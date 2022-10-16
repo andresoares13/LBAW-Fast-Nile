@@ -1,3 +1,17 @@
+DROP TABLE IF EXISTS administrator CASCADE;
+DROP TABLE IF EXISTS bid CASCADE;
+DROP TABLE IF EXISTS notification CASCADE;
+DROP TABLE IF EXISTS follow CASCADE;
+DROP TABLE IF EXISTS auction CASCADE;
+DROP TABLE IF EXISTS car CASCADE;
+DROP TABLE IF EXISTS rating CASCADE;
+DROP TABLE IF EXISTS auctioneer CASCADE;
+DROP TABLE IF EXISTS users CASCADE;
+
+
+
+
+
 CREATE TABLE users (
    id SERIAL PRIMARY KEY,
    names TEXT NOT NULL,
@@ -15,8 +29,8 @@ CREATE TABLE auctioneer (
    picture TEXT,
    email TEXT NOT NULL CONSTRAINT auctioneer_email_uk UNIQUE,
    addresss TEXT,
-   wallet INT NOT NULL DEFAULT 0
-   phone INT NOT NULL CONSTRAINT auctioneer_email_uk UNIQUE,
+   wallet INT NOT NULL DEFAULT 0,
+   phone INT NOT NULL CONSTRAINT auctioneer_phone_uk UNIQUE,
    grade INT
 );
 
@@ -51,7 +65,7 @@ CREATE TABLE auction (
    owners INT NOT NULL,
    states TEXT NOT NULL,
    CONSTRAINT fk_car FOREIGN KEY(idCar) REFERENCES car(id),
-   CONSTRAINT fk_bidder FOREIGN KEY(highestBidder) REFERENCES user(id),
+   CONSTRAINT fk_bidder FOREIGN KEY(highestBidder) REFERENCES users(id),
    CONSTRAINT fk_owner FOREIGN KEY(owners) REFERENCES auctioneer(id)
 );
 
@@ -60,7 +74,7 @@ CREATE TABLE auction (
    idAuction INT,
    valuee INT NOT NULL,
    PRIMARY KEY (idUser, idAuction),
-   CONSTRAINT fk_user FOREIGN KEY(idUser) REFERENCES user(id),
+   CONSTRAINT fk_user FOREIGN KEY(idUser) REFERENCES users(id),
    CONSTRAINT fk_auction FOREIGN KEY(idAuction) REFERENCES auction(id)
 );  
 
@@ -68,7 +82,7 @@ CREATE TABLE auction (
    idUser INT,
    idAuction INT,
    PRIMARY KEY (idUser, idAuction),
-   CONSTRAINT fk_user FOREIGN KEY(idUser) REFERENCES user(id),
+   CONSTRAINT fk_user FOREIGN KEY(idUser) REFERENCES users(id),
    CONSTRAINT fk_auction FOREIGN KEY(idAuction) REFERENCES auction(id)
 );  
 
@@ -77,7 +91,7 @@ CREATE TABLE auction (
    idUser INT NOT NULL,
    idAuction INT NOT NULL,
    messages TEXT NOT NULL,
-   CONSTRAINT fk_user FOREIGN KEY(idUser) REFERENCES user(id),
+   CONSTRAINT fk_user FOREIGN KEY(idUser) REFERENCES users(id),
    CONSTRAINT fk_auction FOREIGN KEY(idAuction) REFERENCES auction(id)
 );  
 
@@ -86,6 +100,6 @@ CREATE TABLE auction (
    idAuctioneer INT,
    grade INT,
    PRIMARY KEY (idUser, idAuctioneer, grade),
-   CONSTRAINT fk_user FOREIGN KEY(idUser) REFERENCES user(id),
+   CONSTRAINT fk_user FOREIGN KEY(idUser) REFERENCES users(id),
    CONSTRAINT fk_auctioneer FOREIGN KEY(idAuctioneer) REFERENCES auctioneer(id)
 );  
