@@ -16,31 +16,27 @@ CREATE TABLE users (
    id SERIAL PRIMARY KEY,
    names TEXT NOT NULL,
    passwords TEXT NOT NULL,
-   picture TEXT,
+   picture TEXT NOT NULL DEFAULT 'default.png',
    email TEXT NOT NULL CONSTRAINT user_email_uk UNIQUE,
-   addresss TEXT,
+   address TEXT,
    wallet INT NOT NULL DEFAULT 0
 );
 
 CREATE TABLE auctioneer (
    id SERIAL PRIMARY KEY,
-   names TEXT NOT NULL,
-   passwords TEXT NOT NULL,
-   picture TEXT,
-   email TEXT NOT NULL CONSTRAINT auctioneer_email_uk UNIQUE,
-   addresss TEXT,
-   wallet INT NOT NULL DEFAULT 0,
-   phone INT NOT NULL CONSTRAINT auctioneer_phone_uk UNIQUE,
-   grade INT
+   idUser Int,
+   phone TEXT NOT NULL CONSTRAINT auctioneer_phone_uk UNIQUE,
+   grade INT,
+   CONSTRAINT fk_user FOREIGN KEY(idUser) REFERENCES users(id)
 );
 
 CREATE TABLE administrator (
    id SERIAL PRIMARY KEY,
    names TEXT NOT NULL,
    passwords TEXT NOT NULL,
-   picture TEXT,
+   picture TEXT NOT NULL DEFAULT 'default.png',
    email TEXT NOT NULL CONSTRAINT administrator_email_uk UNIQUE,
-   addresss TEXT
+   address TEXT
 );
 
 CREATE TABLE car (
@@ -102,4 +98,6 @@ CREATE TABLE auction (
    PRIMARY KEY (idUser, idAuctioneer, grade),
    CONSTRAINT fk_user FOREIGN KEY(idUser) REFERENCES users(id),
    CONSTRAINT fk_auctioneer FOREIGN KEY(idAuctioneer) REFERENCES auctioneer(id)
-);  
+);
+
+
