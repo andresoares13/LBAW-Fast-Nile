@@ -1,3 +1,17 @@
+DROP DATABASE IF EXISTS fastniledb;
+
+CREATE DATABASE fastniledb;
+\c fastniledb
+
+
+
+DROP SCHEMA IF EXISTS fastnile_schema CASCADE;
+CREATE SCHEMA fastnile_schema;
+
+
+SET search_path TO fastnile_schema;
+
+
 DROP TABLE IF EXISTS administrator CASCADE;
 DROP TABLE IF EXISTS bid CASCADE;
 DROP TABLE IF EXISTS notification CASCADE;

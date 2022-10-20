@@ -1,3 +1,8 @@
+\c fastniledb
+
+SET search_path TO fastnile_schema;
+
+
 insert into users (id, names, passwords, email, address) values (1, 'Alis', '2CgZjF7', 'ashortt0@friendfeed.com', '61 Nova Court');
 insert into users (id, names, passwords, email, address) values (2, 'Vivie', 'FYjQYjHM2k4', 'vgashion1@163.com', '0110 Swallow Street');
 insert into users (id, names, passwords, email, address) values (3, 'Tonnie', 'PsOQktLQD', 'truselin2@state.tx.us', '8928 Comanche Lane');
