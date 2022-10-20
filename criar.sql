@@ -70,7 +70,7 @@ CREATE TABLE auction (
    priceStart INT NOT NULL,
    priceNow INT,
    priceClose INT,
-   timeClose DATE NOT NULL,
+   timeClose TIMESTAMP NOT NULL,
    highestBidder INT,
    owners INT NOT NULL,
    states TEXT NOT NULL,
@@ -113,5 +113,6 @@ CREATE TABLE auction (
    CONSTRAINT fk_user FOREIGN KEY(idUser) REFERENCES users(id),
    CONSTRAINT fk_auctioneer FOREIGN KEY(idAuctioneer) REFERENCES auctioneer(id)
 );
+
 
 
