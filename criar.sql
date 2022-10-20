@@ -116,3 +116,11 @@ CREATE TABLE auction (
 
 
 
+
+CREATE INDEX active_auctions ON auction USING hash (states) WHERE states = 'Active';
+
+CREATE INDEX auctioneer_users ON auctioneer USING hash (idUser);
+
+CREATE INDEX notification_users ON notification USING hash (idUser);
+
+
