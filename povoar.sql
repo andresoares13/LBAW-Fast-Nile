@@ -159,7 +159,7 @@ insert into car (id, names, category, states, color, consumption, kilometers) va
 insert into car (id, names, category, states, color, consumption, kilometers) values (5, 'Dodge', 'Sport', 'Wreck', 'Turquoise', 7.0, 577);
 insert into car (id, names, category, states, color, consumption, kilometers) values (6, 'GMC', 'Convertible', 'Brand New', 'Pink', 8.5, 477);
 
-insert into auction (id, idCar, descriptions, priceStart, priceNow, timeClose, owners, states) values (1, 1, '', 6903, 6903, '2023-01-04 04:21:09', 1, 'Active');
+insert into auction (id, idCar, descriptions, priceStart, priceNow, timeClose, owners, states) values (1, 1, 'Super Fast Car', 6903, 6903, '2023-01-04 04:21:09', 1, 'Active');
 insert into auction (id, idCar, descriptions, priceStart, priceNow, timeClose, owners, states) values (2, 2, '', 4236, 4236, '2022-12-20 01:07:28', 2, 'Active');
 insert into auction (id, idCar, descriptions, priceStart, priceNow, timeClose, owners, states) values (3, 3, '', 11332, 11332, '2023-02-02 11:51:40', 3, 'Active');
 insert into auction (id, idCar, descriptions, priceStart, priceNow, timeClose, owners, states) values (4, 4, '', 12637, 12637, '2023-02-13 09:11:11', 4, 'Active');
