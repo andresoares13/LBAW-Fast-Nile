@@ -1,6 +1,6 @@
 \c fastniledb
 
-SET search_path TO fastnile_schema;
+SET search_path TO lbaw22g144;
 
 
 insert into users (id, names, passwords, email, address) values (1, 'Alis', '2CgZjF7', 'ashortt0@friendfeed.com', '61 Nova Court');
@@ -170,6 +170,8 @@ insert into follow (idUser, idAuction) values (1, 2);
 insert into follow (idUser, idAuction) values (2, 1);
 
 insert into rating (idUser, idAuctioneer, grade) values (1, 2, 5);
+
+insert into follow(iDuser,iDauction) values (2,2);
 
 
 

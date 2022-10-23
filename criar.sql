@@ -5,11 +5,11 @@ CREATE DATABASE fastniledb;
 
 
 
-DROP SCHEMA IF EXISTS fastnile_schema CASCADE;
-CREATE SCHEMA fastnile_schema;
+DROP SCHEMA IF EXISTS lbaw22g144 CASCADE;
+CREATE SCHEMA lbaw22g144; --omit this lines above while at feup server
 
 
-SET search_path TO fastnile_schema;
+SET search_path TO lbaw22g144;
 
 
 DROP TABLE IF EXISTS administrator CASCADE;
@@ -22,7 +22,7 @@ DROP TABLE IF EXISTS rating CASCADE;
 DROP TABLE IF EXISTS auctioneer CASCADE;
 DROP TABLE IF EXISTS users CASCADE;
 
-DROP TYPE IF EXISTS category;
+DROP TYPE IF EXISTS categories;
 DROP TYPE IF EXISTS statesAuction;
 DROP TYPE IF EXISTS statesCar;
 
@@ -143,12 +143,12 @@ CREATE INDEX notification_users ON notification USING hash (idUser);
 
 
 -- FTS INDEXES
-
+DROP TRIGGER IF EXISTS auction_search_update ON auction;
 
 ALTER TABLE auction
 ADD COLUMN tsvectors TSVECTOR;
 
-CREATE FUNCTION auction_search_update() RETURNS TRIGGER AS $$
+CREATE OR REPLACE FUNCTION auction_search_update() RETURNS TRIGGER AS $$
 BEGIN
  IF TG_OP = 'INSERT' THEN
         NEW.tsvectors = (
@@ -182,15 +182,18 @@ CREATE INDEX search_idx ON auction USING GIN (tsvectors);
 -- TRIGGERS and UDFs
 -----------------------------------------
 
+DROP TRIGGER IF EXISTS update_highest_bid ON bid;
+DROP TRIGGER IF EXISTS user_same_bid ON bid;
+DROP TRIGGER IF EXISTS update_bid_time ON bid;
+DROP TRIGGER IF EXISTS smaller_bid ON bid;
 
 
 
-
-CREATE FUNCTION update_highest_bid_function() RETURNS TRIGGER AS
+CREATE OR REPLACE FUNCTION update_highest_bid_function() RETURNS TRIGGER AS
 $BODY$
 BEGIN
-    IF (SELECT priceNow from fastnile_schema.auction WHERE auction.id = new.idAuction) < new.valuee THEN  --guarantees that a bid cannot be placed unless its value is bigger than the current one
-      UPDATE fastnile_schema.auction
+    IF (SELECT priceNow from auction WHERE auction.id = new.idAuction) < new.valuee THEN  --guarantees that a bid cannot be placed unless its value is bigger than the current one
+      UPDATE auction
          SET highestBidder = new.idUser, priceNow = new.valuee
          WHERE auction.id = new.idAuction;
     END IF;     
@@ -210,10 +213,10 @@ CREATE TRIGGER update_highest_bid
 
 
 
-CREATE FUNCTION user_same_bid_function() RETURNS TRIGGER AS
+CREATE OR REPLACE FUNCTION user_same_bid_function() RETURNS TRIGGER AS
 $BODY$
 BEGIN
-        IF EXISTS (SELECT * FROM fastnile_schema.bid, fastnile_schema.auction WHERE NEW.idUser = auction.highestBidder AND auction.id = NEW.idAuction ) THEN
+        IF EXISTS (SELECT * FROM bid, auction WHERE NEW.idUser = auction.highestBidder AND auction.id = NEW.idAuction ) THEN
            RAISE EXCEPTION 'A user may only bid if their bid is not the highest';
         END IF;
         RETURN NEW;
@@ -230,12 +233,12 @@ CREATE TRIGGER user_same_bid
 
 
 
-CREATE FUNCTION update_bid_time_function() RETURNS TRIGGER AS
+CREATE OR REPLACE FUNCTION update_bid_time_function() RETURNS TRIGGER AS
 $BODY$
 BEGIN
-   IF (SELECT extract(epoch from (auction.timeclose - now())) / 60 FROM fastnile_schema.auction where auction.id = new.idAuction) < 15 THEN
-      UPDATE fastnile_schema.auction
-         SET timeclose = (select (select timeclose from fastnile_schema.auction where auction.id = new.idAuction) + (30 * interval '1 minute'))
+   IF (SELECT extract(epoch from (auction.timeclose - now())) / 60 FROM auction where auction.id = new.idAuction) < 15 THEN
+      UPDATE auction
+         SET timeclose = (select (select timeclose from auction where auction.id = new.idAuction) + (30 * interval '1 minute'))
          WHERE auction.id = new.idAuction;
    END IF;
    return new;
@@ -252,10 +255,10 @@ CREATE TRIGGER update_bid_time
 
 
 
-CREATE FUNCTION smaller_bid_function() RETURNS TRIGGER AS
+CREATE OR REPLACE FUNCTION smaller_bid_function() RETURNS TRIGGER AS
 $BODY$
 BEGIN
-        IF (SELECT priceNow from fastnile_schema.auction WHERE auction.id = new.idAuction) >= new.valuee THEN
+        IF (SELECT priceNow from auction WHERE auction.id = new.idAuction) >= new.valuee THEN
            RAISE EXCEPTION 'A bid can only be made if it is higher than the current one';
         END IF;
         RETURN NEW;
