@@ -88,6 +88,7 @@ CREATE TABLE auction (
    highestBidder INT,
    owners INT NOT NULL,
    states statesAuction NOT NULL,
+   title TEXT NOT NULL,
    CONSTRAINT fk_car FOREIGN KEY(idCar) REFERENCES car(id) ON UPDATE CASCADE,
    CONSTRAINT fk_bidder FOREIGN KEY(highestBidder) REFERENCES users(id),
    CONSTRAINT fk_owner FOREIGN KEY(owners) REFERENCES auctioneer(id)
@@ -151,13 +152,15 @@ CREATE FUNCTION auction_search_update() RETURNS TRIGGER AS $$
 BEGIN
  IF TG_OP = 'INSERT' THEN
         NEW.tsvectors = (
-         setweight(to_tsvector('english', NEW.descriptions), 'A')
+         setweight(to_tsvector('english', NEW.title), 'A') ||
+         setweight(to_tsvector('english', NEW.descriptions), 'B')
         );
  END IF;
  IF TG_OP = 'UPDATE' THEN
-         IF (NEW.descriptions <> OLD.descriptions) THEN
+         IF (NEW.descriptions <> OLD.descriptions OR NEW.title <> OLD.title) THEN
            NEW.tsvectors = (
-             setweight(to_tsvector('english', NEW.descriptions), 'A')
+             setweight(to_tsvector('english', NEW.title), 'A') ||
+             setweight(to_tsvector('english', NEW.descriptions), 'B')
            );
          END IF;
  END IF;
@@ -201,3 +204,47 @@ CREATE TRIGGER update_highest_bid
      AFTER INSERT ON bid
      FOR EACH ROW
      EXECUTE PROCEDURE update_highest_bid_function();
+
+
+
+
+
+
+CREATE FUNCTION user_same_bid_function() RETURNS TRIGGER AS
+$BODY$
+BEGIN
+        IF EXISTS (SELECT * FROM fastnile_schema.bid, fastnile_schema.auction WHERE NEW.idUser = auction.highestBidder AND auction.id = NEW.idAuction ) THEN
+           RAISE EXCEPTION 'A user may only bid if their bid is not the highest';
+        END IF;
+        RETURN NEW;
+END
+$BODY$
+LANGUAGE plpgsql;
+
+CREATE TRIGGER user_same_bid
+        BEFORE INSERT OR UPDATE ON bid
+        FOR EACH ROW
+        EXECUTE PROCEDURE user_same_bid_function();
+
+
+
+
+
+CREATE FUNCTION update_bid_time_function() RETURNS TRIGGER AS
+$BODY$
+BEGIN
+   IF ((SELECT extract(epoch from (auction.timeclose - now())) / 60 FROM fastnile_schema.auction where id = new.idAuction) <= 15) THEN
+   UPDATE fastnile_schema.auction
+      SET timeclose = (select (select timeclose from fastnile_schema.auction where id = new.idAuction) + (30 * interval '1 minute'))
+      WHERE auction.id = new.idAuction;
+   END IF;
+   return new;
+END;
+$BODY$
+language plpgsql;
+
+
+CREATE TRIGGER update_bid_time
+     AFTER INSERT ON bid
+     FOR EACH ROW
+     EXECUTE PROCEDURE update_highest_bid_function();        
