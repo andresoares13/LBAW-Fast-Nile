@@ -95,10 +95,10 @@ CREATE TABLE auction (
 );
 
  CREATE TABLE bid (
+   id SERIAL PRIMARY KEY,
    idUser INT,
    idAuction INT,
    valuee INT NOT NULL,
-   PRIMARY KEY (idUser, idAuction),
    CONSTRAINT fk_user FOREIGN KEY(idUser) REFERENCES users(id) ON UPDATE CASCADE,
    CONSTRAINT fk_auction FOREIGN KEY(idAuction) REFERENCES auction(id) ON UPDATE CASCADE
 );  
@@ -233,10 +233,10 @@ CREATE TRIGGER user_same_bid
 CREATE FUNCTION update_bid_time_function() RETURNS TRIGGER AS
 $BODY$
 BEGIN
-   IF ((SELECT extract(epoch from (auction.timeclose - now())) / 60 FROM fastnile_schema.auction where id = new.idAuction) <= 15) THEN
-   UPDATE fastnile_schema.auction
-      SET timeclose = (select (select timeclose from fastnile_schema.auction where id = new.idAuction) + (30 * interval '1 minute'))
-      WHERE auction.id = new.idAuction;
+   IF (SELECT extract(epoch from (auction.timeclose - now())) / 60 FROM fastnile_schema.auction where auction.id = new.idAuction) < 15 THEN
+      UPDATE fastnile_schema.auction
+         SET timeclose = (select (select timeclose from fastnile_schema.auction where auction.id = new.idAuction) + (30 * interval '1 minute'))
+         WHERE auction.id = new.idAuction;
    END IF;
    return new;
 END;
@@ -247,4 +247,23 @@ language plpgsql;
 CREATE TRIGGER update_bid_time
      AFTER INSERT ON bid
      FOR EACH ROW
-     EXECUTE PROCEDURE update_highest_bid_function();        
+     EXECUTE PROCEDURE update_bid_time_function();        
+
+
+
+
+CREATE FUNCTION smaller_bid_function() RETURNS TRIGGER AS
+$BODY$
+BEGIN
+        IF (SELECT priceNow from fastnile_schema.auction WHERE auction.id = new.idAuction) >= new.valuee THEN
+           RAISE EXCEPTION 'A bid can only be made if it is higher than the current one';
+        END IF;
+        RETURN NEW;
+END
+$BODY$
+LANGUAGE plpgsql;
+
+CREATE TRIGGER smaller_bid
+        BEFORE INSERT OR UPDATE ON bid
+        FOR EACH ROW
+        EXECUTE PROCEDURE smaller_bid_function();     
