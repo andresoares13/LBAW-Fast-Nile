@@ -157,14 +157,29 @@ insert into car (id, names, category, states, color, consumption, kilometers) va
 insert into car (id, names, category, states, color, consumption, kilometers) values (3, 'Mercury', 'Sport', 'High Condition', 'Puce', 9.2, 729);
 insert into car (id, names, category, states, color, consumption, kilometers) values (4, 'Toyota', 'Coupe', 'Poor Condition', 'Blue', 9.1, 777);
 insert into car (id, names, category, states, color, consumption, kilometers) values (5, 'Dodge', 'Sport', 'Wreck', 'Turquoise', 7.0, 577);
-insert into car (id, names, category, states, color, consumption, kilometers) values (6, 'GMC', 'Convertible', 'Brand New', 'Pink', 8.5, 477);
+
 
 insert into auction (id, idCar, descriptions, priceStart, priceNow, timeClose, owners, states, title) values (1, 1, 'Super Fast Car', 6903, 6903, '2023-01-04 04:21:09', 1, 'Active','Violet Coupe');
 insert into auction (id, idCar, descriptions, priceStart, priceNow, timeClose, owners, states, title) values (2, 2, '', 4236, 4236, '2022-12-20 01:07:28', 2, 'Active','');
 insert into auction (id, idCar, descriptions, priceStart, priceNow, timeClose, owners, states, title) values (3, 3, '', 11332, 11332, '2023-02-02 11:51:40', 3, 'Active','');
 insert into auction (id, idCar, descriptions, priceStart, priceNow, timeClose, owners, states, title) values (4, 4, '', 12637, 12637, '2023-02-13 09:11:11', 4, 'Active','');
 insert into auction (id, idCar, descriptions, priceStart, priceNow, timeClose, owners, states, title) values (5, 5, '', 7714, 7714, '2022-12-11 10:04:05', 5, 'Active','');
-insert into auction (id, idCar, descriptions, priceStart, priceNow, timeClose, owners, states, title) values (6, 6, '', 17758, 17758, '2022-12-08 20:39:22', 6, 'Active','');
+
+insert into bid(id,idUser,idAuction,valuee) values (1,1,1,7000);
+
+BEGIN TRANSACTION;
+
+SET TRANSACTION ISOLATION LEVEL REPEATABLE READ;
+
+-- Insert car
+INSERT INTO car (id, names, category, states, color, consumption, kilometers)
+ VALUES (6, 'GMC', 'Convertible', 'Brand New', 'Pink', 8.5, 477);
+
+-- Insert auction
+INSERT INTO auction (id, idCar, descriptions, priceStart, priceNow, timeClose, owners, states, title)
+ VALUES (6, 6, '', 17758, 17758, '2022-12-08 20:39:22', 6, 'Active','');
+
+END TRANSACTION;
 
 insert into follow (idUser, idAuction) values (1, 2);
 insert into follow (idUser, idAuction) values (2, 1);
@@ -176,3 +191,20 @@ insert into follow(iDuser,iDauction) values (2,2);
 
 
 
+BEGIN TRANSACTION;
+
+SET TRANSACTION ISOLATION LEVEL SERIALIZABLE READ ONLY;
+
+-- Get username of highest bidder
+SELECT names
+FROM users,auction
+WHERE users.id = auction.highestBidder;
+
+-- Get top 10 bids (limit 10)
+SELECT names,valuee
+FROM bid,users,auction
+WHERE users.id = bid.idUser and bid.idAuction = auction.id
+ORDER BY valuee DESC
+LIMIT 10;
+
+END TRANSACTION;

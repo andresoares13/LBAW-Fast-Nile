@@ -55,7 +55,7 @@ CREATE TABLE auctioneer (
    idUser Int,
    phone TEXT NOT NULL CONSTRAINT auctioneer_phone_uk UNIQUE,
    grade INT,
-   CONSTRAINT fk_user FOREIGN KEY(idUser) REFERENCES users(id) ON UPDATE CASCADE
+   CONSTRAINT fk_user FOREIGN KEY(idUser) REFERENCES users(id) ON DELETE CASCADE
 );
 
 CREATE TABLE administrator (
@@ -89,7 +89,7 @@ CREATE TABLE auction (
    owners INT NOT NULL,
    states statesAuction NOT NULL,
    title TEXT NOT NULL,
-   CONSTRAINT fk_car FOREIGN KEY(idCar) REFERENCES car(id) ON UPDATE CASCADE,
+   CONSTRAINT fk_car FOREIGN KEY(idCar) REFERENCES car(id) ON DELETE CASCADE,
    CONSTRAINT fk_bidder FOREIGN KEY(highestBidder) REFERENCES users(id),
    CONSTRAINT fk_owner FOREIGN KEY(owners) REFERENCES auctioneer(id)
 );
@@ -99,16 +99,16 @@ CREATE TABLE auction (
    idUser INT,
    idAuction INT,
    valuee INT NOT NULL,
-   CONSTRAINT fk_user FOREIGN KEY(idUser) REFERENCES users(id) ON UPDATE CASCADE,
-   CONSTRAINT fk_auction FOREIGN KEY(idAuction) REFERENCES auction(id) ON UPDATE CASCADE
+   CONSTRAINT fk_user FOREIGN KEY(idUser) REFERENCES users(id) ON DELETE CASCADE,
+   CONSTRAINT fk_auction FOREIGN KEY(idAuction) REFERENCES auction(id) ON DELETE CASCADE
 );  
 
  CREATE TABLE follow (
    idUser INT,
    idAuction INT,
    PRIMARY KEY (idUser, idAuction),
-   CONSTRAINT fk_user FOREIGN KEY(idUser) REFERENCES users(id) ON UPDATE CASCADE,
-   CONSTRAINT fk_auction FOREIGN KEY(idAuction) REFERENCES auction(id) ON UPDATE CASCADE
+   CONSTRAINT fk_user FOREIGN KEY(idUser) REFERENCES users(id) ON DELETE CASCADE,
+   CONSTRAINT fk_auction FOREIGN KEY(idAuction) REFERENCES auction(id) ON DELETE CASCADE
 );  
 
  CREATE TABLE notification (
@@ -116,7 +116,7 @@ CREATE TABLE auction (
    idUser INT NOT NULL,
    idAuction INT NOT NULL,
    messages TEXT NOT NULL,
-   CONSTRAINT fk_user FOREIGN KEY(idUser) REFERENCES users(id) ON UPDATE CASCADE,
+   CONSTRAINT fk_user FOREIGN KEY(idUser) REFERENCES users(id) ON DELETE CASCADE,
    CONSTRAINT fk_auction FOREIGN KEY(idAuction) REFERENCES auction(id) 
 );  
 
@@ -126,7 +126,7 @@ CREATE TABLE auction (
    grade INT,
    PRIMARY KEY (idUser, idAuctioneer, grade),
    CONSTRAINT fk_user FOREIGN KEY(idUser) REFERENCES users(id),
-   CONSTRAINT fk_auctioneer FOREIGN KEY(idAuctioneer) REFERENCES auctioneer(id) ON UPDATE CASCADE
+   CONSTRAINT fk_auctioneer FOREIGN KEY(idAuctioneer) REFERENCES auctioneer(id) ON DELETE CASCADE
 );
 
 
@@ -269,4 +269,9 @@ LANGUAGE plpgsql;
 CREATE TRIGGER smaller_bid
         BEFORE INSERT OR UPDATE ON bid
         FOR EACH ROW
-        EXECUTE PROCEDURE smaller_bid_function();     
+        EXECUTE PROCEDURE smaller_bid_function();
+
+
+
+
+
