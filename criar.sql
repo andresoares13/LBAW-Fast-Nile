@@ -186,8 +186,9 @@ DROP TRIGGER IF EXISTS update_highest_bid ON bid;
 DROP TRIGGER IF EXISTS user_same_bid ON bid;
 DROP TRIGGER IF EXISTS update_bid_time ON bid;
 DROP TRIGGER IF EXISTS smaller_bid ON bid;
+DROP TRIGGER IF EXISTS auction_valid_time ON auction;
 
-
+--t1
 
 CREATE OR REPLACE FUNCTION update_highest_bid_function() RETURNS TRIGGER AS
 $BODY$
@@ -211,7 +212,7 @@ CREATE TRIGGER update_highest_bid
 
 
 
-
+--t2
 
 CREATE OR REPLACE FUNCTION user_same_bid_function() RETURNS TRIGGER AS
 $BODY$
@@ -232,6 +233,7 @@ CREATE TRIGGER user_same_bid
 
 
 
+--t3
 
 CREATE OR REPLACE FUNCTION update_bid_time_function() RETURNS TRIGGER AS
 $BODY$
@@ -254,6 +256,7 @@ CREATE TRIGGER update_bid_time
 
 
 
+--t4
 
 CREATE OR REPLACE FUNCTION smaller_bid_function() RETURNS TRIGGER AS
 $BODY$
@@ -270,6 +273,26 @@ CREATE TRIGGER smaller_bid
         BEFORE INSERT OR UPDATE ON bid
         FOR EACH ROW
         EXECUTE PROCEDURE smaller_bid_function();
+
+
+
+--t5
+
+CREATE OR REPLACE FUNCTION auction_valid_time_function() RETURNS TRIGGER AS
+$BODY$
+BEGIN
+        IF (SELECT extract(epoch from (new.timeclose - now())) / 60 ) <= 0 THEN
+           RAISE EXCEPTION 'The close date of an auction has to be greater than the opening date';
+        END IF;
+        RETURN NEW;
+END
+$BODY$
+LANGUAGE plpgsql;
+
+CREATE TRIGGER auction_valid_time
+        BEFORE INSERT ON auction
+        FOR EACH ROW
+        EXECUTE PROCEDURE auction_valid_time_function();        
 
 
 
