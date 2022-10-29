@@ -54,7 +54,7 @@ CREATE TABLE auctioneer (
    id SERIAL PRIMARY KEY,
    idUser Int,
    phone TEXT NOT NULL CONSTRAINT auctioneer_phone_uk UNIQUE,
-   grade INT,
+   grade FLOAT DEFAULT 0,
    CONSTRAINT fk_user FOREIGN KEY(idUser) REFERENCES users(id) ON DELETE CASCADE
 );
 
@@ -121,10 +121,10 @@ CREATE TABLE auction (
 );  
 
  CREATE TABLE rating (
+   id SERIAL PRIMARY KEY,
    idUser INT,
    idAuctioneer INT,
    grade INT,
-   PRIMARY KEY (idUser, idAuctioneer, grade),
    CONSTRAINT fk_user FOREIGN KEY(idUser) REFERENCES users(id),
    CONSTRAINT fk_auctioneer FOREIGN KEY(idAuctioneer) REFERENCES auctioneer(id) ON DELETE CASCADE
 );
@@ -187,6 +187,13 @@ DROP TRIGGER IF EXISTS user_same_bid ON bid;
 DROP TRIGGER IF EXISTS update_bid_time ON bid;
 DROP TRIGGER IF EXISTS smaller_bid ON bid;
 DROP TRIGGER IF EXISTS auction_valid_time ON auction;
+DROP TRIGGER IF EXISTS auction_noSame_auctioneer_bid ON bid;
+DROP TRIGGER IF EXISTS rate_won_auctions ON rating;
+DROP TRIGGER IF EXISTS min_auction_value ON auction;
+DROP TRIGGER IF EXISTS min_wallet_value ON users;
+DROP TRIGGER IF EXISTS bid_small_wallet ON bid;
+DROP TRIGGER IF EXISTS valid_rating ON rating;
+DROP TRIGGER IF EXISTS update_average_grade ON rating;
 
 --t1
 
@@ -281,7 +288,7 @@ CREATE TRIGGER smaller_bid
 CREATE OR REPLACE FUNCTION auction_valid_time_function() RETURNS TRIGGER AS
 $BODY$
 BEGIN
-        IF (SELECT extract(epoch from (new.timeclose - now())) / 60 ) <= 0 THEN
+        IF (SELECT extract(epoch from (new.timeclose - now())) / 60 ) <= 1440 THEN
            RAISE EXCEPTION 'The close date of an auction has to be greater than the opening date';
         END IF;
         RETURN NEW;
@@ -292,7 +299,147 @@ LANGUAGE plpgsql;
 CREATE TRIGGER auction_valid_time
         BEFORE INSERT ON auction
         FOR EACH ROW
-        EXECUTE PROCEDURE auction_valid_time_function();        
+        EXECUTE PROCEDURE auction_valid_time_function();       
+
+
+
+
+--t6
+
+CREATE OR REPLACE FUNCTION auction_noSame_auctioneer_bid_function() RETURNS TRIGGER AS
+$BODY$
+BEGIN
+        IF ((select owners from auction where id = new.idAuction) = (select id from auctioneer where idUser = new.idUser))  THEN
+           RAISE EXCEPTION 'An auctioneer can`t bid in their own auction';
+        END IF;
+        RETURN NEW;
+END
+$BODY$
+LANGUAGE plpgsql;
+
+CREATE TRIGGER auction_noSame_auctioneer_bid
+        BEFORE INSERT ON bid
+        FOR EACH ROW
+        EXECUTE PROCEDURE auction_noSame_auctioneer_bid_function();  
+
+
+  
+--t7
+
+CREATE OR REPLACE FUNCTION rate_won_auctions_function() RETURNS TRIGGER AS
+$BODY$
+BEGIN
+        IF (select count(id) from auction where states = 'Closed' AND highestBidder = new.idUser AND owners = new.idAuctioneer) <= (select count(id) from rating where idUser = new.idUser AND idAuctioneer = new.idAuctioneer)   THEN
+           RAISE EXCEPTION 'To rate an auctioneer, a user has to win an auction of theirs';
+        END IF;
+        RETURN NEW;
+END
+$BODY$
+LANGUAGE plpgsql;
+
+CREATE TRIGGER rate_won_auctions
+        BEFORE INSERT ON rating
+        FOR EACH ROW
+        EXECUTE PROCEDURE rate_won_auctions_function(); 
+
+
+
+--t8
+
+CREATE OR REPLACE FUNCTION min_auction_value_function() RETURNS TRIGGER AS
+$BODY$
+BEGIN
+        IF (new.priceStart <= 0)  THEN
+           RAISE EXCEPTION 'The starting value of the auction must be bigger than 0';
+        END IF;
+        RETURN NEW;
+END
+$BODY$
+LANGUAGE plpgsql;
+
+CREATE TRIGGER min_auction_value
+        BEFORE INSERT ON auction
+        FOR EACH ROW
+        EXECUTE PROCEDURE min_auction_value_function(); 
+
+
+
+--t9
+
+CREATE OR REPLACE FUNCTION min_wallet_value_function() RETURNS TRIGGER AS
+$BODY$
+BEGIN
+        IF (new.wallet < 0)  THEN
+           RAISE EXCEPTION 'The value of the wallet can`t be less than 0';
+        END IF;
+        RETURN NEW;
+END
+$BODY$
+LANGUAGE plpgsql;
+
+CREATE TRIGGER min_wallet_value
+        BEFORE INSERT OR UPDATE ON users
+        FOR EACH ROW
+        EXECUTE PROCEDURE min_wallet_value_function(); 
+
+
+
+--t10
+
+CREATE OR REPLACE FUNCTION bid_small_wallet_function() RETURNS TRIGGER AS
+$BODY$
+BEGIN
+        IF (new.valuee > (select wallet from users where id = new.idUser))  THEN
+           RAISE EXCEPTION 'The value of the user`s wallet must be equal or bigger than the value of the bid';
+        END IF;
+        RETURN NEW;
+END
+$BODY$
+LANGUAGE plpgsql;
+
+CREATE TRIGGER bid_small_wallet
+        BEFORE INSERT ON bid
+        FOR EACH ROW
+        EXECUTE PROCEDURE bid_small_wallet_function(); 
+
+
+--t11
+
+CREATE OR REPLACE FUNCTION valid_rating_function() RETURNS TRIGGER AS
+$BODY$
+BEGIN
+        IF (new.grade < 1 OR new.grade > 5)   THEN
+           RAISE EXCEPTION 'The value of the rating must be between 1 and 5';
+        END IF;
+        RETURN NEW;
+END
+$BODY$
+LANGUAGE plpgsql;
+
+CREATE TRIGGER valid_rating
+        BEFORE INSERT ON rating
+        FOR EACH ROW
+        EXECUTE PROCEDURE valid_rating_function(); 
+
+
+--t12
+
+CREATE OR REPLACE FUNCTION update_average_grade_function() RETURNS TRIGGER AS
+$BODY$
+BEGIN
+   UPDATE auctioneer
+      SET grade = round( CAST(((new.grade + auctioneer.grade) / ( (select count(id) from rating where idAuctioneer = new.idAuctioneer))) AS numeric) , 2 )
+      WHERE new.idAuctioneer = auctioneer.id;
+    return new;
+END;
+$BODY$
+language plpgsql;
+
+
+CREATE TRIGGER update_average_grade
+     AFTER INSERT ON rating
+     FOR EACH ROW
+     EXECUTE PROCEDURE update_average_grade_function();
 
 
 

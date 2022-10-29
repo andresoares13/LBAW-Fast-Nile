@@ -9,7 +9,7 @@ SET search_path TO lbaw22g144;
 -----------------------------------------
 
 
-insert into users (id, names, passwords, email, address) values (1, 'Alis', '2CgZjF7', 'ashortt0@friendfeed.com', '61 Nova Court');
+insert into users (id, names, passwords, email, address, wallet) values (1, 'Alis', '2CgZjF7', 'ashortt0@friendfeed.com', '61 Nova Court', 100000);
 insert into users (id, names, passwords, email, address) values (2, 'Vivie', 'FYjQYjHM2k4', 'vgashion1@163.com', '0110 Swallow Street');
 insert into users (id, names, passwords, email, address) values (3, 'Tonnie', 'PsOQktLQD', 'truselin2@state.tx.us', '8928 Comanche Lane');
 insert into users (id, names, passwords, email, address) values (4, 'Gussy', 'v2POgmxWEf5B', 'gwaugh3@naver.com', '2 Corben Alley');
@@ -163,6 +163,7 @@ insert into car (id, names, category, states, color, consumption, kilometers) va
 insert into car (id, names, category, states, color, consumption, kilometers) values (3, 'Mercury', 'Sport', 'High Condition', 'Puce', 9.2, 729);
 insert into car (id, names, category, states, color, consumption, kilometers) values (4, 'Toyota', 'Coupe', 'Poor Condition', 'Blue', 9.1, 777);
 insert into car (id, names, category, states, color, consumption, kilometers) values (5, 'Dodge', 'Sport', 'Wreck', 'Turquoise', 7.0, 577);
+insert into car (id, names, category, states, color, consumption, kilometers) values (6, 'Dodge', 'Sport', 'Wreck', 'Turquoise', 7.0, 577);
 
 
 insert into auction (id, idCar, descriptions, priceStart, priceNow, timeClose, owners, states, title) values (1, 1, 'Super Fast Car', 6903, 6903, '2023-01-04 04:21:09', 1, 'Active','Violet Coupe');
@@ -170,8 +171,19 @@ insert into auction (id, idCar, descriptions, priceStart, priceNow, timeClose, o
 insert into auction (id, idCar, descriptions, priceStart, priceNow, timeClose, owners, states, title) values (3, 3, '', 11332, 11332, '2023-02-02 11:51:40', 3, 'Active','');
 insert into auction (id, idCar, descriptions, priceStart, priceNow, timeClose, owners, states, title) values (4, 4, '', 12637, 12637, '2023-02-13 09:11:11', 4, 'Active','');
 insert into auction (id, idCar, descriptions, priceStart, priceNow, timeClose, owners, states, title) values (5, 5, '', 7714, 7714, '2022-12-11 10:04:05', 5, 'Active','');
+insert into auction (id, idCar, descriptions, priceStart, priceNow, timeClose, highestBidder, owners, states, title) values (6, 6, 'Everyone is a ferrari fan', 7714, 7714, '2022-11-28 10:04:05', 1, 6, 'Closed','Ferrari confort');
 
-insert into bid(id,idUser,idAuction,valuee) values (1,1,1,7000);
+insert into bid (id, idUser, idAuction, valuee) values (1,1,6,9000);
+
+insert into follow (idUser, idAuction) values (1, 2);
+insert into follow (idUser, idAuction) values (2, 1);
+insert into follow(iDuser,iDauction) values (2,2);
+
+insert into rating (id,idUser,idAuctioneer,grade) values (1,1,6,5);
+
+
+
+/* transaction tests
 
 BEGIN TRANSACTION;
 
@@ -179,23 +191,15 @@ SET TRANSACTION ISOLATION LEVEL REPEATABLE READ;
 
 -- Insert car
 INSERT INTO car (id, names, category, states, color, consumption, kilometers)
- VALUES (6, 'GMC', 'Convertible', 'Brand New', 'Pink', 8.5, 477);
+ VALUES (7, 'GMC', 'Convertible', 'Brand New', 'Pink', 8.5, 477);
 
 -- Insert auction
 INSERT INTO auction (id, idCar, descriptions, priceStart, priceNow, timeClose, owners, states, title)
- VALUES (6, 6, '', 17758, 17758, '2022-12-08 20:39:22', 6, 'Active','');
+ VALUES (7, 7, '', 17758, 17758, '2022-12-08 20:39:22', 7, 'Active','');
 
 END TRANSACTION;
 
-insert into follow (idUser, idAuction) values (1, 2);
-insert into follow (idUser, idAuction) values (2, 1);
-
-insert into rating (idUser, idAuctioneer, grade) values (1, 2, 5);
-
-insert into follow(iDuser,iDauction) values (2,2);
-
-
-
+---------------------------------------------
 
 BEGIN TRANSACTION;
 
@@ -214,3 +218,4 @@ ORDER BY valuee DESC
 LIMIT 10;
 
 END TRANSACTION;
+*/
