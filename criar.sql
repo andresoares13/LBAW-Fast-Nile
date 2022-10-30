@@ -86,7 +86,7 @@ CREATE TABLE auction (
    priceClose INT,
    timeClose TIMESTAMP NOT NULL,
    highestBidder INT,
-   owners INT NOT NULL,
+   owners INT,
    states statesAuction NOT NULL,
    title TEXT NOT NULL,
    CONSTRAINT fk_car FOREIGN KEY(idCar) REFERENCES car(id) ON DELETE CASCADE,
@@ -99,7 +99,7 @@ CREATE TABLE auction (
    idUser INT,
    idAuction INT,
    valuee INT NOT NULL,
-   CONSTRAINT fk_user FOREIGN KEY(idUser) REFERENCES users(id) ON DELETE CASCADE,
+   CONSTRAINT fk_user FOREIGN KEY(idUser) REFERENCES users(id),
    CONSTRAINT fk_auction FOREIGN KEY(idAuction) REFERENCES auction(id) ON DELETE CASCADE
 );  
 
@@ -117,7 +117,7 @@ CREATE TABLE auction (
    idAuction INT NOT NULL,
    messages TEXT NOT NULL,
    CONSTRAINT fk_user FOREIGN KEY(idUser) REFERENCES users(id) ON DELETE CASCADE,
-   CONSTRAINT fk_auction FOREIGN KEY(idAuction) REFERENCES auction(id) 
+   CONSTRAINT fk_auction FOREIGN KEY(idAuction) REFERENCES auction(id) ON DELETE CASCADE
 );  
 
  CREATE TABLE rating (
@@ -194,6 +194,11 @@ DROP TRIGGER IF EXISTS min_wallet_value ON users;
 DROP TRIGGER IF EXISTS bid_small_wallet ON bid;
 DROP TRIGGER IF EXISTS valid_rating ON rating;
 DROP TRIGGER IF EXISTS update_average_grade ON rating;
+DROP TRIGGER IF EXISTS update_deleted_user_info ON users;
+DROP TRIGGER IF EXISTS update_deleted_auctioneer ON auction;
+DROP TRIGGER IF EXISTS min_bid_delete_auction ON auction;
+
+
 
 --t1
 
@@ -268,8 +273,8 @@ CREATE TRIGGER update_bid_time
 CREATE OR REPLACE FUNCTION smaller_bid_function() RETURNS TRIGGER AS
 $BODY$
 BEGIN
-        IF (SELECT priceNow from auction WHERE auction.id = new.idAuction) >= new.valuee THEN
-           RAISE EXCEPTION 'A bid can only be made if it is higher than the current one';
+        IF ((SELECT priceNow from auction WHERE auction.id = new.idAuction) * 1.05 ) > new.valuee THEN
+           RAISE EXCEPTION 'A bid can only be made if it is higher than the current one by at least 5 percent';
         END IF;
         RETURN NEW;
 END
@@ -277,7 +282,7 @@ $BODY$
 LANGUAGE plpgsql;
 
 CREATE TRIGGER smaller_bid
-        BEFORE INSERT OR UPDATE ON bid
+        BEFORE INSERT ON bid
         FOR EACH ROW
         EXECUTE PROCEDURE smaller_bid_function();
 
@@ -441,6 +446,80 @@ CREATE TRIGGER update_average_grade
      FOR EACH ROW
      EXECUTE PROCEDURE update_average_grade_function();
 
+
+
+--t13
+
+CREATE OR REPLACE FUNCTION update_deleted_user_info_function() RETURNS TRIGGER AS
+$BODY$
+BEGIN
+   UPDATE bid
+      SET idUser = NULL
+      WHERE old.id = idUser;
+   UPDATE rating
+      SET idUser = NULL
+      WHERE old.id = rating.idUser;
+   UPDATE auction 
+      SET highestBidder = (select bid.idUser from auction,bid where bid.idAuction = auction.id and bid.idUser is not NULL order by valuee desc limit 1),
+      priceNow = (select bid.valuee from auction,bid where bid.idAuction = auction.id and bid.idUser is not NULL order by valuee desc limit 1)
+      WHERE old.id = auction.highestBidder and auction.states = 'Active';   
+    return old;
+END;
+$BODY$
+language plpgsql;
+
+
+CREATE TRIGGER update_deleted_user_info
+     BEFORE DELETE ON users
+     FOR EACH ROW
+     EXECUTE PROCEDURE update_deleted_user_info_function();
+
+
+
+
+--t14
+
+CREATE OR REPLACE FUNCTION update_deleted_auctioneer_function() RETURNS TRIGGER AS
+$BODY$
+BEGIN
+   UPDATE auction
+      SET owners = NULL
+      where old.id = auction.owners and auction.states = 'Closed';
+   IF EXISTS(select states from auction where auction.owners = old.id and auction.states = 'Active') THEN  
+      DELETE FROM auction where auction.owners = old.id;
+   END IF; 
+    return old;
+END;
+$BODY$
+language plpgsql;
+
+
+CREATE TRIGGER update_deleted_auctioneer
+     BEFORE DELETE ON auctioneer
+     FOR EACH ROW
+     EXECUTE PROCEDURE update_deleted_auctioneer_function();
+
+
+
+
+--t15
+
+
+CREATE OR REPLACE FUNCTION min_bid_delete_auction_function() RETURNS TRIGGER AS
+$BODY$
+BEGIN
+    IF (select count(bid.id) from auction,bid where bid.idAuction = old.id) > 0 THEN 
+        RAISE EXCEPTION 'An auction can´t be deleted if it has more than 0 bids';
+    END IF;
+    RETURN old;
+END;
+$BODY$
+language plpgsql;
+
+CREATE TRIGGER min_bid_delete_auction
+     BEFORE DELETE ON auction
+     FOR EACH ROW
+     EXECUTE PROCEDURE min_bid_delete_auction_function();
 
 
 
