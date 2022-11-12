@@ -5,11 +5,11 @@ CREATE DATABASE fastniledb;
 
 
 
-DROP SCHEMA IF EXISTS lbaw22g144 CASCADE;
-CREATE SCHEMA lbaw22g144; --omit this lines above while at feup server
+DROP SCHEMA IF EXISTS lbaw22144 CASCADE;
+CREATE SCHEMA lbaw22144; --omit this lines above while at feup server
 
 
-SET search_path TO lbaw22g144;
+SET search_path TO lbaw22144;
 
 
 DROP TABLE IF EXISTS administrator CASCADE;
