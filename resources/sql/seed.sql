@@ -1,6 +1,6 @@
-create schema if not exists lbaw;
+create schema if not exists lbaw22144;
 
-SET search_path TO lbaw;
+SET search_path TO lbaw22144;
 
 
 DROP TABLE IF EXISTS administrator CASCADE;
