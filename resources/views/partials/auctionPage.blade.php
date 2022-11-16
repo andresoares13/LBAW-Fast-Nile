@@ -2,6 +2,12 @@
 <header>
   <h1 id='AuctionTitle' ><a href="/auction/{{ $auction->id }}">{{ $auction->title }}</a></h1>
 </header>
+
+@php
+$time = strtotime($auction->toArray()['timeclose']);
+@endphp
+<script src="{{ asset('js/clock.js') }}" defer> </script>
+
 <img class= "AuctionsPic" src= "{{asset('img/car/' . $auction->getCarPicture($auction->id))}}" /> 
 @if ($auction->getTopBid($auction->id)->toArray() == [])
 <table id="tables">  
@@ -20,7 +26,7 @@
 @endif
 
 <form id='BidForm' method="POST" action="{{ route('login') }}">
-    <caption id='BidForm' >Closes in: </caption>
+    <p id='clock'>Closes in: </p>
 
     {{ csrf_field() }}
 
@@ -29,9 +35,14 @@
 
     <input id="bid" type="text" onkeypress="return checkNumber(event)" name="bid" value="{{ floor($auction->pricenow * 1.05) }}" required autofocus>
 
+    
+
     <button type="submit" onclick="return checkBidValue(event,value)">
         Make Bid
     </button>
+    
 </form>
+<p hidden id = "hTime"><?php echo $time; ?></p>
+<body onload="startTime()"> </body>
 
 </article>

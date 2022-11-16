@@ -209,6 +209,12 @@ input[type=password]:focus {
   width: 10em;
 }
 
+#clock{
+  width: 13em;
+  position: relative;
+  left: -1em;
+}
+
 
 #profile_image{
   width: 6.25em !important;
