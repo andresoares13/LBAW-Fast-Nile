@@ -3,8 +3,9 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
-class Item extends Model
+class Car extends Model
 {
   // Don't add create and update timestamps in database.
   public $timestamps  = false;
@@ -12,7 +13,9 @@ class Item extends Model
   /**
    * The card this item belongs to.
    */
-  public function card() {
-    return $this->belongsTo('App\Models\Card');
+  public function auction() {
+    return $this->belongsTo('App\Models\Auction');
   }
+
+  
 }

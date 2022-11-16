@@ -145,7 +145,7 @@ The web page is processed by *Laravel*'s [routing](https://laravel.com/docs/8.x/
 By default, routes are defined inside *routes/web.php*. A typical *route* looks like this:
 
 ```php
-Route::get('cards/{id}', 'CardController@show');
+Route::get('cards/{id}', 'AuctionController@show');
 ```
 
 This route receives a parameter *id* that is passed on to the *show* method of a controller called *CardController*.

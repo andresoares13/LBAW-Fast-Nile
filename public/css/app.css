@@ -155,3 +155,129 @@ input[type=email]:focus,
 input[type=password]:focus {
   border-color: #9b4dca;
 }
+
+.mainAuctionsPic {
+  width: 6.25em !important;
+  height: 6.25em !important;
+  margin-left: 1em;
+}
+
+.AuctionsPic {
+  width: 30em !important;
+  height: 30em !important;
+  left: 20em;
+  top: 2em;
+  position: relative;
+}
+
+#AuctionTitle{
+  text-align: center;
+  font-size: 6em;
+}
+
+#tables{
+  position: relative;
+  left: 80em;
+  top: -22em;
+  width: 15em;
+}
+
+#tables td{
+  height: 5em;
+  width: 10em;
+  text-align: center;
+  vertical-align: middle;
+  
+}
+
+#tables th{
+  height: 5em;
+  width: 10em;
+  text-align: center;
+  vertical-align: middle;
+}
+
+#BidsTable{
+  font-size: 1.5em;
+}
+
+#BidForm{
+  position: relative;
+  left: 60em;
+  top: -35em;
+  text-align: center;
+  width: 10em;
+}
+
+
+#profile_image{
+  width: 6.25em !important;
+  height: 6.25em !important;
+  margin-left: 1em;
+}
+
+#profile_list{
+  display: flex;
+
+}
+
+#profile_list>img{
+  margin: 1em;
+}
+
+#profile_list>ul{
+  margin: 1em;
+}
+
+#profile_list{
+  justify-content: center;
+  
+}
+
+#profile_list ul{
+  list-style: none;
+  list-style-position: inside;
+  margin: 0;
+  padding: 0;
+}
+
+
+#formSearch {
+  background-color: #4654e1;
+  width: 300px;
+  height: 44px;
+  border-radius: 5px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+
+#formSearch input {
+  all: unset;
+  font: 16px system-ui;
+  color: #fff;
+  height: 100%;
+  width: 100%;
+  padding: 6px 10px;
+}
+
+#formSearch ::placeholder {
+  color: #fff;
+  opacity: 0.7; 
+}
+
+#formSearch button {
+  all: unset;
+  cursor: pointer;
+  width: 44px;
+  height: 44px;
+}
+
+svg {
+  color: #fff;
+  fill: currentColor;
+  width: 24px;
+  height: 24px;
+  padding: 10px;
+}

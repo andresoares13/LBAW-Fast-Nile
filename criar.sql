@@ -43,11 +43,12 @@ CREATE TYPE statesCar AS ENUM ('Wreck', 'Poor Condition', 'Normal Condition', 'H
 CREATE TABLE users (
    id SERIAL PRIMARY KEY,
    names TEXT NOT NULL,
-   passwords TEXT NOT NULL,
+   password TEXT NOT NULL,
    picture TEXT NOT NULL DEFAULT 'default.png',
    email TEXT NOT NULL CONSTRAINT user_email_uk UNIQUE,
    address TEXT,
-   wallet INT NOT NULL DEFAULT 0
+   wallet INT NOT NULL DEFAULT 0,
+   remember_token TEXT
 );
 
 CREATE TABLE auctioneer (

@@ -3,23 +3,19 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
-class Card extends Model
+class Auctioneer extends Model
 {
   // Don't add create and update timestamps in database.
   public $timestamps  = false;
 
   /**
-   * The user this card belongs to
+   * The card this item belongs to.
    */
   public function user() {
     return $this->belongsTo('App\Models\User');
   }
 
-  /**
-   * Items inside this card
-   */
-  public function items() {
-    return $this->hasMany('App\Models\Item');
-  }
+  
 }

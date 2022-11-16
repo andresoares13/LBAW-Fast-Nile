@@ -3,16 +3,16 @@
 namespace App\Policies;
 
 use App\Models\User;
-use App\Models\Card;
+use App\Models\Auction;
 
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Support\Facades\Auth;
 
-class CardPolicy
+class AuctionPolicy
 {
     use HandlesAuthorization;
 
-    public function show(User $user, Card $card)
+    public function show(User $user, Auction $auction)
     {
       // Only a card owner can see it
       return $user->id == $card->user_id;
@@ -30,9 +30,9 @@ class CardPolicy
       return Auth::check();
     }
 
-    public function delete(User $user, Card $card)
+    public function delete(User $user, Auction $auction)
     {
       // Only a card owner can delete it
-      return $user->id == $card->user_id;
+      return $user->id == $auction->owner;
     }
 }

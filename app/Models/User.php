@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Support\Facades\DB;
 
 class User extends Authenticatable
 {
@@ -18,7 +19,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        'names','email', 'password',
     ];
 
     /**
@@ -33,7 +34,12 @@ class User extends Authenticatable
     /**
      * The cards this user owns.
      */
-     public function cards() {
-      return $this->hasMany('App\Models\Card');
+     public function auctions() {
+      return $this->hasMany('App\Models\Auction');
+    }
+
+    public function getAuctioneer($id){
+        $auct = DB::table('auctioneer')->where('iduser', $id)->get()->toArray();
+        return Auctioneer::hydrate($auct); 
     }
 }

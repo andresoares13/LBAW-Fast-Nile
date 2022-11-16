@@ -6,9 +6,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
-use App\Models\Card;
+use App\Models\Auction;
 
-class CardController extends Controller
+class AuctionController extends Controller
 {
     /**
      * Shows the card for a given id.
@@ -18,9 +18,8 @@ class CardController extends Controller
      */
     public function show($id)
     {
-      $card = Card::find($id);
-      $this->authorize('show', $card);
-      return view('pages.card', ['card' => $card]);
+      $auction = Auction::find($id);
+      return view('pages.auction', ['auction' => $auction]);
     }
 
     /**
@@ -30,10 +29,10 @@ class CardController extends Controller
      */
     public function list()
     {
-      if (!Auth::check()) return redirect('/login');
-      $this->authorize('list', Card::class);
-      $cards = Auth::user()->cards()->orderBy('id')->get();
-      return view('pages.cards', ['cards' => $cards]);
+      $auction = new Auction();
+      $auctions = $auction->allAuctions();
+
+      return view('pages.auctions', ['auctions' => $auctions]);
     }
 
     /**
@@ -43,7 +42,7 @@ class CardController extends Controller
      */
     public function create(Request $request)
     {
-      $card = new Card();
+      $card = new Auction();
 
       $this->authorize('create', $card);
 
@@ -56,7 +55,7 @@ class CardController extends Controller
 
     public function delete(Request $request, $id)
     {
-      $card = Card::find($id);
+      $card = Auction::find($id);
 
       $this->authorize('delete', $card);
       $card->delete();
