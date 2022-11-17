@@ -316,3 +316,8 @@ svg {
   position: relative;
   top: 2em;
 }
+
+#profilePictureEdit{
+  text-align: center;
+}
+

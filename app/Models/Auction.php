@@ -26,7 +26,7 @@ class Auction extends Model
   }
   
   public function allAuctions(){
-    $auctions = DB::table('auction')->get()->toArray();
+    $auctions = DB::table('auction')->orderBy('pricenow','desc')->limit(20)->get()->toArray();
     return Auction::hydrate($auctions);
   }
   

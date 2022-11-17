@@ -39,9 +39,11 @@ Route::get('profile/{id}', 'UserController@show');
 Route::get('profile/edit/{id}', 'UserController@showEdit');
 Route::get('profile/wallet/{id}', 'UserController@showWallet');
 Route::get('profile/upgrade/{id}', 'UserController@showUpgrade');
+Route::get('profile/picture/{id}', 'UserController@showPicture');
 Route::post('wallet', 'UserController@addFunds');
 Route::post('edit', 'UserController@editProfile');
 Route::post('upgrade', 'UserController@becomeAuctioneer');
+Route::post('pictureProfile', 'UserController@updatePicture');
 
 // Search
 Route::get('search/{query}', 'UserController@show');

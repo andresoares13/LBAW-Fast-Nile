@@ -37,6 +37,7 @@
   </ul>
   <div id='profile_image'>
     <img src="{{asset('img/profile/' . $user->picture)}}" alt="ProfilePic">
+    <a href="{{ url('/profile/picture/'. strval(auth()->user()->id))}}"><button>Change profile picture</button></a>
   </div>
   
 </article>

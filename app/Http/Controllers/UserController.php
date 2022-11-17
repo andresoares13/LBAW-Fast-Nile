@@ -60,6 +60,16 @@ class UserController extends Controller
       }
     }
 
+    public function showPicture($id){
+      $user = User::find($id);
+      if ($user->id == Auth::user()->id){
+        return view('pages.profilePicture', ['user' => $user]);
+      }
+      else{
+        abort(403);
+      }
+    }
+
     public function addFunds(Request $request){
       if ($request->input('user') == Auth::user()->id){
         $user = User::find($request->input('user'));
@@ -98,6 +108,27 @@ class UserController extends Controller
         $auctioneer->iduser = $request->input('user');
         $auctioneer->phone = $request->input('phone');
         $auctioneer->save();
+        return redirect('profile/'.$request->input('user'));
+      }
+      else{
+        abort(403);
+      }
+    }
+
+
+    public function updatePicture(Request $request)
+    {
+      if ($request->input('user') == Auth::user()->id){
+        if($request->hasFile('image')){
+            $filename = $request->image->getClientOriginalName();
+            $filename = $request->input('user') . "." .pathinfo($filename,PATHINFO_EXTENSION);
+            
+            $request->image->storeAs('',$filename,'my_files');
+            $user = User::find($request->input('user'));
+            $user->picture = $filename;
+            $user->save();
+            
+        }
         return redirect('profile/'.$request->input('user'));
       }
       else{
