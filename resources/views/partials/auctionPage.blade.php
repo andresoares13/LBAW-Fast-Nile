@@ -7,6 +7,7 @@
 $time = strtotime($auction->toArray()['timeclose']);
 @endphp
 <script src="{{ asset('js/clock.js') }}" defer> </script>
+<p hidden id = "startValue">{{ floor($auction->pricenow * 1.05) }}</p>
 
 <img class= "AuctionsPic" src= "{{asset('img/car/' . $auction->getCarPicture($auction->id))}}" /> 
 @if ($auction->getTopBid($auction->id)->toArray() == [])
@@ -25,7 +26,7 @@ $time = strtotime($auction->toArray()['timeclose']);
 
 @endif
 
-<form id='BidForm' method="POST" action="{{ route('login') }}">
+<form id='BidForm' method="POST" action="/bid" onsubmit="return checkBidValue()">
     <p id='clock'>Closes in: </p>
 
     {{ csrf_field() }}
@@ -33,11 +34,11 @@ $time = strtotime($auction->toArray()['timeclose']);
     <label for="bid">Bid Amount</label>
     <script src="{{ asset('js/pages.js') }}"></script>
 
-    <input id="bid" type="text" onkeypress="return checkNumber(event)" name="bid" value="{{ floor($auction->pricenow * 1.05) }}" required autofocus>
+    <input id="bidInput" type="text" onkeypress="return checkNumber(event)" name="bid" value="{{ floor($auction->pricenow * 1.05) }}" required autofocus>
 
     
 
-    <button type="submit" onclick="return checkBidValue(event,value)">
+    <button type="submit" >
         Make Bid
     </button>
     
