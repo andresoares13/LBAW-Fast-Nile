@@ -1,1 +1,1 @@
-<tr><td>{{$loop->count}} </td><td>{{ $bid->valuee }}</td><td>{{ $bid->getUserName($bid->id)}}</td></tr>
+<tr><td>{{$i+1}} </td><td>{{ $bid->valuee }}</td><td>{{ $bid->getUserName($bid->iduser)}}</td></tr>

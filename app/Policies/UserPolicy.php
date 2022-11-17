@@ -12,10 +12,12 @@ class UserPolicy
 {
     use HandlesAuthorization;
 
-    public function editAllow(User $user)
+    public function editAllow(User $user, int $id)
     {
-
-      return $user->id == Auth::user()->id;
+      echo $user->id;
+      echo $id;
+      exit();
+      return $user->id == $id;
     }
 
     

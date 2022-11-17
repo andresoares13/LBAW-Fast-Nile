@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Auction;
 use App\Models\User;
+use App\Models\Bid;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -12,15 +13,15 @@ use Illuminate\Support\Facades\Auth;
 class BidController extends Controller
 {
 
-  public function create(Request $request, $auction_id)
+  public function create(Request $request)
   {
-    $item = new Item();
-    $item->card_id = $card_id;
-    $this->authorize('create', $item);
-    $item->done = false;
-    $item->description = $request->input('description');
-    $item->save();
-    return $item;
+    $bid = new Bid();
+    $bid->iduser = $request->input('user');
+    $this->authorize('create', $bid);
+    $bid->idauction = $request->input('auction');
+    $bid->valuee = $request->input('bid');
+    $bid->save();
+    return redirect('auction/'.$request->input('auction'));
   }
 
 

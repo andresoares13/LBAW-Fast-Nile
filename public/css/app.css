@@ -287,3 +287,32 @@ svg {
   height: 24px;
   padding: 10px;
 }
+
+#walletForm{
+  text-align: center;
+}
+
+#walletForm input{
+  text-align: center;
+  width: 12em;
+}
+
+#walletForm button{
+  position: relative;
+  top: 2em;
+}
+
+
+#upgradeForm{
+  text-align: center;
+}
+
+#upgradeForm input{
+  text-align: center;
+  width: 12em;
+}
+
+#upgradeForm button{
+  position: relative;
+  top: 2em;
+}

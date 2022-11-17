@@ -9,6 +9,7 @@ class Auctioneer extends Model
 {
   // Don't add create and update timestamps in database.
   public $timestamps  = false;
+  protected $table = 'auctioneer';
 
   /**
    * The card this item belongs to.

@@ -36,7 +36,8 @@ class Auction extends Model
   }
   
   public function getTop10Bids(int $id){
-    $bids = DB::table('bid')->where('idauction', $id)->orderBy('valuee')->limit(10)->get()->toArray();
+    $bids = DB::table('bid')->where('idauction', $id)->orderBy('valuee', "desc")->limit(10)->get()->toArray();
+
     return Bid::hydrate($bids); 
   }
 

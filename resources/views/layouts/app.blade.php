@@ -26,7 +26,7 @@
         <h1><a href="{{ url('/home') }}">Fast Nile</a></h1>
         @if (Auth::check())
         <p>
-        <a class='button' href="{{ url('/profile/'. strval(auth()->user()->id.'/wallet')) }}">Wallet: {{ Auth::user()->wallet }}</a>
+        <a class='button' href="{{ url('/profile/wallet/'. strval(auth()->user()->id)) }}">Wallet: {{ Auth::user()->wallet }}</a>
         <a class='button' href="{{ url('/profile/'. strval(auth()->user()->id)) }}">{{ Auth::user()->names }}</a> 
         <a class="button" href="{{ url('/logout') }}"> Logout </a> 
         </p>

@@ -2,12 +2,20 @@
   <ul>
     <li>Name: <?=$user->names ?>  </li>
     <li>Address: <?php if ($user->address != ""){echo $user->address;} else {echo "Undefined";} ?>
-    <?php if (count($auctioneer) != 0) { ?>
-    <li>Phone number: <?php if ($user->phone != ""){echo $user->phone;} else {echo "Undefined";} ?></li>
+    <?php if (count($auctioneer) != 0) {?>
+    <li>Phone number: {{$auctioneer[0]["phone"]}}</li>
     <?php } ?>
     @if (auth()->user()->id == substr(strrchr(url()->current(),"/"),1))
+    <?php if (count($auctioneer) == 0) { ?>
+    <li>
+        <a href="{{ url('/profile/upgrade/'. strval(auth()->user()->id))}}"><button>Become an auctioneer </button> </a>
+    </li>
+    <?php } ?>
     <li>
         <a href="{{ url('/profile/edit/'. strval(auth()->user()->id))}}"><button>Edit Profile Information </button> </a>
+    </li>
+    <li>
+        <a href="{{ url('/profile/wallet/'. strval(auth()->user()->id))}}"><button>Add funds</button> </a>
     </li>
     <li>
         <p>

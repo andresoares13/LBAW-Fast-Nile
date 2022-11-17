@@ -19,8 +19,8 @@ $time = strtotime($auction->toArray()['timeclose']);
 <table id="tables">  
     <caption id='BidsTable' >Top Bids</caption>
     <tr><th scope="col">Bid</th><th scope="col">Value</th><th scope="col">User</th></tr>
-    @foreach ($auction->getTop10Bids($auction->id) as $bid)
-        @include('partials.bids', $bid)
+    @foreach ($auction->getTop10Bids($auction->id) as $i=>$bid)
+        @include('partials.bids', [$bid,$i])
     @endforeach
 </table>
 
@@ -30,11 +30,14 @@ $time = strtotime($auction->toArray()['timeclose']);
     <p id='clock'>Closes in: </p>
 
     {{ csrf_field() }}
+   
 
     <label for="bid">Bid Amount</label>
     <script src="{{ asset('js/pages.js') }}"></script>
 
-    <input id="bidInput" type="text" onkeypress="return checkNumber(event)" name="bid" value="{{ floor($auction->pricenow * 1.05) }}" required autofocus>
+    <input id="bidInput" type="text" onkeypress="return checkNumber(event)" name="bid" value="{{ floor($auction->pricenow * 1.05) +1}}" required autofocus>
+    <input type="hidden" name="auction" value="{{ $auction->id }}">
+    <input type="hidden" name="user" value="{{ Auth::user()->id }}">
 
     
 

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\BidController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -13,6 +14,7 @@
 // Home
 Route::get('/', 'AuctionController@list');
 
+
 // Cards
 Route::get('home', 'AuctionController@list');
 Route::get('auction/{id}', 'AuctionController@show');
@@ -23,7 +25,7 @@ Route::delete('api/cards/{card_id}', 'AuctionController@delete');
 Route::put('api/cards/{card_id}/', 'ItemController@create');
 Route::post('api/item/{id}', 'ItemController@update');
 Route::delete('api/item/{id}', 'ItemController@delete');
-Route::post('bid','BidController@create');
+Route::put('api/bid', 'BidController@create');
 
 // Authentication
 Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');
@@ -35,6 +37,14 @@ Route::post('register', 'Auth\RegisterController@register');
 // profile
 Route::get('profile/{id}', 'UserController@show');
 Route::get('profile/edit/{id}', 'UserController@showEdit');
+Route::get('profile/wallet/{id}', 'UserController@showWallet');
+Route::get('profile/upgrade/{id}', 'UserController@showUpgrade');
+Route::post('wallet', 'UserController@addFunds');
+Route::post('edit', 'UserController@editProfile');
+Route::post('upgrade', 'UserController@becomeAuctioneer');
 
 // Search
 Route::get('search/{query}', 'UserController@show');
+
+//bid
+Route::post('bid', 'BidController@create');

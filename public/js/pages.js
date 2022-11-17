@@ -7,9 +7,18 @@ function checkNumber(event) {
 
 
 function checkBidValue() {
-    console.log(document.getElementById('startValue').innerHTML);
-    if (document.getElementById('bidInput').value < document.getElementById('startValue').innerHTML){
+    if (parseInt(document.getElementById('bidInput').value) < parseInt(document.getElementById('startValue').innerHTML)){
+        console.log("hye");
         return false
     }
     return true;
 }
+
+function checkWalletValue() {
+    if (parseInt(document.getElementById('fundsInput').value) < 500 || parseInt(document.getElementById('fundsInput').value) > 50000){
+        return false
+    }
+    return true;
+}
+
+
