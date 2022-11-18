@@ -45,8 +45,14 @@ Route::post('edit', 'UserController@editProfile');
 Route::post('upgrade', 'UserController@becomeAuctioneer');
 Route::post('pictureProfile', 'UserController@updatePicture');
 
+
 // Search
 Route::get('search/{query}', 'UserController@show');
 
 //bid
 Route::post('bid', 'BidController@create');
+
+//auction
+
+Route::get('profile/auctionCreate/{id}', 'UserController@showAuctionCreate');
+Route::post('auctionCreate', 'UserController@createAuction');

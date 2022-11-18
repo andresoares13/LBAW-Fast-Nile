@@ -26,8 +26,15 @@ $time = strtotime($auction->toArray()['timeclose']);
 
 @endif
 
-<form id='BidForm' method="POST" action="/bid" onsubmit="return checkBidValue()">
-    <p id='clock'>Closes in: </p>
+<article id="currentPrice">
+    <p>Current price: {{ floor($auction->pricenow ) }}</p>
+    <p id='clock'>Closes in: </p> 
+</article>
+
+
+@if (Auth::check()){
+    <form id='BidForm' method="POST" action="/bid" onsubmit="return checkBidValue()">
+   
 
     {{ csrf_field() }}
    
@@ -36,16 +43,21 @@ $time = strtotime($auction->toArray()['timeclose']);
     <script src="{{ asset('js/pages.js') }}"></script>
 
     <input id="bidInput" type="text" onkeypress="return checkNumber(event)" name="bid" value="{{ floor($auction->pricenow * 1.05) +1}}" required autofocus>
+    <label id="error"></label>
     <input type="hidden" name="auction" value="{{ $auction->id }}">
     <input type="hidden" name="user" value="{{ Auth::user()->id }}">
 
     
 
-    <button type="submit" >
+    <button type="submit" onclick="return checkBidValue()">
         Make Bid
     </button>
     
 </form>
+}
+
+@endif
+
 <p hidden id = "hTime"><?php echo $time; ?></p>
 <body onload="startTime()"> </body>
 

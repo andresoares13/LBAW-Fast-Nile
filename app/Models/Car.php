@@ -9,6 +9,7 @@ class Car extends Model
 {
   // Don't add create and update timestamps in database.
   public $timestamps  = false;
+  protected $table = 'car';
 
   /**
    * The card this item belongs to.

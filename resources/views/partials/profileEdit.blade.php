@@ -10,7 +10,7 @@
 
   <?php if (count($auctioneer) != 0) { ?>
   <label for="phone">Phone Number:</label>
-  <input id="phone" type="text" name="phone" value="<?=$auctioneer[0]["phone"]?>" class = "profilein" required="required">
+  <input id="phone" type="text" name="phone" value="<?=$auctioneer[0]["phone"]?>" class = "profilein" required="required" minlength="5" maxlength="15">
   <?php } ?>
   
   <input type="hidden" name="user" value="{{ Auth::user()->id }}">
@@ -21,3 +21,5 @@
     <?php if(isset($_SESSION['ERROR'])) echo htmlentities($_SESSION['ERROR']); unset($_SESSION['ERROR'])?>
   </p>
 </form>
+
+

@@ -6,10 +6,11 @@
     <script src="{{ asset('js/pages.js') }}"></script>
     {{ csrf_field() }}
     <input id="fundsInput" type="text" onkeypress="return checkNumber(event)" name="funds" value="500" required autofocus>
+    <label id="error"></label>
     <input type="hidden" name="user" value="{{ Auth::user()->id }}">
 
   
-  <button type="submit" >Add Funds</button>
+  <button type="submit" onclick="return checkWalletValue()" >Add Funds</button>
 
   <p id="error_messages" style="color: black">
     <?php if(isset($_SESSION['ERROR'])) echo htmlentities($_SESSION['ERROR']); unset($_SESSION['ERROR'])?>

@@ -56,6 +56,11 @@ return [
             'driver' => 'local',
     	    'root'   => 'img/profile',
 	],
+	
+	'my_files2' => [
+            'driver' => 'local',
+    	    'root'   => 'img/car',
+	],
 
     ],
 
@@ -75,3 +80,4 @@ return [
     ],
 
 ];
+

@@ -204,16 +204,12 @@ input[type=password]:focus {
 #BidForm{
   position: relative;
   left: 60em;
-  top: -35em;
+  top: -40em;
   text-align: center;
   width: 10em;
 }
 
-#clock{
-  width: 13em;
-  position: relative;
-  left: -1em;
-}
+
 
 
 #profile_image{
@@ -280,6 +276,7 @@ input[type=password]:focus {
   height: 44px;
 }
 
+
 svg {
   color: #fff;
   fill: currentColor;
@@ -320,4 +317,33 @@ svg {
 #profilePictureEdit{
   text-align: center;
 }
+
+#currentPrice{
+  position: relative;
+  text-align: center;
+  align-content: center;
+  top: -30em;
+  width: 30em;
+  left: 35em;
+  display: flexbox;
+  font-size: 1.3em;
+}
+
+
+#auctionForm{
+  max-width: 30em !important;
+  text-align: center;
+  font-size: 2em;
+}
+
+#auctionForm input,select{
+  max-width: 20em;
+  text-align: center;
+}
+
+#auctionForm textarea{
+  height: 10em;
+}
+
+
 

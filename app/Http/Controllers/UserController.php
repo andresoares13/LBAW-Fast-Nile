@@ -9,6 +9,8 @@ use Policies\UserPolicy;
 
 use App\Models\User;
 use App\Models\Auctioneer;
+use App\Models\Auction;
+use App\Models\Car;
 
 class UserController extends Controller
 {
@@ -64,6 +66,23 @@ class UserController extends Controller
       $user = User::find($id);
       if ($user->id == Auth::user()->id){
         return view('pages.profilePicture', ['user' => $user]);
+      }
+      else{
+        abort(403);
+      }
+    }
+
+    public function showAuctionCreate($id){
+      
+      $user = User::find($id);
+      if ($user->id == Auth::user()->id){
+        $auctioneer = $user->getAuctioneer($user->id);
+        if (count($auctioneer) != 0){
+          return view('pages.createAuction', ['user' => $user,'auctioneer' => $auctioneer]);
+        }
+        else{
+          abort(404);
+        }
       }
       else{
         abort(403);
@@ -130,6 +149,60 @@ class UserController extends Controller
             
         }
         return redirect('profile/'.$request->input('user'));
+      }
+      else{
+        abort(403);
+      }
+    }
+
+
+    public function createAuction(Request $request){
+      $user = User::find($request->input('user'));
+      if ($user->id == Auth::user()->id){
+        $auctioneer = $user->getAuctioneer($user->id);
+        if (count($auctioneer) != 0){
+
+          //create car
+          $car = new Car();
+          $car->names = $request->input('carName');
+          $car->category = $request->input('categorie');
+          $car->states = $request->input('state');
+          $car->color = $request->input('color');
+          $car->consumption = $request->input('consumption');
+          $car->kilometers = $request->input('kilometers');
+          $car->save();
+
+          //get car id to store picture
+          $filename = $request->image->getClientOriginalName();
+          $filename = $car->id . "." .pathinfo($filename,PATHINFO_EXTENSION);
+          $request->image->storeAs('',$filename,'my_files2');
+          $car->picture = $filename;
+          //save picture name
+          $car->save();
+
+          //create auction
+          $auction = new Auction();
+          $auction->idcar = $car->id;
+          $auction->descriptions = $request->input('description');
+          $auction->pricestart = $request->input('priceStart');
+          $auction->pricenow = $request->input('priceStart');
+
+          //calculate date
+          $date1 = strtotime($request->input('timeClose'));
+          $date1 = date("Y-m-d", $date1);
+          $date2 = date("H:i:s",strtotime("+2 hours"));
+          $auction->timeclose = $date1 . " " . $date2;
+          $auction->owners = $auctioneer[0]['id'];
+          $auction->states = "Active";
+          $auction->title = $request->input('title');
+          $auction->save();
+          return redirect('auction/'.$auction->id);
+
+
+        }
+        else{
+          abort(404);
+        }
       }
       else{
         abort(403);

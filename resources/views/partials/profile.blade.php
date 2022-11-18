@@ -10,7 +10,11 @@
     <li>
         <a href="{{ url('/profile/upgrade/'. strval(auth()->user()->id))}}"><button>Become an auctioneer </button> </a>
     </li>
-    <?php } ?>
+    <?php } else{?>
+        <li>
+        <a href="{{ url('/profile/auctionCreate/'. strval(auth()->user()->id))}}"><button>Create an auction</button> </a>
+    </li>
+    <?php }?>    
     <li>
         <a href="{{ url('/profile/edit/'. strval(auth()->user()->id))}}"><button>Edit Profile Information </button> </a>
     </li>
@@ -37,7 +41,9 @@
   </ul>
   <div id='profile_image'>
     <img src="{{asset('img/profile/' . $user->picture)}}" alt="ProfilePic">
+    @if (auth()->user()->id == substr(strrchr(url()->current(),"/"),1))
     <a href="{{ url('/profile/picture/'. strval(auth()->user()->id))}}"><button>Change profile picture</button></a>
+    @endif
   </div>
   
 </article>
