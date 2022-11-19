@@ -26,7 +26,7 @@ class Auction extends Model
   }
   
   public function allAuctions(){
-    $auctions = DB::table('auction')->orderBy('pricenow','desc')->limit(20)->get()->toArray();
+    $auctions = DB::table('auction')->where('states','Active')->orderBy('pricenow','desc')->limit(20)->get()->toArray();
     return Auction::hydrate($auctions);
   }
   
@@ -44,5 +44,20 @@ class Auction extends Model
   public function getCarPicture(int $id){
     $car = DB::table('car')->where('id', $id)->limit(1)->get();
     return $car[0]->picture;
+  }
+
+  public function scopeSearch($query, $search)
+    {
+        if (!$search) {
+            return $query;
+        }
+        return $query->whereRaw('tsvectors @@ to_tsquery(\'english\', ?)', [$search])
+            ->orderByRaw('ts_rank(tsvectors, to_tsquery(\'english\', ?)) DESC', [$search]);
+    }
+
+  public function getAuctioneerName($id){
+    $auctioneer = Auctioneer::find($id);
+    $user = User::find($auctioneer->iduser);
+    return $user->names;
   }
 }

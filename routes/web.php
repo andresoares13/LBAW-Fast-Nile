@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\BidController;
+use App\Http\Controllers\SearchController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -47,12 +47,20 @@ Route::post('pictureProfile', 'UserController@updatePicture');
 
 
 // Search
-Route::get('search/{query}', 'UserController@show');
+Route::get('search/auction', 'SearchController@viewSearchFull');
+Route::get('search/auctionM', 'SearchController@viewSearchExact');
+Route::get('search/user', 'SearchController@viewSearchUser');
+Route::get('search', 'SearchController@viewSearchPage');
 
 //bid
 Route::post('bid', 'BidController@create');
 
 //auction
 
+Route::get('auctions/{pageNr}', 'AuctionController@showAuctionsPage');
 Route::get('profile/auctionCreate/{id}', 'UserController@showAuctionCreate');
 Route::post('auctionCreate', 'UserController@createAuction');
+
+//users
+
+Route::get('users/{pageNr}', 'UserController@showUsersPage');

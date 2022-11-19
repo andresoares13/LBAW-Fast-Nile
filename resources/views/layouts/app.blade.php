@@ -13,6 +13,7 @@
     <!-- Styles -->
     <link href="{{ asset('css/milligram.min.css') }}" rel="stylesheet">
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    
     <script type="text/javascript">
         // Fix for Firefox autofocus CSS bug
         // See: http://stackoverflow.com/questions/18943276/html-5-autofocus-messes-up-css-loading/18945951#18945951
@@ -23,34 +24,30 @@
   <body>
     <main>
       <header>
-        <h1><a href="{{ url('/home') }}">Fast Nile</a></h1>
+        <h1 id="SiteName" ><a href="{{ url('/home') }}">Fast Nile</a></h1>
         @if (Auth::check())
-        <p>
-        <a class='button' href="{{ url('/profile/wallet/'. strval(auth()->user()->id)) }}">Wallet: {{ Auth::user()->wallet }}</a>
+        <p id ="headerUser">
         <a class='button' href="{{ url('/profile/'. strval(auth()->user()->id)) }}">{{ Auth::user()->names }}</a> 
+        <a class='button' href="{{ url('/profile/wallet/'. strval(auth()->user()->id)) }}">Wallet: {{ Auth::user()->wallet }} €</a>
         <a class="button" href="{{ url('/logout') }}"> Logout </a> 
         </p>
-        <p>
-        <form id="formSearch" action="{{ url('/search') }}" role="search">
-          <input type="search" id="query" name="q"
-          placeholder="Search..."
-          aria-label="Search through site content">
-          <button type='submit'>
-            <svg viewBox="0 0 1024 1024"><path class="path1" d="M848.471 928l-263.059-263.059c-48.941 36.706-110.118 55.059-177.412 55.059-171.294 0-312-140.706-312-312s140.706-312 312-312c171.294 0 312 140.706 312 312 0 67.294-24.471 128.471-55.059 177.412l263.059 263.059-79.529 79.529zM189.623 408.078c0 121.364 97.091 218.455 218.455 218.455s218.455-97.091 218.455-218.455c0-121.364-103.159-218.455-218.455-218.455-121.364 0-218.455 97.091-218.455 218.455z"></path></svg>
-        </button>
-        </form>
+
+        <p id="headerAccess">
+        <a class='button' href="{{ url('/search')}}">Search</a> 
+        <a class='button' href="{{ url('/users/1') }}">Users</a>
+        <a class="button" href="{{ url('/auctions/1') }}"> Auctions </a> 
         </p>
         
+        
         @elseif (substr(strrchr(url()->current(),"/"),1) != ('login') && substr(strrchr(url()->current(),"/"),1) != ('register'))
-        <form id="formSearch" action="{{ url('/search') }}" role="search">
-          <input type="search" id="query" name="q"
-          placeholder="Search..."
-          aria-label="Search through site content">
-          <button type='submit'>
-          <svg viewBox="0 0 1024 1024"><path class="path1" d="M848.471 928l-263.059-263.059c-48.941 36.706-110.118 55.059-177.412 55.059-171.294 0-312-140.706-312-312s140.706-312 312-312c171.294 0 312 140.706 312 312 0 67.294-24.471 128.471-55.059 177.412l263.059 263.059-79.529 79.529zM189.623 408.078c0 121.364 97.091 218.455 218.455 218.455s218.455-97.091 218.455-218.455c0-121.364-103.159-218.455-218.455-218.455-121.364 0-218.455 97.091-218.455 218.455z"></path></svg>
-          </button>
-        </form>
+        <p id ="headerUser">
         <a class="button" href="{{ route('register') }}">Register</a> <a class="button" href="{{ url('/login') }}"> Login </a> 
+        </p>
+        <p id="headerAccess">
+        <a class='button' href="{{ url('/search')}}">Search</a> 
+        <a class='button' href="{{ url('/users/1') }}">Users</a>
+        <a class="button" href="{{ url('/auctions/1') }}"> Auctions </a> 
+        </p>
         @else
         @endif
       </header>

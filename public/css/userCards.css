@@ -1,0 +1,189 @@
+@import url('https://fonts.googleapis.com/css?family=Abel');
+
+
+
+
+
+.userCard {
+  width: 450px;
+  height: 250px;
+  background-color: #fff;
+  background: linear-gradient(#f8f8f8, #fff);
+  border-radius: 6px;
+  overflow: hidden;
+  position: relative;
+  margin: 1.5rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.userCard h1 {
+  text-align: center;
+}
+
+.userCard .additional {
+  position: absolute;
+  width: 150px;
+  height: 100%;
+  background: linear-gradient(#dE685E, #EE786E);
+  transition: width 0.4s;
+  overflow: hidden;
+  z-index: 2;
+}
+
+.userCard.green .additional {
+  background: linear-gradient(#92bCa6, #A2CCB6);
+}
+
+
+.userCard:hover .additional {
+  width: 100%;
+  border-radius: 0 5px 5px 0;
+}
+
+.userCard .additional .user-card {
+  width: 150px;
+  height: 100%;
+  position: relative;
+  float: left;
+}
+
+.userCard .additional .user-card::after {
+  content: "";
+  display: block;
+  position: absolute;
+  top: 10%;
+  right: -2px;
+  height: 80%;
+  border-left: 2px solid rgba(0,0,0,0.025);
+}
+
+.userCard .additional .user-card .level,
+.userCard .additional .user-card .points {
+  top: 15%;
+  color: #fff;
+  text-transform: uppercase;
+  font-size: 0.75em;
+  font-weight: bold;
+  background: rgba(0,0,0,0.15);
+  padding: 0.125rem 0.75rem;
+  border-radius: 100px;
+  white-space: nowrap;
+}
+
+.userCard .additional .user-card .points {
+  top: 85%;
+}
+
+.userCard .additional .user-card svg {
+  top: 50%;
+}
+
+.userCard .additional .more-info {
+  width: 300px;
+  float: left;
+  position: absolute;
+  left: 150px;
+  height: 100%;
+}
+
+.userCard .additional .more-info h1 {
+  color: #fff;
+  margin-bottom: 0;
+}
+
+.userCard.green .additional .more-info h1 {
+  color: #224C36;
+}
+
+.userCard .additional .coords {
+  margin: 0 1rem;
+  color: #fff;
+  font-size: 1rem;
+}
+
+.userCard.green .additional .coords {
+  color: #325C46;
+}
+
+.userCard .additional .coords span + span {
+  float: right;
+}
+
+.userCard .additional .stats {
+  font-size: 2rem;
+  display: flex;
+  position: absolute;
+  bottom: 1rem;
+  left: 1rem;
+  right: 1rem;
+  top: auto;
+  color: #fff;
+}
+
+.userCard.green .additional .stats {
+  color: #325C46;
+}
+
+.userCard .additional .stats > div {
+  flex: 1;
+  text-align: center;
+}
+
+.userCard .additional .stats i {
+  display: block;
+}
+
+.userCard .additional .stats div.title {
+  font-size: 0.75rem;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.userCard .additional .stats div.value {
+  font-size: 1.5rem;
+  font-weight: bold;
+  line-height: 1.5rem;
+}
+
+.userCard .additional .stats div.value.infinity {
+  font-size: 2.5rem;
+}
+
+.userCard .general {
+  width: 300px;
+  height: 100%;
+  top: 0;
+  right: 0;
+  z-index: 1;
+  box-sizing: border-box;
+  padding: 1rem;
+  padding-top: 0;
+}
+
+.userCard .general h1{
+  position: absolute;
+  bottom: 1em;
+  right: 1em;
+  top: 1.3em;
+  left: 3.5em;
+  font-size: 3em;
+
+}
+
+.userCard .general .more {
+  position: absolute;
+  bottom: 1rem;
+  right: 1rem;
+  font-size: 0.9em;
+}
+
+
+#userType{
+  text-align: center;
+  font-size: 1.5em;
+  color: rgb(32, 28, 28);
+  left: 0.7em;
+  top: 6em;
+  margin-top: 1em;
+}

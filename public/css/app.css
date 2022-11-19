@@ -1,5 +1,5 @@
 body {
-  background-color: #ffffff;
+  background-color: #f3f5f8;
   color: #9b4dca;
 }
 main > header {
@@ -79,6 +79,7 @@ main > header span {
   background-color: white;
   margin: 0;
 }
+
 #content label {
   font-weight: normal;
 }
@@ -96,7 +97,7 @@ main > header span {
   background-color: white;
 }
 @media (max-width: 70em) {
-  #cards {
+  #auctions {
     grid-template-columns: repeat(2, 1fr);
   }
   main > header {
@@ -108,7 +109,7 @@ main > header span {
   }
 }
 @media (max-width: 40em) {
-  #cards {
+  #auctions {
     grid-template-columns: 1fr;
   }
 }
@@ -245,6 +246,8 @@ input[type=password]:focus {
 
 
 #formSearch {
+  margin-left: auto !important;
+  margin-right: 1em !important;
   background-color: #4654e1;
   width: 300px;
   height: 44px;
@@ -252,6 +255,11 @@ input[type=password]:focus {
   display: flex;
   flex-direction: row;
   align-items: center;
+}
+
+#formSearch,.None{
+  margin-left: auto !important;
+  margin-right: auto !important;
 }
 
 
@@ -262,6 +270,7 @@ input[type=password]:focus {
   height: 100%;
   width: 100%;
   padding: 6px 10px;
+  background-color: transparent!important;
 }
 
 #formSearch ::placeholder {
@@ -345,5 +354,125 @@ svg {
   height: 10em;
 }
 
+#SiteName{
+  text-align: center;
+  max-width: 5em;
+  margin: auto;
+  font-size: 5em;
+}
+
+#headerUser{
+  display: flex;
+  flex-direction: column;
+}
 
 
+
+#headerAccess{
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+
+}
+
+#pagePara{
+  text-align: center;
+  margin: 0;
+  font-size: 4em;
+}
+
+
+#auctionAll{
+  margin-left: auto;
+  margin-right: auto;
+}
+
+
+
+
+#auctionAll {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+}
+
+#auctionAll ul{
+  grid-column-start: 2;
+}
+#auctionAll article.card {
+  
+  display: flex;
+  flex-direction: column;
+  background-color: #d3edc3;
+  padding: 2em;
+  margin: 2em;
+}
+#auctionAll article.card header {
+  display: flex;
+  align-items: center;
+}
+#auctionAll article.card header h2 {
+  flex-grow: 1;
+}
+#auctionAll article.card header a.delete {
+  display: none;
+  font-size: 2.6rem;
+  margin-top: .5rem;
+  margin-bottom: 2.5rem;
+  line-height: 1.25;
+}
+#auctionAll article.card header:hover a.delete {
+  display: inline;
+}
+#auctionAll article.card li {
+  list-style-type: none;
+}
+#auctionAll article.card li label {
+  display: flex;
+  align-items: baseline;
+}
+#auctionAll article.card li label span {
+  margin-left: .5em;
+  flex-grow: 1;
+}
+#auctionAll article.card li label a {
+  display: none;
+}
+#auctionAll article.card li label:hover a {
+  display: inline;
+}
+#auctionAll article.card input:checked + span {
+  text-decoration: var(--primary-color) solid line-through;
+}
+#auctionAll article.card ul {
+  margin: 0;
+}
+#auctionAll article.card form {
+  margin: 0;
+}
+#auctionAll article.card input[type=text] {
+  background-color: white;
+  margin: 0;
+}
+
+#pageLinks{
+  text-align: center;
+}
+
+#pageLinks a{
+  text-decoration: underline;
+}
+
+#userImg{
+  border-radius: 50%;
+  width: 6.25em !important;
+  height: 6.25em !important;
+  margin-left: 1.5em;
+  margin-top: 2em;
+}
+
+
+#showingUsersWarning{
+  text-align: center;
+  margin: 0;
+  font-size: 1em;
+}

@@ -42,4 +42,24 @@ class User extends Authenticatable
         $auct = DB::table('auctioneer')->where('iduser', $id)->get()->toArray();
         return Auctioneer::hydrate($auct); 
     }
+
+    public function isAuctioneer($id){
+        $auct = Auctioneer::where('iduser',$id)->get();
+        if (count($auct) == 0){
+            return false;
+        }
+        else{
+            return true;
+        }
+    }
+
+    public function getBidsMade($id){
+        $bids=Bid::where('iduser',$id)->get();
+        return $bids;
+    }
+
+    public function getAuctionsWon($id){
+        $auctions=Auction::where('highestbidder',$id)->where('states','Closed')->get();
+        return $auctions;
+    }
 }

@@ -209,6 +209,20 @@ class UserController extends Controller
       }
     }
 
+
+
+    public function showUsersPage($pageNr){ //gets 20 results based on the page number
+      $limit = 20 * intval($pageNr);
+      $users = User::orderBy('id')->limit($limit)->get();
+      $totalCount = count(User::get());
+      $lastEl = $totalCount - (20 * (intval($pageNr)-1)); 
+      $users = array_slice($users->toArray(), -$lastEl); //only get the last 20
+      $users = User::hydrate($users);
+      $totalPages = intval(ceil($totalCount /20)); //gets the total number of pages of auctions assuming each has 20
+      return view('pages.userCard', ['users' => $users,'totalPages' => $totalPages,'pageNr' => $pageNr]);
+
+    }
+
     
 
    

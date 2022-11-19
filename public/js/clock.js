@@ -14,6 +14,7 @@ function startTime() {
         days = ""
     }
 
+
     // calculate (and subtract) whole hours
     var hours = Math.floor(diffTime / 3600) % 24;
     diffTime -= hours * 3600;
@@ -25,8 +26,22 @@ function startTime() {
     // what's left is seconds
     var seconds = diffTime % 60;  // in theory the modulus is not required
     seconds = Math.floor(seconds);
+
+    if (hours > 0){
+      hours = hours + "h "
+    }
+    else{
+      hours = ""
+    }
     
-    document.getElementById('clock').innerHTML ="Closes in: "+  days + hours + "h " + minutes + "m " + seconds + "s";
+    if (minutes > 0){
+      minutes = minutes + "m "
+    }
+    else{
+       minutes = ""
+    }
+    
+    document.getElementById('clock').innerHTML ="Closes in: "+  days + hours + minutes + seconds + "s";
     setTimeout(startTime, 1000);
   }
   

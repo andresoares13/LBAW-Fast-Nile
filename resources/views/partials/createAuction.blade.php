@@ -51,7 +51,7 @@
   <input type="file" name="image" required="required"><br><br>
 
   <label for="priceStart">Starting Price:</label>
-  <input id="priceStart" type="text" name="priceStart"  class = "auctionC" required="required" onkeypress="return checkNumber(event)">
+  <input id="priceStart" type="text" name="priceStart"  class = "auctionC" required="required" onkeypress="return checkNumber(event)"><i> €<i>
   <label id="error"></label> <br> <br>
 
   <label for="timeClose">Pick the closing date:</label>

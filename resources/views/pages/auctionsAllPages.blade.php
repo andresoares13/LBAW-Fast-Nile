@@ -5,9 +5,9 @@
 @section('content')
 
         <p id="pagePara">
-          Top Auctions
+          Auctions Page {{$pageNr}} 
+          <br>
         </p>
-
         <p>
         <form id="formSearch" action="/search/auction"  method="get" role="search">
           <input type="search" id="query" name="q"
@@ -19,9 +19,22 @@
         </form>
         </p>
 
-      
-<section id="cards">
-  @each('partials.auction', $auctions, 'auction')
-</section>
+
+    <section id="auctionAll">    
+        <ul>
+        @each('partials.auction', $auctions, 'auction')
+        <p id="pageLinks">
+        @for ($i = 0; $i < $totalPages; $i++)
+        @if ($pageNr != $i+1)
+        <a href="/auctions/{{$i+1}}">{{$i+1}}</a>
+        @endif
+        @endfor
+        </p>
+        </ul>
+
+    </section>
+
+    
+
 
 @endsection

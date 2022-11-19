@@ -10,23 +10,14 @@ use App\Models\Auction;
 
 class AuctionController extends Controller
 {
-    /**
-     * Shows the card for a given id.
-     *
-     * @param  int  $id
-     * @return Response
-     */
+
     public function show($id)
     {
       $auction = Auction::find($id);
       return view('pages.auction', ['auction' => $auction]);
     }
 
-    /**
-     * Shows all cards.
-     *
-     * @return Response
-     */
+
     public function list()
     {
       $auction = new Auction();
@@ -35,31 +26,16 @@ class AuctionController extends Controller
       return view('pages.auctions', ['auctions' => $auctions]);
     }
 
-    /**
-     * Creates a new card.
-     *
-     * @return Card The card created.
-     */
-    public function create(Request $request)
-    {
-      $card = new Auction();
 
-      $this->authorize('create', $card);
+    public function showAuctionsPage($pageNr){ //gets 5 results based on the page number
+      $limit = 5 * intval($pageNr);
+      $auctions = Auction::where('states','Active')->orderBy('timeclose')->limit($limit)->get();
+      $totalCount = count(Auction::where('states','Active')->get());
+      $lastEl = $totalCount - (5 * (intval($pageNr)-1)); //if the page is not complete we dont want repetitives, if there are 7, first page gets 5, 2nd gets 2
+      $auctions = array_slice($auctions->toArray(), -$lastEl); //only get the last 5
+      $auctions = Auction::hydrate($auctions);
+      $totalPages = intval(ceil($totalCount /5)); //gets the total number of pages of auctions assuming each has 20
+      return view('pages.auctionsAllPages', ['auctions' => $auctions,'totalPages' => $totalPages,'pageNr' => $pageNr]);
 
-      $card->name = $request->input('name');
-      $card->user_id = Auth::user()->id;
-      $card->save();
-
-      return $card;
-    }
-
-    public function delete(Request $request, $id)
-    {
-      $card = Auction::find($id);
-
-      $this->authorize('delete', $card);
-      $card->delete();
-
-      return $card;
     }
 }
