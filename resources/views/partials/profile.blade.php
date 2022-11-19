@@ -5,6 +5,7 @@
     <?php if (count($auctioneer) != 0) {?>
     <li>Phone number: {{$auctioneer[0]["phone"]}}</li>
     <?php } ?>
+    @if (auth()->check())
     @if (auth()->user()->id == substr(strrchr(url()->current(),"/"),1))
     <?php if (count($auctioneer) == 0) { ?>
     <li>
@@ -38,11 +39,14 @@
         </p>
     </li>
     @endif
+    @endif
   </ul>
   <div id='profile_image'>
     <img src="{{asset('img/profile/' . $user->picture)}}" alt="ProfilePic">
+    @if (auth()->check())
     @if (auth()->user()->id == substr(strrchr(url()->current(),"/"),1))
     <a href="{{ url('/profile/picture/'. strval(auth()->user()->id))}}"><button>Change profile picture</button></a>
+    @endif
     @endif
   </div>
   
