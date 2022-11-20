@@ -13,6 +13,7 @@
     <!-- Styles -->
     <link href="{{ asset('css/milligram.min.css') }}" rel="stylesheet">
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/userCards.css') }}" rel="stylesheet">
     
     <script type="text/javascript">
         // Fix for Firefox autofocus CSS bug
@@ -37,9 +38,20 @@
         <a class='button' href="{{ url('/users/1') }}">Users</a>
         <a class="button" href="{{ url('/auctions/1') }}"> Auctions </a> 
         </p>
+
+        @elseif (Auth::guard('admin')->check())
+        <p id ="headerUser">
+        <a class='button' href="{{ url('/profileAdmin/'. strval(auth()->guard('admin')->user()->id)) }}">{{ Auth::guard('admin')->user()->names }}</a> 
+        <a class="button" href="{{ url('/logout') }}"> Logout </a> 
+        </p>
+
+        <p id="headerAccess">
+        <a class='button' href="{{ url('/search')}}">Search</a> 
+        <a class='button' href="{{ url('/users/1') }}">Users</a>
+        <a class="button" href="{{ url('/auctions/1') }}"> Auctions </a> 
+        </p>
         
-        
-        @elseif (substr(strrchr(url()->current(),"/"),1) != ('login') && substr(strrchr(url()->current(),"/"),1) != ('register'))
+        @elseif (substr(strrchr(url()->current(),"/"),1) != ('login') && substr(strrchr(url()->current(),"/"),1) != ('register') && substr(strrchr(url()->current(),"/"),1) != ('admin'))
         <p id ="headerUser">
         <a class="button" href="{{ route('register') }}">Register</a> <a class="button" href="{{ url('/login') }}"> Login </a> 
         </p>

@@ -5,7 +5,23 @@
 @section('content')
 
         <p id="pagePara">
-          Auctions Page {{$pageNr}} 
+        @if (count($auctions)==0)
+        There are no auctions at this time
+        @else
+        @if (isset($id))
+        @if (auth()->check())
+        @if (auth()->user()->id == $userId)
+        My Auctions Page {{$pageNr}}
+        @else
+        {{$name}} Auctions Page {{$pageNr}}
+        @endif
+        @else
+        {{$name}} Auctions Page {{$pageNr}}
+        @endif
+        @else
+        Auctions Page {{$pageNr}}
+        @endif 
+        @endif
           <br>
         </p>
         <p>
@@ -26,7 +42,11 @@
         <p id="pageLinks">
         @for ($i = 0; $i < $totalPages; $i++)
         @if ($pageNr != $i+1)
+        @if (isset($id))
+        <a href="/profile/auctions/{{$id}}/{{$i+1}}">{{$i+1}}</a>
+        @else
         <a href="/auctions/{{$i+1}}">{{$i+1}}</a>
+        @endif
         @endif
         @endfor
         </p>

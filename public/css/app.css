@@ -4,7 +4,7 @@ body {
 }
 main > header {
   display: grid;
-  grid-template-columns: 1fr auto auto;
+  grid-template-columns: auto 1fr auto;
   align-items: center;
   background-color: #d2afe7;
   padding: 1em;
@@ -359,6 +359,7 @@ svg {
   max-width: 5em;
   margin: auto;
   font-size: 5em;
+  grid-column-start: 2;
 }
 
 #headerUser{
@@ -372,6 +373,8 @@ svg {
   display: flex;
   flex-direction: column;
   position: absolute;
+  margin-bottom: 0;
+  grid-column-start: 1;
 
 }
 
@@ -475,4 +478,48 @@ svg {
   text-align: center;
   margin: 0;
   font-size: 1em;
+}
+
+#loginType{
+  font-size: 2em;
+  text-align: center;
+}
+
+#loginTypeButton button[type="button"] {
+  display: block;
+  margin: 0 auto;
+}
+
+.buttonHolder{
+  text-align: center;
+}
+
+#profileTitle{
+  text-align: center !important;
+}
+
+#myBids{
+  align-items: center;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+}
+
+#myBidsTable{
+  grid-column-start: 2;
+  width: 100%;
+  display: table;
+  table-layout: fixed;
+  border-collapse: collapse;
+}
+
+#myBidsTable td,th{
+  display: table-cell;
+    text-align: center;
+    vertical-align: middle;
+    word-wrap: break-word;
+}
+
+
+#editAuctionButton {
+  text-align: center;
 }

@@ -13,7 +13,7 @@
   <input id="phone" type="text" name="phone" value="<?=$auctioneer[0]["phone"]?>" class = "profilein" required="required" minlength="5" maxlength="15">
   <?php } ?>
   
-  <input type="hidden" name="user" value="{{ Auth::user()->id }}">
+  <input type="hidden" name="user" value="{{ substr(strrchr(url()->current(),"/"),1) }}">
 
   <button type="submit" >Save</button>
 

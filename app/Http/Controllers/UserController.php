@@ -11,6 +11,7 @@ use App\Models\User;
 use App\Models\Auctioneer;
 use App\Models\Auction;
 use App\Models\Car;
+use App\Models\Bid;
 
 class UserController extends Controller
 {
@@ -28,6 +29,9 @@ class UserController extends Controller
 
     public function showEdit($id){
       $user = User::find($id);
+      if (Auth::guard('admin')->check()){
+        return view('pages.profileEdit', ['user' => $user]);
+      }
       if ($user->id == Auth::user()->id){
         return view('pages.profileEdit', ['user' => $user]);
       }
@@ -89,6 +93,58 @@ class UserController extends Controller
       }
     }
 
+    public function showUserAuctions($id,$pageNr){
+      $limit = 5 * intval($pageNr);
+      $auctioneer = Auctioneer::Find($id);
+      if ($auctioneer != NULL){
+        $name = $auctioneer->getName($auctioneer->iduser);
+        $userId = $auctioneer->getUserId($auctioneer->iduser);
+        $auctions = Auction::where('states','Active')->where('owners',$id)->orderBy('timeclose')->limit($limit)->get();
+        $totalCount = count(Auction::where('states','Active')->where('owners',$id)->get());
+        $lastEl = $totalCount - (5 * (intval($pageNr)-1)); //if the page is not complete we dont want repetitives, if there are 7, first page gets 5, 2nd gets 2
+        $auctions = array_slice($auctions->toArray(), -$lastEl); //only get the last 5
+        $auctions = Auction::hydrate($auctions);
+        $totalPages = intval(ceil($totalCount /5)); //gets the total number of pages of auctions assuming each has 20
+        return view('pages.auctionsAllPages', ['auctions' => $auctions,'totalPages' => $totalPages,'pageNr' => $pageNr,'id' =>$id,'name' => $name,'userId'=>$userId]);
+      }
+      else{
+        abort(404);
+      }
+      
+    }
+
+
+    public function showUserBids($id,$pageNr){
+      if (!auth()->check() && !Auth::guard('admin')->check()){
+        abort(404);
+      }
+      if (Auth::guard('admin')->check()){
+        $user = User::find($id);
+        $limit = 20 * intval($pageNr);
+        $bids = Bid::where('iduser',$id)->orderBy('id','desc')->limit($limit)->get();
+        $totalCount = count(Bid::where('iduser',$id)->get());
+        $lastEl = $totalCount - (5 * (intval($pageNr)-1)); //if the page is not complete we dont want repetitives, if there are 7, first page gets 5, 2nd gets 2
+        $bids = array_slice($bids->toArray(), -$lastEl); //only get the last 5
+        $bids = Bid::hydrate($bids);
+        $totalPages = intval(ceil($totalCount /5)); //gets the total number of pages of auctions assuming each has 20
+        return view('pages.userBids', ['bids' => $bids,'totalPages' => $totalPages,'pageNr' => $pageNr, 'name' => $user->names]);
+      }
+      else if ($id == Auth::user()->id){
+        $limit = 20 * intval($pageNr);
+        $bids = Bid::where('iduser',$id)->orderBy('id','desc')->limit($limit)->get();
+        $totalCount = count(Bid::where('iduser',$id)->get());
+        $lastEl = $totalCount - (5 * (intval($pageNr)-1)); //if the page is not complete we dont want repetitives, if there are 7, first page gets 5, 2nd gets 2
+        $bids = array_slice($bids->toArray(), -$lastEl); //only get the last 5
+        $bids = Bid::hydrate($bids);
+        $totalPages = intval(ceil($totalCount /5)); //gets the total number of pages of auctions assuming each has 20
+        return view('pages.userBids', ['bids' => $bids,'totalPages' => $totalPages,'pageNr' => $pageNr]);
+      }
+      else{
+        abort(403);
+      }
+      
+    }
+
     public function addFunds(Request $request){
       if ($request->input('user') == Auth::user()->id){
         $user = User::find($request->input('user'));
@@ -103,6 +159,18 @@ class UserController extends Controller
 
 
     public function editProfile(Request $request){
+      if (Auth::guard('admin')->check()){
+        $user = User::find($request->input('user'));
+        $user->names = $request->input('name');
+        $user->address = $request->input('address');
+        if($request->input('phone') != NULL){
+          $auctioneer = Auctioneer::find($user->getAuctioneer($user->id)[0]['id']);
+          $auctioneer->phone = $request->input('phone');
+          $auctioneer->save();
+        }
+        $user->save();
+        return redirect('profile/'.$request->input('user'));
+      }
       if ($request->input('user') == Auth::user()->id){
         $user = User::find($request->input('user'));
         $user->names = $request->input('name');
@@ -222,6 +290,8 @@ class UserController extends Controller
       return view('pages.userCard', ['users' => $users,'totalPages' => $totalPages,'pageNr' => $pageNr]);
 
     }
+
+    
 
     
 

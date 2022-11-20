@@ -1,6 +1,11 @@
 <?php
 
 use App\Http\Controllers\SearchController;
+
+if (env('APP_ENV') === 'production') {
+    URL::forceSchema('https');
+}
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -34,16 +39,30 @@ Route::get('logout', 'Auth\LoginController@logout')->name('logout');
 Route::get('register', 'Auth\RegisterController@showRegistrationForm')->name('register');
 Route::post('register', 'Auth\RegisterController@register');
 
+Route::get('/login/admin', 'Auth\LoginController@showAdminLoginForm');
+Route::post('/login/admin', 'Auth\LoginController@adminLogin');
+
+
 // profile
 Route::get('profile/{id}', 'UserController@show');
 Route::get('profile/edit/{id}', 'UserController@showEdit');
 Route::get('profile/wallet/{id}', 'UserController@showWallet');
 Route::get('profile/upgrade/{id}', 'UserController@showUpgrade');
 Route::get('profile/picture/{id}', 'UserController@showPicture');
+Route::get('profile/auctions/{id}/{pageNr}', 'UserController@showUserAuctions');
+Route::get('profile/bids/{id}/{pageNr}', 'UserController@showUserBids');
 Route::post('wallet', 'UserController@addFunds');
 Route::post('edit', 'UserController@editProfile');
 Route::post('upgrade', 'UserController@becomeAuctioneer');
 Route::post('pictureProfile', 'UserController@updatePicture');
+
+//admin
+
+Route::get('profileAdmin/{id}', 'AdminController@show');
+Route::get('profileAdmin/edit/{id}', 'AdminController@showEdit');
+Route::get('profileAdmin/picture/{id}', 'AdminController@showPicture');
+Route::post('editAdmin', 'AdminController@editProfile');
+Route::post('pictureAdminProfile', 'AdminController@updatePicture');
 
 
 // Search
@@ -60,6 +79,9 @@ Route::post('bid', 'BidController@create');
 Route::get('auctions/{pageNr}', 'AuctionController@showAuctionsPage');
 Route::get('profile/auctionCreate/{id}', 'UserController@showAuctionCreate');
 Route::post('auctionCreate', 'UserController@createAuction');
+Route::get('auctionEdit/{id}', 'AuctionController@showAuctionEdit');
+Route::post('auctionEdit', 'AuctionController@editAuction');
+Route::post('auctionCancel', 'AuctionController@deleteAuction');
 
 //users
 

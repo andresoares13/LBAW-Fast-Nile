@@ -60,4 +60,27 @@ class Auction extends Model
     $user = User::find($auctioneer->iduser);
     return $user->names;
   }
+
+  public function isOwner($id,$Aid){
+    $user = User::find($id);
+    $auctioneer = $user->getAuctioneer($id);
+    $auction = Auction::where('owners',$auctioneer[0]->id)->where('id',$Aid)->get();
+    if (count($auction)==1){
+      return TRUE;
+    }
+    else{
+      return FALSE;
+    }
+  }
+
+  public function hasBids($id){
+    $auction = Auction::find($id);
+    $bids = Bid::where('idauction',$auction->id)->get()->toArray();
+    if (count($bids)>0){
+      return TRUE;
+    }
+    else{
+      return FALSE;
+    }
+  }
 }

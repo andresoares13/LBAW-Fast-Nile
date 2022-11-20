@@ -1,7 +1,14 @@
 @extends('layouts.app')
 
 @section('content')
+
+@isset($url)
+<form method="POST" action="{{ url('login/admin') }}">
+<p id="loginType">Admin Login</p>
+@else
 <form method="POST" action="{{ route('login') }}">
+<p id="loginType">User Login</p>
+@endisset
     {{ csrf_field() }}
 
     <label for="email">E-mail</label>
@@ -24,9 +31,24 @@
         <input type="checkbox" name="remember" {{ old('remember') ? 'checked' : '' }}> Remember Me
     </label>
 
+    <div class="buttonHolder">
     <button type="submit">
         Login
     </button>
+    @isset($url)
+    @else
     <a class="button button-outline" href="{{ route('register') }}">Register</a>
+    @endisset
+    </div>
+    <br>
+    @isset($url)
+    <a id="loginTypeButton" href="{{url('login')}}"><button type="button">
+        User Login
+    </button></a>
+    @else
+    <a id="loginTypeButton" href="{{url('login/admin')}}"><button type="button">
+        Admin Login
+    </button></a>
+    @endisset
 </form>
 @endsection

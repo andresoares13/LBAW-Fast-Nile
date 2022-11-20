@@ -18,5 +18,15 @@ class Auctioneer extends Model
     return $this->belongsTo('App\Models\User');
   }
 
+  public function getName($id){
+    $user = DB::table('users')->where('id',$id)->get()->toArray();
+    return $user[0]->names;
+  }
+
+  public function getUserId($id){
+    $user = DB::table('users')->where('id',$id)->get()->toArray();
+    return $user[0]->id;
+  }
+
   
 }

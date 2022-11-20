@@ -38,4 +38,43 @@ class AuctionController extends Controller
       return view('pages.auctionsAllPages', ['auctions' => $auctions,'totalPages' => $totalPages,'pageNr' => $pageNr]);
 
     }
+
+    public function editAuction(Request $request){
+      $auction = Auction::find($request->input('auction'));
+      $auction->title = $request->input('title');
+      $auction->descriptions = $request->input('description');
+      $auction->save();
+      return redirect('auction/'.$auction->id);
+    }
+
+
+    public function showAuctionEdit($id){
+      if (auth()->check()){
+        $auction = Auction::find($id);
+        if ($auction->isOwner(auth()->user()->id,$id)){
+          return view('pages.auctionEdit', ['auction' => $auction]);
+        }
+        else{
+          abort(403);
+        }
+      }
+      elseif(auth()->guard('admin')->check()){
+        $auction = Auction::find($id);
+        return view('pages.auctionEdit', ['auction' => $auction]);
+      }
+      else{
+        abort(403);
+      }
+    }
+
+    public function deleteAuction(Request $request){
+      $auction = Auction::find($request->input('auction'));
+      if (!$auction->hasBids($auction->id)){
+        $auction->delete();
+        return redirect('/');
+      }
+      abort(404);
+      
+    }
+
 }

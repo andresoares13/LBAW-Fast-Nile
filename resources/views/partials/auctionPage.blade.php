@@ -1,6 +1,23 @@
 <article class="card" data-id="{{ $auction->id }}">
 <header>
   <h1 id='AuctionTitle' ><a href="/auction/{{ $auction->id }}">{{ $auction->title }}</a></h1>
+  @if (auth()->guard('admin')->check())
+  <div id="editAuctionButton"><a href="/auctionEdit/{{$auction->id}}"><button>Edit Auction</button></a></div>
+  @elseif (auth()->check())
+    @if ($auction->isOwner(auth()->user()->id,$auction->id))
+    <div id="editAuctionButton"><a href="/auctionEdit/{{$auction->id}}"><button>Edit Auction</button></a></div>
+    @if (!$auction->hasBids($auction->id))
+    <div id="editAuctionButton">
+    <form action="/auctionCancel" method="POST" id="auctionCancel" class="profile" >
+    {{ csrf_field() }}
+    <input type="hidden" name="auction" value="{{ $auction->id }}">
+        <button type="Submit">Cancel Auction</button>
+    </form>    
+    </div> <br>
+    @endif
+    @endif
+  @else
+  @endif  
 </header>
 
 @php

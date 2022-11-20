@@ -22,4 +22,9 @@ class Bid extends Model
     $user = DB::table('users')->where('id', $id)->get();
     return $user[0]->names;
   }
+
+  public function getAuction($id){
+    $auction = DB::table('auction')->where('id',$id)->get();
+    return $auction;
+  }
 }

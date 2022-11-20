@@ -53,10 +53,11 @@ CREATE TABLE auctioneer (
 CREATE TABLE administrator (
    id SERIAL PRIMARY KEY,
    names TEXT NOT NULL,
-   passwords TEXT NOT NULL,
+   password TEXT NOT NULL,
    picture TEXT NOT NULL DEFAULT 'default.png',
    email TEXT NOT NULL CONSTRAINT administrator_email_uk UNIQUE,
-   address TEXT
+   address TEXT,
+   remember_token TEXT
 );
 
 CREATE TABLE car (

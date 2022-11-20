@@ -3,7 +3,7 @@
 @section('title', 'Home')
 
 @section('content')
-<link href="{{ asset('css/userCards.css') }}" rel="stylesheet">
+
 @if (count($users)!=0)
         <p id="pagePara">
           Users similar to "{{$query}}" 
