@@ -89,4 +89,16 @@ class Auction extends Model
     $user = User::find($id);
     return $user->names;
   }
+
+  public function isAuct($id){
+    $auctioneer = Auctioneer::where('iduser',$id)->get();
+
+    if (isset($auctioneer[0]['id'])){
+      return TRUE;
+    }
+    
+
+    return FALSE;
+  }
+
 }

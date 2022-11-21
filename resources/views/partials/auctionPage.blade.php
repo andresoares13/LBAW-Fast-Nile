@@ -4,6 +4,7 @@
   @if (auth()->guard('admin')->check())
   <div id="editAuctionButton"><a href="/auctionEdit/{{$auction->id}}"><button>Edit Auction</button></a></div>
   @elseif (auth()->check())
+    @if ($auction->isAuct(auth()->user()->id))
     @if ($auction->isOwner(auth()->user()->id,$auction->id))
     <div id="editAuctionButton"><a href="/auctionEdit/{{$auction->id}}"><button>Edit Auction</button></a></div>
     @if (!$auction->hasBids($auction->id))
@@ -14,6 +15,7 @@
         <button type="Submit">Cancel Auction</button>
     </form>    
     </div> <br>
+    @endif
     @endif
     @endif
   @else
