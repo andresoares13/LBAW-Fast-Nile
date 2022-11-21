@@ -30,12 +30,12 @@ $time = strtotime($auction->toArray()['timeclose']);
 @if ($auction->getTopBid($auction->id)->toArray() == [])
 <table id="tables">  
     <caption id='BidsTable' >Top Bids</caption>
-    <th>No Bids yet</th>
+    <th id="bids?">No Bids yet</th>
 </table>
 @else
 <table id="tables">  
     <caption id='BidsTable' >Top Bids</caption>
-    <tr><th scope="col">Bid</th><th scope="col">Value</th><th scope="col">User</th></tr>
+    <tr><th id="bids?" scope="col">Bid</th><th scope="col">Value</th><th scope="col">User</th></tr>
     @foreach ($auction->getTop10Bids($auction->id) as $i=>$bid)
         @include('partials.bids', [$bid,$i])
     @endforeach
@@ -44,16 +44,20 @@ $time = strtotime($auction->toArray()['timeclose']);
 @endif
 
 <article id="currentPrice">
-    <p>Current price: {{ floor($auction->pricenow ) }}</p>
+<p >Owner: <a href="/profile/{{$auction->getUser($auction->owners)->id}}">{{$auction->getAuctioneerName($auction->owners)}}</a></p> 
+
+<p id="HighestBidder" hidden>{{$auction->highestbidder}}</p>
+
+    <p id="currentPriceText">Current price: {{ floor($auction->pricenow ) }}</p>
     <p id='clock'>Closes in: </p> 
+    <br>
+    
 </article>
 
 
-@if (Auth::check()){
-    <form id='BidForm' method="POST" action="/bid" onsubmit="return checkBidValue()">
-   
-
-    {{ csrf_field() }}
+@if (Auth::check() && Auth::user()->id != $auction->getUser($auction->owners)->id)
+<iframe name="dummyframe" id="dummyframe" style="display: none;"></iframe>
+    <form id='BidForm' target="dummyframe" onsubmit="return checkBidValue()">
    
 
     <label for="bid">Bid Amount €</label>
@@ -61,21 +65,35 @@ $time = strtotime($auction->toArray()['timeclose']);
 
     <input id="bidInput" type="text" onkeypress="return checkNumber(event)" name="bid" value="{{ floor($auction->pricenow * 1.05) +1}}" required autofocus>
     <label id="error"></label>
-    <input type="hidden" name="auction" value="{{ $auction->id }}">
-    <input type="hidden" name="user" value="{{ Auth::user()->id }}">
+    <input type="hidden" id="formAuction" name="auction" value="{{ $auction->id }}">
+    <input type="hidden" id="formUser" name="user" value="{{ Auth::user()->id }}">
 
     
 
-    <button type="submit" onclick="return checkBidValue()">
+    <button id="bidButton" type="button" onclick="return checkBidValue()">
         Make Bid
     </button>
+    <div id="bidConfirm">
+    <p>Are you Sure?</p>
+    <button id="finalBidButton" type="button">
+        Yes
+    </button>
+    <button type="button" onclick="return closeBidConfirm()">
+        No
+    </button>
+    </div>
     
 </form>
-}
+
 
 @endif
 
+<article id="description"> 
+    <h2>Descritpion</h2>
+    <p>{{$auction->descriptions}}</p>
+</article>
+
 <p hidden id = "hTime"><?php echo $time; ?></p>
-<body onload="startTime()"> </body>
+<body onload="startTime();addEventListeners();"> </body>
 
 </article>

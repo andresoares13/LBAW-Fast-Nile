@@ -11,16 +11,11 @@ class Auction extends Model
   public $timestamps  = false;
   protected $table = 'auction';
 
-  /**
-   * The user this card belongs to
-   */
   public function user() {
     return $this->belongsTo('App\Models\User');
   }
 
-  /**
-   * Items inside this card
-   */
+
   public function bids() {
     return $this->hasMany('App\Models\Bid');
   }
@@ -82,5 +77,16 @@ class Auction extends Model
     else{
       return FALSE;
     }
+  }
+
+  public function getUser($auctioneerId){
+    $auctioneer = Auctioneer::find($auctioneerId);
+    $user = User::find($auctioneer->iduser);
+    return $user;
+  }
+
+  public function getHighestBidderName($id){
+    $user = User::find($id);
+    return $user->names;
   }
 }

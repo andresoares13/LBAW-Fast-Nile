@@ -18,19 +18,9 @@ if (env('APP_ENV') === 'production') {
 */
 // Home
 Route::get('/', 'AuctionController@list');
-
-
-// Cards
 Route::get('home', 'AuctionController@list');
-Route::get('auction/{id}', 'AuctionController@show');
 
-// API
-Route::put('api/cards', 'AuctionController@create');
-Route::delete('api/cards/{card_id}', 'AuctionController@delete');
-Route::put('api/cards/{card_id}/', 'ItemController@create');
-Route::post('api/item/{id}', 'ItemController@update');
-Route::delete('api/item/{id}', 'ItemController@delete');
-Route::put('api/bid', 'BidController@create');
+
 
 // Authentication
 Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');
@@ -71,11 +61,13 @@ Route::get('search/auctionM', 'SearchController@viewSearchExact');
 Route::get('search/user', 'SearchController@viewSearchUser');
 Route::get('search', 'SearchController@viewSearchPage');
 
-//bid
-Route::post('bid', 'BidController@create');
+//bid (API)
+Route::post('api/bid', 'BidController@create');
+
 
 //auction
 
+Route::get('auction/{id}', 'AuctionController@show');
 Route::get('auctions/{pageNr}', 'AuctionController@showAuctionsPage');
 Route::get('profile/auctionCreate/{id}', 'UserController@showAuctionCreate');
 Route::post('auctionCreate', 'UserController@createAuction');

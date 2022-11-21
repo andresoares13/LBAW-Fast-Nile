@@ -15,13 +15,15 @@ class BidController extends Controller
 
   public function create(Request $request)
   {
+    
     $bid = new Bid();
     $bid->iduser = $request->input('user');
     $this->authorize('create', $bid);
     $bid->idauction = $request->input('auction');
     $bid->valuee = $request->input('bid');
-    $bid->save();
-    return redirect('auction/'.$request->input('auction'));
+    //$bid->save();
+    $bid->username = $bid->getUsername($bid->iduser);
+    return $bid;
   }
 
 
