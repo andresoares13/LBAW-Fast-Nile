@@ -51,7 +51,7 @@ class AuctionController extends Controller
     public function showAuctionEdit($id){
       if (auth()->check()){
         $auction = Auction::find($id);
-        if ($auction->isOwner(auth()->user()->id,$id)){
+        if ($this->authorize('showEdit', $auction)){ 
           return view('pages.auctionEdit', ['auction' => $auction]);
         }
         else{

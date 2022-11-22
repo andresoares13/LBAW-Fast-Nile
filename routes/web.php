@@ -18,7 +18,7 @@ if (env('APP_ENV') === 'production') {
 */
 // Home
 Route::get('/', 'AuctionController@list');
-Route::get('home', 'AuctionController@list');
+Route::get('/home', 'AuctionController@list');
 
 
 

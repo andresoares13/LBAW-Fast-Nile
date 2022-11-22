@@ -714,13 +714,13 @@ svg {
 }
 
 
-#description{
+#descriptionA{
   position: absolute;
   left: 30em;
-  top: 65em;
+  top: 100em;
 }
 
-#description h2{
+#descriptionA h2{
   font-size: 2em;
   
 }

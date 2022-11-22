@@ -11,9 +11,7 @@ class Auctioneer extends Model
   public $timestamps  = false;
   protected $table = 'auctioneer';
 
-  /**
-   * The card this item belongs to.
-   */
+
   public function user() {
     return $this->belongsTo('App\Models\User');
   }

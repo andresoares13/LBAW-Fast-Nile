@@ -12,12 +12,9 @@ class UserPolicy
 {
     use HandlesAuthorization;
 
-    public function editAllow(User $user, int $id)
+    public function correctUser(User $user, User $tryUser)
     {
-      echo $user->id;
-      echo $id;
-      exit();
-      return $user->id == $id;
+      return $user->id == $tryUser->id;
     }
 
     

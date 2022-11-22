@@ -11,9 +11,7 @@ class Bid extends Model
   public $timestamps  = false;
   protected $table = 'bid';
 
-  /**
-   * The card this item belongs to.
-   */
+
   public function auction() {
     return $this->belongsTo('App\Models\Auction');
   }

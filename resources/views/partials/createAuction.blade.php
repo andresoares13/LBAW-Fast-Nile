@@ -7,8 +7,8 @@
   <label for="title">Title:</label>
   <input id="title" type="text" name="title"  class = "auctionC" required="required" minlength="3" maxlength="40">
  
-  <label for="description">Description:</label>
-  <textarea id="description" name="description"  class = "auctionC" required="required" minlength="10" maxlength="250" rows="4" cols="50"> </textarea>
+  <label for="descriptions">Description:</label>
+  <textarea id="descriptions" name="description"  class = "auctionC" required="required" minlength="10" maxlength="250" rows="4" cols="50"> </textarea>
 
   <label for="carName">Car name:</label>
   <input id="carName" type="text" name="carName"  class = "auctionC" required="required" minlength="3" maxlength="40">

@@ -12,27 +12,10 @@ class AuctionPolicy
 {
     use HandlesAuthorization;
 
-    public function show(User $user, Auction $auction)
+    public function showEdit(User $user, Auction $auction)
     {
-      // Only a card owner can see it
-      return $user->id == $card->user_id;
+
+      return $user->id == $auction->getUser($auction->owners)->id;
     }
 
-    public function list(User $user)
-    {
-      // Any user can list its own cards
-      return Auth::check();
-    }
-
-    public function create(User $user)
-    {
-      // Any user can create a new card
-      return Auth::check();
-    }
-
-    public function delete(User $user, Auction $auction)
-    {
-      // Only a card owner can delete it
-      return $user->id == $auction->owner;
-    }
 }

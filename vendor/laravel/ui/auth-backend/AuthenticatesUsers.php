@@ -185,7 +185,7 @@ trait AuthenticatesUsers
         if(Auth::guard('admin')->check()) // this means that the admin was logged in.
         {
             Auth::guard('admin')->logout();
-            return redirect()->route('/home');
+            return redirect('/home');
         }
         
         return $request->wantsJson()

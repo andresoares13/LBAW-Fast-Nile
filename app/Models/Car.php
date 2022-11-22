@@ -11,9 +11,7 @@ class Car extends Model
   public $timestamps  = false;
   protected $table = 'car';
 
-  /**
-   * The card this item belongs to.
-   */
+
   public function auction() {
     return $this->belongsTo('App\Models\Auction');
   }

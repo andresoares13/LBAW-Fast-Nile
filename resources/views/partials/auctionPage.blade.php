@@ -90,7 +90,7 @@ $time = strtotime($auction->toArray()['timeclose']);
 
 @endif
 
-<article id="description"> 
+<article id="descriptionA"> 
     <h2>Descritpion</h2>
     <p>{{$auction->descriptions}}</p>
 </article>

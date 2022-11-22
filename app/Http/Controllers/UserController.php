@@ -15,12 +15,7 @@ use App\Models\Bid;
 
 class UserController extends Controller
 {
-    /**
-     * Shows the card for a given id.
-     *
-     * @param  int  $id
-     * @return Response
-     */
+
     public function show($id)
     {
       $user = User::find($id);
@@ -32,7 +27,7 @@ class UserController extends Controller
       if (Auth::guard('admin')->check()){
         return view('pages.profileEdit', ['user' => $user]);
       }
-      if ($user->id == Auth::user()->id){
+      else if ($this->authorize('correctUser', $user)){
         return view('pages.profileEdit', ['user' => $user]);
       }
       else{
@@ -42,7 +37,7 @@ class UserController extends Controller
 
     public function showWallet($id){
       $user = User::find($id);
-      if ($user->id == Auth::user()->id){
+      if ($this->authorize('correctUser', $user)){
         return view('pages.profileWallet', ['user' => $user]);
       }
       else{
@@ -52,7 +47,7 @@ class UserController extends Controller
 
     public function showUpgrade($id){
       $user = User::find($id);
-      if ($user->id == Auth::user()->id){
+      if ($this->authorize('correctUser', $user)){
         $auctioneer = $user->getAuctioneer($user->id);
         if (count($auctioneer) == 0){
           return view('pages.profileUpgrade', ['user' => $user]);
@@ -68,7 +63,7 @@ class UserController extends Controller
 
     public function showPicture($id){
       $user = User::find($id);
-      if ($user->id == Auth::user()->id){
+      if ($this->authorize('correctUser', $user)){
         return view('pages.profilePicture', ['user' => $user]);
       }
       else{
@@ -79,7 +74,7 @@ class UserController extends Controller
     public function showAuctionCreate($id){
       
       $user = User::find($id);
-      if ($user->id == Auth::user()->id){
+      if ($this->authorize('correctUser', $user)){
         $auctioneer = $user->getAuctioneer($user->id);
         if (count($auctioneer) != 0){
           return view('pages.createAuction', ['user' => $user,'auctioneer' => $auctioneer]);
@@ -118,6 +113,7 @@ class UserController extends Controller
       if (!auth()->check() && !Auth::guard('admin')->check()){
         abort(404);
       }
+      $user = User::find($id);
       if (Auth::guard('admin')->check()){
         $user = User::find($id);
         $limit = 20 * intval($pageNr);
@@ -129,7 +125,7 @@ class UserController extends Controller
         $totalPages = intval(ceil($totalCount /5)); //gets the total number of pages of auctions assuming each has 20
         return view('pages.userBids', ['bids' => $bids,'totalPages' => $totalPages,'pageNr' => $pageNr, 'name' => $user->names]);
       }
-      else if ($id == Auth::user()->id){
+      else if ($this->authorize('correctUser', $user)){
         $limit = 20 * intval($pageNr);
         $bids = Bid::where('iduser',$id)->orderBy('id','desc')->limit($limit)->get();
         $totalCount = count(Bid::where('iduser',$id)->get());
@@ -146,8 +142,8 @@ class UserController extends Controller
     }
 
     public function addFunds(Request $request){
-      if ($request->input('user') == Auth::user()->id){
-        $user = User::find($request->input('user'));
+      $user = User::find($request->input('user'));
+      if ($this->authorize('correctUser', $user)){
         $user->wallet = $user->wallet + $request->input('funds');
         $user->save();
         return redirect('profile/'.$request->input('user'));
@@ -171,8 +167,8 @@ class UserController extends Controller
         $user->save();
         return redirect('profile/'.$request->input('user'));
       }
-      if ($request->input('user') == Auth::user()->id){
-        $user = User::find($request->input('user'));
+      $user = User::find($request->input('user'));
+      if ($this->authorize('correctUser', $user)){
         $user->names = $request->input('name');
         $user->address = $request->input('address');
         if($request->input('phone') != NULL){
@@ -190,7 +186,8 @@ class UserController extends Controller
 
 
     public function becomeAuctioneer(Request $request){
-      if ($request->input('user') == Auth::user()->id){
+      $user = User::find($request->input('user'));
+      if ($this->authorize('correctUser', $user)){
         $auctioneer = new Auctioneer();
         $auctioneer->iduser = $request->input('user');
         $auctioneer->phone = $request->input('phone');
@@ -205,13 +202,13 @@ class UserController extends Controller
 
     public function updatePicture(Request $request)
     {
-      if ($request->input('user') == Auth::user()->id){
+      $user = User::find($request->input('user'));
+      if ($this->authorize('correctUser', $user)){
         if($request->hasFile('image')){
             $filename = $request->image->getClientOriginalName();
             $filename = $request->input('user') . "." .pathinfo($filename,PATHINFO_EXTENSION);
             
             $request->image->storeAs('',$filename,'my_files');
-            $user = User::find($request->input('user'));
             $user->picture = $filename;
             $user->save();
             
@@ -226,7 +223,7 @@ class UserController extends Controller
 
     public function createAuction(Request $request){
       $user = User::find($request->input('user'));
-      if ($user->id == Auth::user()->id){
+      if ($this->authorize('correctUser', $user)){
         $auctioneer = $user->getAuctioneer($user->id);
         if (count($auctioneer) != 0){
 

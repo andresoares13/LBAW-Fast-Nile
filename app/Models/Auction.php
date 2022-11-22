@@ -46,8 +46,8 @@ class Auction extends Model
         if (!$search) {
             return $query;
         }
-        return $query->whereRaw('tsvectors @@ to_tsquery(\'english\', ?)', [$search])
-            ->orderByRaw('ts_rank(tsvectors, to_tsquery(\'english\', ?)) DESC', [$search]);
+        return $query->whereRaw('tsvectors @@ plainto_tsquery(\'english\', ?)', [$search])
+            ->orderByRaw('ts_rank(tsvectors, plainto_tsquery(\'english\', ?)) DESC', [$search]);
     }
 
   public function getAuctioneerName($id){

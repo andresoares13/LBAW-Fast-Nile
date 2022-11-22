@@ -1,4 +1,4 @@
-<ul class="item" data-id="{{$bid->id}}">
+<ul class="bid" data-id="{{$bid->id}}">
   <label>
     <span>Current top bid: {{ $bid->valuee }} € <br> By user: {{ $bid->getUserName($bid->iduser)}}</span>
 

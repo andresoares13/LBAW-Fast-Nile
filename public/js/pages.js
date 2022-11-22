@@ -116,8 +116,7 @@ function encodeForAjax(data) {
     let user = document.getElementById('formUser').value;
     let bid = document.getElementById('bidInput').value;
   
-    if (description != '')
-      sendAjaxRequest('post', '/api/bid/', {"auction": auction,"user": user,"bid": bid}, bidMadeHandler);
+    sendAjaxRequest('post', '/api/bid/', {"auction": auction,"user": user,"bid": bid}, bidMadeHandler);
   
     event.preventDefault();
   }
