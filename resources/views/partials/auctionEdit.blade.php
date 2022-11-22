@@ -1,4 +1,4 @@
-<script src="{{ asset('js/pages.js') }}" defer> </script>
+<script src="{{ asset('js/pages1.js') }}" defer> </script>
 <p hidden id="lTitle"><?php echo $auction->title?></p>
 
 <form action="/auctionEdit" method="POST" id="auctionForm" class="profile" enctype="multipart/form-data">

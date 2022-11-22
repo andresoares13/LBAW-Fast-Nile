@@ -1,4 +1,4 @@
-<script src="{{ asset('js/pages.js') }}" defer> </script>
+<script src="{{ asset('js/pages1.js') }}" defer> </script>
 
 <form action="/auctionCreate" method="POST" id="auctionForm" class="profile" enctype="multipart/form-data">
 <caption>Fill in the details to create your auction <br> <br></caption>
@@ -39,7 +39,7 @@
   <label for="color">Car color:</label>
   <input id="color" type="text" name="color"  class = "auctionC" required="required" minlength="3" maxlength="10">
 
-  <script src="{{ asset('js/pages.js') }}"></script>
+  <script src="{{ asset('js/pages1.js') }}"></script>
 
   <label for="consumption">Car consumption: (in Liter/100km)</label>
   <input id="consumption" type="text" name="consumption"  class = "auctionC" required="required" minlength="1" maxlength="6" onkeypress="return checkConsumption(event)">

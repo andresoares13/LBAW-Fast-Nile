@@ -18,7 +18,6 @@ class BidController extends Controller
     
     $bid = new Bid();
     $bid->iduser = $request->input('user');
-    $this->authorize('create', $bid);
     $bid->idauction = $request->input('auction');
     $bid->valuee = $request->input('bid');
     //note: we don't use $bid->save() as this would refresh the page and we don't want that when we make a bid

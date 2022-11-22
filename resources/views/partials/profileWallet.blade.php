@@ -3,7 +3,7 @@
   
 
 <label for="funds">Choose the amount you want to add <br> <br></label>
-    <script src="{{ asset('js/pages.js') }}"></script>
+    <script src="{{ asset('js/pages1.js') }}"></script>
     {{ csrf_field() }}
     <input id="fundsInput" type="text" onkeypress="return checkNumber(event)" name="funds" value="500" required autofocus><i> €<i>
     <label id="error"></label>

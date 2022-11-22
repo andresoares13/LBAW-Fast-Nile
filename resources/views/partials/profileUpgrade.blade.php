@@ -4,7 +4,7 @@
 
 
   <label for="phone">To become an auctioneer, please enter your phone number. <br> <br></label>
-  <script src="{{ asset('js/pages.js') }}"></script>
+  <script src="{{ asset('js/pages1.js') }}"></script>
   <input id="phone" type="text" name="phone" class = "profilein" onkeypress="return checkNumber(event)" required="required" minlength="5" maxlength="15">
 
   

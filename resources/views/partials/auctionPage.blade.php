@@ -63,7 +63,7 @@ $time = strtotime($auction->toArray()['timeclose']);
    
 
     <label for="bid">Bid Amount €</label>
-    <script src="{{ asset('js/pages.js') }}"></script>
+    <script src="{{ asset('js/pages1.js') }}"></script>
 
     <input id="bidInput" type="text" onkeypress="return checkNumber(event)" name="bid" value="{{ floor($auction->pricenow * 1.05) +1}}" required autofocus>
     <label id="error"></label>
