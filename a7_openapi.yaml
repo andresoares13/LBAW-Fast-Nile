@@ -14,7 +14,6 @@ servers:
 tags:
   - name: 'M01: Authentication and Individual Profile'
   - name: 'M02: Auctions'
-  - name: 'M03: Follows and Reviews'
   - name: 'M04: Bids'
   - name: 'M05: User Administration and Static pages'
 
