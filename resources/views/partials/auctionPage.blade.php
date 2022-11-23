@@ -28,7 +28,7 @@ $time = strtotime($auction->toArray()['timeclose']);
 <script src="{{ asset('js/clock.js') }}" defer> </script>
 <p hidden id = "startValue">{{ floor($auction->pricenow * 1.05) }}</p>
 
-<img class= "AuctionsPic" src= "{{asset('img/car/' . $auction->getCarPicture($auction->id))}}" /> 
+<img class= "AuctionsPic" src= "{{asset('img/car/' . $auction->getCarPicture($auction->idcar))}}" /> 
 @if ($auction->getTopBid($auction->id)->toArray() == [])
 <table id="tables">  
     <caption id='BidsTable' >Top Bids</caption>
