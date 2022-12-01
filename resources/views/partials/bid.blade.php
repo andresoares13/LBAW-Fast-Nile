@@ -1,6 +1,3 @@
-<ul class="bid" data-id="{{$bid->id}}">
-  <label>
-    <span>Current top bid: {{ $bid->valuee }} € <br> By user: {{ $bid->getUserName($bid->iduser)}}</span>
+Current top bid: {{ $bid->valuee }} € <br> By user: {{ $bid->getUserName($bid->iduser)}}
 
-  </label>
-</ul>
+

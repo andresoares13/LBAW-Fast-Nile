@@ -3,56 +3,87 @@
 @section('title', 'Home')
 
 @section('content')
+        <!-- ======= Breadcrumbs ======= -->
+    <section id="breadcrumbs" class="breadcrumbs">
+      <div class="container">
 
-        <p id="pagePara">
-        @if (count($auctions)==0)
-        There are no auctions at this time
-        @else
-        @if (isset($id))
-        @if (auth()->check())
-        @if (auth()->user()->id == $userId)
-        My Auctions Page {{$pageNr}}
-        @else
-        {{$name}} Auctions Page {{$pageNr}}
-        @endif
-        @else
-        {{$name}} Auctions Page {{$pageNr}}
-        @endif
-        @else
-        Auctions Page {{$pageNr}}
-        @endif 
-        @endif
-          <br>
-        </p>
-        <p>
-        <form id="formSearch" action="/search/auction"  method="get" role="search">
-          <input type="search" id="query" name="q"
-          placeholder="Search for an Auction..."
-          aria-label="Search through site content">
-          <button type='submit'>
-            <svg viewBox="0 0 1024 1024"><path class="path1" d="M848.471 928l-263.059-263.059c-48.941 36.706-110.118 55.059-177.412 55.059-171.294 0-312-140.706-312-312s140.706-312 312-312c171.294 0 312 140.706 312 312 0 67.294-24.471 128.471-55.059 177.412l263.059 263.059-79.529 79.529zM189.623 408.078c0 121.364 97.091 218.455 218.455 218.455s218.455-97.091 218.455-218.455c0-121.364-103.159-218.455-218.455-218.455-121.364 0-218.455 97.091-218.455 218.455z"></path></svg>
-        </button>
+        <div class="d-flex justify-content-between align-items-center">
+          @if (count($auctions)==0)
+          <h1 style="font-weight: bold;">There are no auctions at this time</h1>
+          @else
+          @if (isset($id))
+          @if (auth()->check())
+          @if (auth()->user()->id == $userId)
+          <h1 style="font-weight: bold;">My Auctions Page {{$pageNr}}</a></h1>
+          @else
+          <h1 style="font-weight: bold;">{{$name}} Auctions Page {{$pageNr}}</h1>
+          @endif
+          @else
+          <h1 style="font-weight: bold;">{{$name}} Auctions Page {{$pageNr}}</h1>
+          @endif
+          @else
+          <h1 style="font-weight: bold;">Auctions Page {{$pageNr}}</h1>
+          @endif
+          @endif
+        </div>
+        <form id="searchForms" class="d-flex"  action="/search/auction"  method="get" role="search">
+        <input class="form-control me-sm-2" type="search" placeholder="Search for an Auction..." id="query" name="q">
+        <button class="btn btn-secondary my-2 my-sm-0" type="submit">Search</button>
         </form>
-        </p>
+      </div>
+    </section><!-- End Breadcrumbs -->
 
-
-    <section id="auctionAll">    
-        <ul>
+    <section id="auctionAll">
+  <div class="py-5">
+    <div class="container">
+      <div class="row hidden-md-up">
         @each('partials.auction', $auctions, 'auction')
+        </div>
+      </div>
+    </div>
+
+
         <p id="pageLinks">
+        <div class="bg pageNum">
+        <ul class="pagination">
+        @if ($pageNr == 1)
+        <li class="page-item disabled">
+          <a class="page-link" href="#">&laquo;</a>
+        </li>
+        @else
+        <li class="page-item">
+          <a class="page-link" href="/auctions/{{$pageNr-1}}">&laquo;</a>
+        </li>
+        @endif
         @for ($i = 0; $i < $totalPages; $i++)
         @if ($pageNr != $i+1)
         @if (isset($id))
-        <a href="/profile/auctions/{{$id}}/{{$i+1}}">{{$i+1}}</a>
+        <li class="page-item ">
+        <a class="page-link" href="/profile/auctions/{{$id}}/{{$i+1}}">{{$i+1}}</a>
+        </li>
         @else
-        <a href="/auctions/{{$i+1}}">{{$i+1}}</a>
+        <li class="page-item ">
+        <a class="page-link" href="/auctions/{{$i+1}}">{{$i+1}}</a>
+        </li>
         @endif
         @endif
         @endfor
-        </p>
+        @if ($totalPages == $pageNr)
+        <li class="page-item disabled">
+          <a class="page-link" href="#">&raquo;</a>
+        </li>
+        @else
+        <li class="page-item">
+          <a class="page-link" href="/auctions/{{$pageNr+1}}">&raquo;</a>
+        </li>
+        @endif
         </ul>
+        </div>
+        </p>
 
-    </section>
+
+</section>
+
 
     
 

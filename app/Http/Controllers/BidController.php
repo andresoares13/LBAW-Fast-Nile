@@ -22,9 +22,14 @@ class BidController extends Controller
     $bid->valuee = $request->input('bid');
     //note: we don't use $bid->save() as this would refresh the page and we don't want that when we make a bid
     DB::table('bid')->insert(['idauction' => $request->input('auction'), 'iduser' => $request->input('user'),'valuee' => $request->input('bid')]);
+    $bidToSend = Bid::where('iduser',$request->input('user'))->where('idauction',$request->input('auction'))->where('valuee',$request->input('bid'))->get();
+    $bidToSendFinal = Bid::find($bidToSend[0]->id);
+    event(new \App\Events\PlaygroundEvent($bidToSendFinal,$bid->getUsername($bid->iduser)));
     $bid->username = $bid->getUsername($bid->iduser);
     return $bid;
   }
+
+
 
 
 }

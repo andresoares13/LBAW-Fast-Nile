@@ -3,40 +3,69 @@
 @section('title', 'Home')
 
 @section('content')
-<link href="{{ asset('css/userCards.css') }}" rel="stylesheet">
-        <p id="pagePara">
-          Users Page {{$pageNr}} 
-          
-        </p>
-        <p>
-        <form id="formSearch" action="/search/user"  method="get" role="search">
-          <input type="search" id="query" name="q"
-          placeholder="Search for a user..."
-          aria-label="Search through site content">
-          <button type='submit'>
-            <svg viewBox="0 0 1024 1024"><path class="path1" d="M848.471 928l-263.059-263.059c-48.941 36.706-110.118 55.059-177.412 55.059-171.294 0-312-140.706-312-312s140.706-312 312-312c171.294 0 312 140.706 312 312 0 67.294-24.471 128.471-55.059 177.412l263.059 263.059-79.529 79.529zM189.623 408.078c0 121.364 97.091 218.455 218.455 218.455s218.455-97.091 218.455-218.455c0-121.364-103.159-218.455-218.455-218.455-121.364 0-218.455 97.091-218.455 218.455z"></path></svg>
-        </button>
+
+        <!-- ======= Breadcrumbs ======= -->
+    <section id="breadcrumbs" class="breadcrumbs">
+      <div class="container">
+
+        <div class="d-flex justify-content-between align-items-center">
+          <h1 style="font-weight: bold;">Users Page: {{$pageNr}}</h1>
+        </div>
+        <form id="searchForms" class="d-flex"  action="/search/user"  method="get" role="search">
+        <input class="form-control me-sm-2" type="search" placeholder="Search for a user..." id="query" name="q">
+        <button class="btn btn-secondary my-2 my-sm-0" type="submit">Search</button>
         </form>
-        </p>
+
+      </div>
+    </section><!-- End Breadcrumbs -->
 
 
-        <br>
-    <section id="auctionAll">    
-        <ul>
-        <br>
+
+    <section style="min-height: calc(100vh - 276px);">
+    <div class="py-5">
+    <div class="container">
+      <div class="row hidden-md-up">
+        
         @each('partials.userCard', $users, 'user')
+        </div>
+        </div>
+        </div>
         <p id="pageLinks">
+        <div class="bg pageNum">
+        <ul class="pagination">
+        @if ($pageNr == 1)
+        <li class="page-item disabled">
+          <a class="page-link" href="#">&laquo;</a>
+        </li>
+        @else
+        <li class="page-item">
+          <a class="page-link" href="/users/{{$pageNr-1}}">&laquo;</a>
+        </li>
+        @endif
         @for ($i = 0; $i < $totalPages; $i++)
         @if ($pageNr != $i+1)
-        <a href="/users/{{$i+1}}">{{$i+1}}</a>
+        <li class="page-item ">
+        <a class="page-link" href="/users/{{$i+1}}">{{$i+1}}</a>
+        </li>
         @endif
         @endfor
-        </p>
+        @if ($totalPages == $pageNr)
+        <li class="page-item disabled">
+          <a class="page-link" href="#">&raquo;</a>
+        </li>
+        @else
+        <li class="page-item">
+          <a class="page-link" href="/users/{{$pageNr+1}}">&raquo;</a>
+        </li>
+        @endif
         </ul>
+        </div>
+        </p>
+        </section>
+ 
 
-    </section>
 
-    
+
 
 
 @endsection

@@ -13,7 +13,12 @@ class AuctionController extends Controller
 
     public function show($id)
     {
-      $auction = Auction::find($id);
+      try{
+        $auction = Auction::find($id);
+      }
+      catch(Illuminate\Database\QueryException $ex){
+        dd($ex->getMessage()); 
+      }
       return view('pages.auction', ['auction' => $auction]);
     }
 
@@ -22,19 +27,20 @@ class AuctionController extends Controller
     {
       $auction = new Auction();
       $auctions = $auction->allAuctions();
+      
 
       return view('pages.auctions', ['auctions' => $auctions]);
     }
 
 
-    public function showAuctionsPage($pageNr){ //gets 5 results based on the page number
-      $limit = 5 * intval($pageNr);
+    public function showAuctionsPage($pageNr){ //gets 6 results based on the page number
+      $limit = 6 * intval($pageNr);
       $auctions = Auction::where('states','Active')->orderBy('timeclose')->limit($limit)->get();
       $totalCount = count(Auction::where('states','Active')->get());
-      $lastEl = $totalCount - (5 * (intval($pageNr)-1)); //if the page is not complete we dont want repetitives, if there are 7, first page gets 5, 2nd gets 2
-      $auctions = array_slice($auctions->toArray(), -$lastEl); //only get the last 5
+      $lastEl = $totalCount - (6 * (intval($pageNr)-1)); //if the page is not complete we dont want repetitives, if there are 7, first page gets 6, 2nd gets 1
+      $auctions = array_slice($auctions->toArray(), -$lastEl); //only get the last 6
       $auctions = Auction::hydrate($auctions);
-      $totalPages = intval(ceil($totalCount /5)); //gets the total number of pages of auctions assuming each has 20
+      $totalPages = intval(ceil($totalCount /6)); //gets the total number of pages of auctions assuming each has 20
       return view('pages.auctionsAllPages', ['auctions' => $auctions,'totalPages' => $totalPages,'pageNr' => $pageNr]);
 
     }

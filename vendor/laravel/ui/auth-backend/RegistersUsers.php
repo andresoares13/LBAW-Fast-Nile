@@ -29,22 +29,15 @@ trait RegistersUsers
      */
     public function register(Request $request)
     {
-    	
         $this->validator($request->all())->validate();
-	
+
         event(new Registered($user = $this->create($request->all())));
-	 if(!Auth::guard('admin')->check()){
-	   $this->guard()->login($user);
-	 }
-	 else{
-	   return redirect('profile/'.$user->id);
-	 }
-	 
-	
+
+        $this->guard()->login($user);
+
         if ($response = $this->registered($request, $user)) {
             return $response;
         }
-        
 
         return $request->wantsJson()
                     ? new JsonResponse([], 201)

@@ -44,14 +44,12 @@ trait AuthenticatesUsers
         }
 
         if ($this->attemptLogin($request)) {
-            
             if ($request->hasSession()) {
                 $request->session()->put('auth.password_confirmed_at', time());
             }
 
             return $this->sendLoginResponse($request);
         }
-        
 
         // If the login attempt was unsuccessful we will increment the number of attempts
         // to login and redirect the user back to the login form. Of course, when this
@@ -167,27 +165,16 @@ trait AuthenticatesUsers
      */
     public function logout(Request $request)
     {
-   
         $this->guard()->logout();
-        
 
         $request->session()->invalidate();
 
         $request->session()->regenerateToken();
-        
-        
 
         if ($response = $this->loggedOut($request)) {
             return $response;
         }
-        
-        
-        if(Auth::guard('admin')->check()) // this means that the admin was logged in.
-        {
-            Auth::guard('admin')->logout();
-            return redirect('/home');
-        }
-        
+
         return $request->wantsJson()
             ? new JsonResponse([], 204)
             : redirect('/');

@@ -105,8 +105,39 @@ function encodeForAjax(data) {
   
 
   function addEventListeners() {
-    let bidCreators = document.getElementById('finalBidButton');
-    bidCreators.addEventListener('click', sendBidRequest);
+    if (document.getElementById('finalBidButton') != null){
+        let bidCreators = document.getElementById('finalBidButton');
+        bidCreators.addEventListener('click', sendBidRequest);
+    }    
+    if (document.getElementById('walletForm') != null){
+        button = document.getElementById('walletForm').getElementsByTagName('button')[0];
+        button.addEventListener('click',sendFundsRequest);
+    }
+  }
+
+  function sendFundsRequest(event){
+    event.preventDefault();
+    okMessage("")
+    let funds = document.getElementById('fundsInput').value;
+    if (funds < 500 || funds > 50000){
+        errorMessage("The value of funds to be added has to be between 500 and 50000");
+        return;
+    }
+    let user = document.getElementById('formUser').value;
+    sendAjaxRequest('post', '/api/wallet/',{"funds": funds,"user": user},fundsAddHandler);
+
+    event.preventDefault();
+  }
+
+  function fundsAddHandler(){
+    if (this.status != 200){
+        errorMessage("There was an error while adding the funds");
+        return;
+    }
+    okMessage("Funds were added!");
+    let funds = JSON.parse(this.responseText);
+    document.getElementById('headerWallet').innerHTML='Wallet: ' + funds + ' €';
+    document.getElementById('currentFunds').innerHTML = funds + ' €';
   }
 
 
@@ -122,65 +153,13 @@ function encodeForAjax(data) {
 
 
   function bidMadeHandler() {
-    if (this.status != 200) window.location = '/auction/' + document.getElementById('formAuction').value;
-    let bid = JSON.parse(this.responseText);
-    okMessage("Bid was Made")
-    document.getElementById('bidConfirm').style.display = "none"
-    document.getElementById('currentPriceText').innerHTML = 'Current price: '+bid.valuee
-    document.getElementById('bidInput').value = Math.floor(parseInt(bid.valuee) * 1.05) +1
-    document.getElementById('startValue').innerHTML = Math.floor(parseInt(bid.valuee) * 1.05);
-    document.getElementById('HighestBidder').innerHTML = bid.iduser;
-    if (document.getElementById('bids?').innerHTML == "No Bids yet"){
-        let tbl = document.getElementById('tables')
-        document.getElementById("bids?").parentNode.removeChild(document.getElementById('bids?'));
-        let th1= document.createElement('th');
-        let th2= document.createElement('th');
-        let th3= document.createElement('th');
-        let tr1 = document.createElement('tr');
-        th1.innerHTML = "Bid";
-        th1.scope = "col"
-        th2.innerHTML = "Value";
-        th2.scope = "col"
-        th3.innerHTML = "User";
-        th3.scope = "col"
-        tr1.appendChild(th1);
-        tr1.appendChild(th2);
-        tr1.appendChild(th3);
-        tbl.appendChild(tr1);
-        let tr2 = document.createElement('tr');
-        let td1= document.createElement('td');
-        let td2= document.createElement('td');
-        let td3= document.createElement('td');
-        td1.innerHTML = "1";
-        td2.innerHTML = bid.valuee;
-        td3.innerHTML = bid.username;
-        tr2.appendChild(td1);
-        tr2.appendChild(td2);
-        tr2.appendChild(td3);
-        tbl.appendChild(tr2);
+    if (this.status != 200){
+        errorMessage("There was an error while making the bid");
+        return;
+    }
+    okMessage("Bid was Made!")
+    
 
-    }
-    else{
-        let tbl = document.getElementById('tables')
-        let tr2 = document.createElement('tr');
-        let td1= document.createElement('td');
-        let td2= document.createElement('td');
-        let td3= document.createElement('td');
-        td1.innerHTML = "1";
-        td2.innerHTML = bid.valuee;
-        td3.innerHTML = bid.username;
-        tr2.appendChild(td1);
-        tr2.appendChild(td2);
-        tr2.appendChild(td3);
-        let previousRows = tbl.querySelector('tbody').children;
-        tbl.querySelector('tbody').insertBefore(tr2,tbl.querySelector('tbody').children[1]);
-        for (let i=0;i<previousRows.length;i++){
-            if (i!=0){
-                previousRows[i].firstChild.innerHTML = i;
-            }
-        }
-     
-    }
     
   
    
@@ -192,6 +171,99 @@ function encodeForAjax(data) {
         error.style.color = "green"
     
 }
+
+function footerFix(){
+    var footer = document.getElementById("footer");
+    footer.style.position = "static";
+}
+
+
+
+
+
+function verifyFileUpload(e)
+{
+  window.URL = window.URL || window.webkitURL;  
+  var file = document.getElementById("imageInput");
+  
+  if (file && file.files.length > 0) 
+  {
+        var img = new Image();
+
+        img.src = window.URL.createObjectURL( file.files[0] );
+        img.onload = function() 
+        {
+            var width = this.naturalWidth,
+                height = this.naturalHeight;
+                
+          if (width < 800 || height < 700){
+            errorMessage("The car picture needs to be at least 800x700")
+            return false;
+          }
+        };
+    }
+    return true;
+}
+
+
+
+
+
+
+
+
+
+// Enable pusher logging - don't include this in production
+Pusher.logToConsole = false;
+
+var pusher = new Pusher('ef60f01b5d6f9e11314e', {
+  cluster: 'eu'
+});
+
+var channel = pusher.subscribe('public.bid.1');
+channel.bind('newBid', function(data) {
+
+  bid=JSON.stringify(data);
+  bid = JSON.parse(bid);
+
+  if (document.getElementById('bidConfirm') !=null){
+    document.getElementById('bidConfirm').style.display = "none"
+    document.getElementById('bidInput').value = Math.floor(parseInt(bid.valuee) * 1.05) +1
+  }
+    
+    document.getElementById('currentPriceText').innerHTML = ': '+bid.valuee+' €'
+    document.getElementById('startValue').innerHTML = Math.floor(parseInt(bid.valuee) * 1.05);
+    document.getElementById('HighestBidder').innerHTML = bid.iduser;
+
+    let tbl = document.getElementById('tables')
+    let tr2 = document.createElement('tr');
+    let td1= document.createElement('td');
+    let td2= document.createElement('td');
+    let td3= document.createElement('td');
+    td1.innerHTML = "1";
+    td2.innerHTML = bid.valuee + ' €';
+    let anchor = document.createElement('a');
+    anchor.href= "/users/"+bid.iduser;
+    anchor.innerHTML=bid.username;
+    td3.appendChild(anchor);
+    tr2.appendChild(td1);
+    tr2.appendChild(td2);
+    tr2.appendChild(td3);
+    let previousRows = tbl.querySelector('tbody').children;
+    if (previousRows[0].children[1].innerHTML == "No Bids Yet"){
+        previousRows[0].parentNode.removeChild(previousRows[0])
+    }
+    tbl.querySelector('tbody').insertBefore(tr2,tbl.querySelector('tbody').children[0]);
+    for (let i=0;i<previousRows.length;i++){
+        if (i!=0){
+            previousRows[i].firstChild.innerHTML = i+1;
+        }
+    }
+    while (previousRows.length > 5){
+        previousRows[5].parentNode.removeChild(previousRows[5])
+    }
+    
+});
 
 
   

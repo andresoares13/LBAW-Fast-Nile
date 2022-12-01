@@ -17,8 +17,11 @@ if (env('APP_ENV') === 'production') {
 |
 */
 // Home
-Route::get('/', 'AuctionController@list');
-Route::get('/home', 'AuctionController@list');
+Route::get('/', function () {
+    return redirect('/home');
+});
+Route::get('/home', 'HomeController@showHome');
+
 
 
 
@@ -41,7 +44,7 @@ Route::get('profile/upgrade/{id}', 'UserController@showUpgrade');
 Route::get('profile/picture/{id}', 'UserController@showPicture');
 Route::get('profile/auctions/{id}/{pageNr}', 'UserController@showUserAuctions');
 Route::get('profile/bids/{id}/{pageNr}', 'UserController@showUserBids');
-Route::post('wallet', 'UserController@addFunds');
+Route::post('api/wallet', 'UserController@addFunds');
 Route::post('edit', 'UserController@editProfile');
 Route::post('upgrade', 'UserController@becomeAuctioneer');
 Route::post('pictureProfile', 'UserController@updatePicture');

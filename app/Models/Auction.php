@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Database\QueryException;
+Use Exception;
 
 class Auction extends Model
 {
@@ -21,7 +23,12 @@ class Auction extends Model
   }
   
   public function allAuctions(){
-    $auctions = DB::table('auction')->where('states','Active')->orderBy('pricenow','desc')->limit(20)->get()->toArray();
+    try{
+      $auctions = DB::table('auction')->where('states','Active')->orderBy('pricenow','desc')->limit(20)->get()->toArray();
+    }
+    catch(Exception $ex){
+      return [];
+    }
     return Auction::hydrate($auctions);
   }
   
@@ -30,8 +37,8 @@ class Auction extends Model
     return Bid::hydrate($bid);
   }
   
-  public function getTop10Bids(int $id){
-    $bids = DB::table('bid')->where('idauction', $id)->orderBy('valuee', "desc")->limit(10)->get()->toArray();
+  public function getTopBids(int $id){
+    $bids = DB::table('bid')->where('idauction', $id)->orderBy('valuee', "desc")->limit(5)->get()->toArray();
 
     return Bid::hydrate($bids); 
   }
@@ -99,6 +106,32 @@ class Auction extends Model
     
 
     return FALSE;
+  }
+
+  public function getCar($id){
+    $car = Car::find($id);
+    return $car;
+  }
+
+  public function getSoonAuction(){
+    try{
+      $auction = Auction::orderBy('timeclose')->limit(1)->get();
+      return $auction;
+    }
+    catch(Exception $ex){
+      return null;
+    }
+  }
+
+
+  public function getBidsNum($id){
+    try{
+      $bids = Bid::where('idauction',$id)->get();
+      return count($bids->toArray());
+    }
+    catch(Exception $ex){
+      return null;
+    }
   }
 
 }

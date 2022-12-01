@@ -41,7 +41,7 @@ function startTime() {
        minutes = ""
     }
     
-    document.getElementById('clock').innerHTML ="Closes in: "+  days + hours + minutes + seconds + "s";
+    document.getElementById('clock').innerHTML =days + hours + minutes + seconds + "s";
     setTimeout(startTime, 1000);
     
   }

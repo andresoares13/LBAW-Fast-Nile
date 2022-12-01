@@ -119,21 +119,21 @@ class UserController extends Controller
         $limit = 20 * intval($pageNr);
         $bids = Bid::where('iduser',$id)->orderBy('id','desc')->limit($limit)->get();
         $totalCount = count(Bid::where('iduser',$id)->get());
-        $lastEl = $totalCount - (5 * (intval($pageNr)-1)); //if the page is not complete we dont want repetitives, if there are 7, first page gets 5, 2nd gets 2
+        $lastEl = $totalCount - (20 * (intval($pageNr)-1)); //if the page is not complete we dont want repetitives, if there are 7, first page gets 5, 2nd gets 2
         $bids = array_slice($bids->toArray(), -$lastEl); //only get the last 5
         $bids = Bid::hydrate($bids);
-        $totalPages = intval(ceil($totalCount /5)); //gets the total number of pages of auctions assuming each has 20
-        return view('pages.userBids', ['bids' => $bids,'totalPages' => $totalPages,'pageNr' => $pageNr, 'name' => $user->names]);
+        $totalPages = intval(ceil($totalCount /20)); //gets the total number of pages of auctions assuming each has 20
+        return view('pages.userBids', ['bids' => $bids,'totalPages' => $totalPages,'pageNr' => $pageNr, 'name' => $user->names,'id' => $id]);
       }
       else if ($this->authorize('correctUser', $user)){
         $limit = 20 * intval($pageNr);
         $bids = Bid::where('iduser',$id)->orderBy('id','desc')->limit($limit)->get();
         $totalCount = count(Bid::where('iduser',$id)->get());
-        $lastEl = $totalCount - (5 * (intval($pageNr)-1)); //if the page is not complete we dont want repetitives, if there are 7, first page gets 5, 2nd gets 2
+        $lastEl = $totalCount - (20 * (intval($pageNr)-1)); //if the page is not complete we dont want repetitives, if there are 7, first page gets 5, 2nd gets 2
         $bids = array_slice($bids->toArray(), -$lastEl); //only get the last 5
         $bids = Bid::hydrate($bids);
-        $totalPages = intval(ceil($totalCount /5)); //gets the total number of pages of auctions assuming each has 20
-        return view('pages.userBids', ['bids' => $bids,'totalPages' => $totalPages,'pageNr' => $pageNr]);
+        $totalPages = intval(ceil($totalCount /20)); //gets the total number of pages of auctions assuming each has 20
+        return view('pages.userBids', ['bids' => $bids,'totalPages' => $totalPages,'pageNr' => $pageNr,'id' => Auth::user()->id]);
       }
       else{
         abort(403);
@@ -142,11 +142,14 @@ class UserController extends Controller
     }
 
     public function addFunds(Request $request){
+      if (parseInt($request->input('funds')) > 50000 || parseInt($request->input('funds')) < 500){
+        return header("HTTP/1.1 500 Internal Server Error");;
+      }
       $user = User::find($request->input('user'));
+      $addedFunds = $user->wallet + $request->input('funds');
       if ($this->authorize('correctUser', $user)){
-        $user->wallet = $user->wallet + $request->input('funds');
-        $user->save();
-        return redirect('profile/'.$request->input('user'));
+        DB::table('users')->where('id',$request->input('user'))->update(['wallet' => $addedFunds]);
+        return $addedFunds;
       }
       else{
         abort(403);
@@ -276,14 +279,14 @@ class UserController extends Controller
 
 
 
-    public function showUsersPage($pageNr){ //gets 20 results based on the page number
-      $limit = 20 * intval($pageNr);
+    public function showUsersPage($pageNr){ //gets 30 results based on the page number
+      $limit = 30 * intval($pageNr);
       $users = User::orderBy('id')->limit($limit)->get();
       $totalCount = count(User::get());
-      $lastEl = $totalCount - (20 * (intval($pageNr)-1)); 
-      $users = array_slice($users->toArray(), -$lastEl); //only get the last 20
+      $lastEl = $totalCount - (30 * (intval($pageNr)-1)); 
+      $users = array_slice($users->toArray(), -$lastEl); //only get the last 30
       $users = User::hydrate($users);
-      $totalPages = intval(ceil($totalCount /20)); //gets the total number of pages of auctions assuming each has 20
+      $totalPages = intval(ceil($totalCount /30)); //gets the total number of pages of auctions assuming each has 30
       return view('pages.userCard', ['users' => $users,'totalPages' => $totalPages,'pageNr' => $pageNr]);
 
     }
