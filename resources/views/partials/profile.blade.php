@@ -38,14 +38,24 @@
                 @if ($user->isAuctioneer($user->id))
                 <p class="card-text">Phone Number: {{$user->getAuctioneer($user->id)[0]['phone']}}</p>
                 @if (!auth()->check() || Auth::guard('admin')->check())
+                <div id="profileOptions">
                 <a href="{{ url('/profile/auctions/'. $auctioneer[0]['id'].'/1')}}">
                   <button id="buttonInvBack" style="margin-top: 0;margin-bottom: 10px;" class="btn btn-outline-light btn-lg px-5" type="button">{{$user->names}} auctions</button> 
                 </a>
+                  <a href="{{ url('/profile/following/'. $user->id . '/1')}}">
+                    <button id="buttonInvBack" style="margin-top: 0" class="btn btn-outline-light btn-lg px-5" type="button">Followed Auctions</button> 
+                  </a>
+                </div>
                 @else
                   @if (auth()->user()->id != substr(strrchr(url()->current(),"/"),1))
+                  <div id="profileOptions">
                     <a href="{{ url('/profile/auctions/'. $auctioneer[0]['id'].'/1')}}">
                       <button id="buttonInvBack" style="margin-top: 0; margin-bottom: 10px" class="btn btn-outline-light btn-lg px-5" type="button">{{$user->names}} auctions</button> 
                     </a>
+                    <a href="{{ url('/profile/following/'. $user->id . '/1')}}">
+                    <button id="buttonInvBack" style="margin-top: 0" class="btn btn-outline-light btn-lg px-5" type="button">Followed Auctions</button> 
+                  </a>
+                </div>
                   @endif  
                 @endif
               @endif
