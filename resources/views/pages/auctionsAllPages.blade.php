@@ -9,21 +9,33 @@
 
         <div class="d-flex justify-content-between align-items-center">
           @if (count($auctions)==0)
-          <h1 style="font-weight: bold;">There are no auctions at this time</h1>
+            @if (isset($follow))
+            <h1 style="font-weight: bold;">No followed auctions found at this time</h1>
+            @else
+              <h1 style="font-weight: bold;">There are no auctions at this time</h1>
+            @endif
           @else
-          @if (isset($id))
-          @if (auth()->check())
-          @if (auth()->user()->id == $userId)
-          <h1 style="font-weight: bold;">My Auctions Page {{$pageNr}}</a></h1>
-          @else
-          <h1 style="font-weight: bold;">{{$name}} Auctions Page {{$pageNr}}</h1>
-          @endif
-          @else
-          <h1 style="font-weight: bold;">{{$name}} Auctions Page {{$pageNr}}</h1>
-          @endif
-          @else
-          <h1 style="font-weight: bold;">Auctions Page {{$pageNr}}</h1>
-          @endif
+            @if (isset($id))
+              @if (isset($follow))
+
+              @lse
+                @if (auth()->check())
+                  @if (auth()->user()->id == $userId)
+                    <h1 style="font-weight: bold;">My Auctions Page {{$pageNr}}</a></h1>
+                  @else
+                    <h1 style="font-weight: bold;">{{$name}} Auctions Page {{$pageNr}}</h1>
+                  @endif
+                @else
+                  <h1 style="font-weight: bold;">{{$name}} Auctions Page {{$pageNr}}</h1>
+                @endif
+              @endif  
+            @else
+              @if (!isset($follow))
+              <h1 style="font-weight: bold;">Auctions Page {{$pageNr}}</h1>
+              @else
+              <h1 style="font-weight: bold;">Followed Auctions Page {{$pageNr}}</h1>
+              @endif
+            @endif
           @endif
         </div>
         <form id="searchForms" class="d-flex"  action="/search/auction"  method="get" role="search">
@@ -42,7 +54,7 @@
       </div>
     </div>
 
-
+      @if (count($auctions)!=0 && $totalPages > 1)
         <p id="pageLinks">
         <div class="bg pageNum">
         <ul class="pagination">
@@ -80,7 +92,7 @@
         </ul>
         </div>
         </p>
-
+      @endif
 
 </section>
 

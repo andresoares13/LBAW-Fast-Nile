@@ -77,6 +77,9 @@
                   <a href="{{ url('/profile/bids/'. strval(auth()->user()->id) . '/1')}}">
                     <button id="buttonInvBack" style="margin-top: 0" class="btn btn-outline-light btn-lg px-5" type="button">My Bids</button> 
                   </a>
+                  <a href="{{ url('/profile/following/'. strval(auth()->user()->id) . '/1')}}">
+                    <button id="buttonInvBack" style="margin-top: 0" class="btn btn-outline-light btn-lg px-5" type="button">Followed Auctions</button> 
+                  </a>
                   <a href="{{ url('/profile/edit/'. strval(auth()->user()->id))}}">
                     <button id="buttonInvBack" style="margin-top: 0" class="btn btn-outline-light btn-lg px-5" type="button">Edit Profile Information</button> 
                   </a>

@@ -12,6 +12,7 @@ use App\Models\Auctioneer;
 use App\Models\Auction;
 use App\Models\Car;
 use App\Models\Bid;
+use App\Models\Follow;
 
 class UserController extends Controller
 {
@@ -141,9 +142,25 @@ class UserController extends Controller
       
     }
 
+    public function showUserFollowed($id,$pageNr){
+      $limit = 5 * intval($pageNr);
+      $auctions = [];
+      $follows = Follow::where('iduser',$id)->limit($limit)->get()->toArray();
+      $totalCount = count(Follow::where('iduser',$id)->get());
+      foreach($follows as $follow){
+          $auction = Auction::find($follow['idauction']);
+          $auctions[] = $auction;
+      }
+      $lastEl = $totalCount - (5 * (intval($pageNr)-1)); //if the page is not complete we dont want repetitives, if there are 7, first page gets 5, 2nd gets 2
+      $auctions = array_slice($auctions, -$lastEl); //only get the last 5
+      $totalPages = intval(ceil($totalCount /5)); //gets the total number of pages of auctions assuming each has 20
+      return view('pages.auctionsAllPages', ['auctions' => $auctions,'totalPages' => $totalPages,'pageNr' => $pageNr,'follow' => true]);
+
+    }
+
     public function addFunds(Request $request){
       if (parseInt($request->input('funds')) > 50000 || parseInt($request->input('funds')) < 500){
-        return header("HTTP/1.1 500 Internal Server Error");;
+        return header("HTTP/1.1 500 Internal Server Error");
       }
       $user = User::find($request->input('user'));
       $addedFunds = $user->wallet + $request->input('funds');
@@ -290,6 +307,28 @@ class UserController extends Controller
       return view('pages.userCard', ['users' => $users,'totalPages' => $totalPages,'pageNr' => $pageNr]);
 
     }
+
+    public function followAuction(Request $request){
+      $test = Follow::where('iduser',$request->input('user'))->where('idauction',$request->input('auction'))->get()->toArray();
+      if (count($test) != 0){
+        return header("HTTP/1.1 500 Internal Server Error");
+      }
+      $follow = new Follow();
+      $follow->iduser = $request->input('user');
+      $follow->idauction = $request->input('auction');
+      DB::table('follow')->insert(['idauction' => $request->input('auction'), 'iduser' => $request->input('user')]);
+      return $follow;
+    }
+
+    public function unfollowAuction(Request $request){
+      $test = Follow::where('iduser',$request->input('user'))->where('idauction',$request->input('auction'))->get()->toArray();
+      if (count($test) == 0){
+        return header("HTTP/1.1 500 Internal Server Error");
+      }
+      DB::table('follow')->where('iduser',$request->input('user'))->where('idauction',$request->input('auction'))->delete();
+    }
+    
+
 
     
 

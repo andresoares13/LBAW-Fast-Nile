@@ -108,12 +108,66 @@ function encodeForAjax(data) {
     if (document.getElementById('finalBidButton') != null){
         let bidCreators = document.getElementById('finalBidButton');
         bidCreators.addEventListener('click', sendBidRequest);
-    }    
+    }
+    if (document.getElementById('auctionFollow') != null){
+        button = document.getElementById('auctionFollow').getElementsByTagName('button')[0];
+        button.addEventListener('click',sendFollowRequest);
+    }
+    if (document.getElementById('auctionUnFollow') != null){
+        button = document.getElementById('auctionUnFollow').getElementsByTagName('button')[0];
+        button.addEventListener('click',sendUnFollowRequest);
+    }      
     if (document.getElementById('walletForm') != null){
         button = document.getElementById('walletForm').getElementsByTagName('button')[0];
         button.addEventListener('click',sendFundsRequest);
     }
   }
+
+  function sendFollowRequest(event){
+    event.preventDefault();
+    let user = document.getElementById('formUser').value;
+    let auction = document.getElementById('formAuction').value;
+    sendAjaxRequest('post', '/api/auctionFollow/',{"user": user,"auction": auction},followHandler);
+    event.preventDefault();
+  }
+
+  function followHandler(){
+    if (this.status != 200){
+        return;
+    }
+    button = document.getElementById('auctionFollow').getElementsByTagName('button')[0];
+    button.innerHTML = 'Following';
+    document.getElementById('auctionFollow').id='auctionUnFollow';
+    button.removeEventListener('click',sendFollowRequest);
+    button.addEventListener('click',sendUnFollowRequest);
+    button.classList.add('following');
+
+
+  }
+
+  function sendUnFollowRequest(event){
+    event.preventDefault();
+    let user = document.getElementById('formUser').value;
+    let auction = document.getElementById('formAuction').value;
+    console.log(user,auction);
+    sendAjaxRequest('post', '/api/auctionUnFollow/',{"user": user,"auction": auction},unfollowHandler);
+    event.preventDefault();
+  }
+
+  function unfollowHandler(){
+    if (this.status != 200){
+        return;
+    }
+    button = document.getElementById('auctionUnFollow').getElementsByTagName('button')[0];
+    button.innerHTML = 'Follow Auction';
+    document.getElementById('auctionUnFollow').id='auctionFollow';
+    button.removeEventListener('click',sendUnFollowRequest);
+    button.addEventListener('click',sendFollowRequest);
+    button.classList.remove('following');
+  }
+
+
+
 
   function sendFundsRequest(event){
     event.preventDefault();
@@ -128,6 +182,9 @@ function encodeForAjax(data) {
 
     event.preventDefault();
   }
+
+
+
 
   function fundsAddHandler(){
     if (this.status != 200){
@@ -213,57 +270,66 @@ function verifyFileUpload(e)
 
 
 
-// Enable pusher logging - don't include this in production
-Pusher.logToConsole = false;
 
-var pusher = new Pusher('ef60f01b5d6f9e11314e', {
-  cluster: 'eu'
-});
+var path = window.location.pathname;
+var page = path.split("/");
 
-var channel = pusher.subscribe('public.bid.1');
-channel.bind('newBid', function(data) {
+if (page[1]=='auction'){
 
-  bid=JSON.stringify(data);
-  bid = JSON.parse(bid);
+    // Enable pusher logging - don't include this in production
+    Pusher.logToConsole = false;
 
-  if (document.getElementById('bidConfirm') !=null){
-    document.getElementById('bidConfirm').style.display = "none"
-    document.getElementById('bidInput').value = Math.floor(parseInt(bid.valuee) * 1.05) +1
-  }
-    
-    document.getElementById('currentPriceText').innerHTML = ': '+bid.valuee+' €'
-    document.getElementById('startValue').innerHTML = Math.floor(parseInt(bid.valuee) * 1.05);
-    document.getElementById('HighestBidder').innerHTML = bid.iduser;
+    var pusher = new Pusher('ef60f01b5d6f9e11314e', {
+    cluster: 'eu'
+    });
 
-    let tbl = document.getElementById('tables')
-    let tr2 = document.createElement('tr');
-    let td1= document.createElement('td');
-    let td2= document.createElement('td');
-    let td3= document.createElement('td');
-    td1.innerHTML = "1";
-    td2.innerHTML = bid.valuee + ' €';
-    let anchor = document.createElement('a');
-    anchor.href= "/users/"+bid.iduser;
-    anchor.innerHTML=bid.username;
-    td3.appendChild(anchor);
-    tr2.appendChild(td1);
-    tr2.appendChild(td2);
-    tr2.appendChild(td3);
-    let previousRows = tbl.querySelector('tbody').children;
-    if (previousRows[0].children[1].innerHTML == "No Bids Yet"){
-        previousRows[0].parentNode.removeChild(previousRows[0])
+    var channel = pusher.subscribe('public.bid.1');
+    channel.bind('newBid', function(data) {
+
+    bid=JSON.stringify(data);
+    bid = JSON.parse(bid);
+
+    if (document.getElementById('bidConfirm') !=null){
+        document.getElementById('bidConfirm').style.display = "none"
+        document.getElementById('bidInput').value = Math.floor(parseInt(bid.valuee) * 1.05) +1
     }
-    tbl.querySelector('tbody').insertBefore(tr2,tbl.querySelector('tbody').children[0]);
-    for (let i=0;i<previousRows.length;i++){
-        if (i!=0){
-            previousRows[i].firstChild.innerHTML = i+1;
+        
+        document.getElementById('currentPriceText').innerHTML = ': '+bid.valuee+' €'
+        document.getElementById('startValue').innerHTML = Math.floor(parseInt(bid.valuee) * 1.05);
+        document.getElementById('HighestBidder').innerHTML = bid.iduser;
+
+        let tbl = document.getElementById('tables')
+        let tr2 = document.createElement('tr');
+        let td1= document.createElement('td');
+        let td2= document.createElement('td');
+        let td3= document.createElement('td');
+        td1.innerHTML = "1";
+        td2.innerHTML = bid.valuee + ' €';
+        let anchor = document.createElement('a');
+        anchor.href= "/users/"+bid.iduser;
+        anchor.innerHTML=bid.username;
+        td3.appendChild(anchor);
+        tr2.appendChild(td1);
+        tr2.appendChild(td2);
+        tr2.appendChild(td3);
+        let previousRows = tbl.querySelector('tbody').children;
+        if (previousRows[0].children[1].innerHTML == "No Bids Yet"){
+            previousRows[0].parentNode.removeChild(previousRows[0])
         }
-    }
-    while (previousRows.length > 5){
-        previousRows[5].parentNode.removeChild(previousRows[5])
-    }
-    
-});
+        tbl.querySelector('tbody').insertBefore(tr2,tbl.querySelector('tbody').children[0]);
+        for (let i=0;i<previousRows.length;i++){
+            if (i!=0){
+                previousRows[i].firstChild.innerHTML = i+1;
+            }
+        }
+        while (previousRows.length > 5){
+            previousRows[5].parentNode.removeChild(previousRows[5])
+        }
+   
+        
+    });
+}
+
 
 
   

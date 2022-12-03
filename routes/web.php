@@ -44,6 +44,7 @@ Route::get('profile/upgrade/{id}', 'UserController@showUpgrade');
 Route::get('profile/picture/{id}', 'UserController@showPicture');
 Route::get('profile/auctions/{id}/{pageNr}', 'UserController@showUserAuctions');
 Route::get('profile/bids/{id}/{pageNr}', 'UserController@showUserBids');
+Route::get('profile/following/{id}/{pageNr}', 'UserController@showUserFollowed');
 Route::post('api/wallet', 'UserController@addFunds');
 Route::post('edit', 'UserController@editProfile');
 Route::post('upgrade', 'UserController@becomeAuctioneer');
@@ -77,6 +78,8 @@ Route::post('auctionCreate', 'UserController@createAuction');
 Route::get('auctionEdit/{id}', 'AuctionController@showAuctionEdit');
 Route::post('auctionEdit', 'AuctionController@editAuction');
 Route::post('auctionCancel', 'AuctionController@deleteAuction');
+Route::post('api/auctionFollow','UserController@followAuction');
+Route::post('api/auctionUnFollow','UserController@unfollowAuction');
 
 //users
 

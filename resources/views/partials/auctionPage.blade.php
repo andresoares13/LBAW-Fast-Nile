@@ -62,7 +62,52 @@
                                 </form>    
                                 </div> <br>
                             @endif
+                        @else
+                          @if (!$auction->isFollowed($auction->id,auth()->user()->id))
+                          <div id="editAuctionButton">
+                          <iframe name="dummyframe" id="dummyframe" style="display: none;"></iframe>
+                          <form target="dummyframe" method="POST" id="auctionFollow" class="profile" >
+                          {{ csrf_field() }}
+                          <input id="formAuction" type="hidden" name="auction" value="{{ $auction->id }}">
+                          <input id="formUser" type="hidden" name="user" value="{{ auth()->user()->id }}">
+                              <button type="Submit" id="buttonInvBack" class="btn btn-outline-light btn-lg px-5">Follow Auction</button>
+                          </form>    
+                          </div> <br>
+                          @else
+                          <div id="editAuctionButton">
+                          <iframe name="dummyframe" id="dummyframe" style="display: none;"></iframe>
+                          <form target="dummyframe" method="POST" id="auctionUnFollow" class="profile" >
+                          {{ csrf_field() }}
+                          <input id="formAuction" type="hidden" name="auction" value="{{ $auction->id }}">
+                          <input id="formUser" type="hidden" name="user" value="{{ auth()->user()->id }}">
+                              <button type="Submit" id="buttonInvBack" class="btn btn-outline-light btn-lg px-5 following">Following</button>
+                          </form>    
+                          </div> <br>
+                          @endif   
                         @endif
+                    @else
+                      @if (!$auction->isFollowed($auction->id,auth()->user()->id))
+                      <div id="editAuctionButton">
+                        <iframe name="dummyframe" id="dummyframe" style="display: none;"></iframe>
+                        <form target="dummyframe" method="POST" id="auctionFollow" class="profile" >
+                        {{ csrf_field() }}
+                        <input id="formAuction" type="hidden" name="auction" value="{{ $auction->id }}">
+                        <input id="formUser" type="hidden" name="user" value="{{ auth()->user()->id }}">
+                            <button type="Submit" id="buttonInvBack" class="btn btn-outline-light btn-lg px-5 following">Follow Auction</button>
+                        </form>    
+                        </div> <br>
+                      @else
+                      <div id="editAuctionButton">
+                          <iframe name="dummyframe" id="dummyframe" style="display: none;"></iframe>
+                          <form target="dummyframe" method="POST" id="auctionUnFollow" class="profile" >
+                          {{ csrf_field() }}
+                          <input id="formAuction" type="hidden" name="auction" value="{{ $auction->id }}">
+                          <input id="formUser" type="hidden" name="user" value="{{ auth()->user()->id }}">
+                              <button type="Submit" id="buttonInvBack" class="btn btn-outline-light btn-lg px-5">Following</button>
+                          </form>    
+                          </div> <br>
+
+                      @endif
                     @endif
                 @else
                 @endif 

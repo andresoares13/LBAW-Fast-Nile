@@ -134,4 +134,13 @@ class Auction extends Model
     }
   }
 
+  public function isFollowed($idAuction,$idUser){
+    $test = Follow::where('iduser',$idUser)->where('idauction',$idAuction)->get()->toArray();
+    if (count($test) == 0){
+      return false;
+    }
+    return true;
+
+  }
+
 }
