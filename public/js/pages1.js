@@ -121,6 +121,7 @@ function encodeForAjax(data) {
         button = document.getElementById('walletForm').getElementsByTagName('button')[0];
         button.addEventListener('click',sendFundsRequest);
     }
+
   }
 
   function sendFollowRequest(event){
@@ -141,15 +142,12 @@ function encodeForAjax(data) {
     button.removeEventListener('click',sendFollowRequest);
     button.addEventListener('click',sendUnFollowRequest);
     button.classList.add('following');
-
-
   }
 
   function sendUnFollowRequest(event){
     event.preventDefault();
     let user = document.getElementById('formUser').value;
     let auction = document.getElementById('formAuction').value;
-    console.log(user,auction);
     sendAjaxRequest('post', '/api/auctionUnFollow/',{"user": user,"auction": auction},unfollowHandler);
     event.preventDefault();
   }
@@ -214,6 +212,7 @@ function encodeForAjax(data) {
         errorMessage("There was an error while making the bid");
         return;
     }
+    
     okMessage("Bid was Made!")
     
 
@@ -288,6 +287,8 @@ if (page[1]=='auction'){
 
     bid=JSON.stringify(data);
     bid = JSON.parse(bid);
+
+    console.log(bid.users);
 
     if (document.getElementById('bidConfirm') !=null){
         document.getElementById('bidConfirm').style.display = "none"

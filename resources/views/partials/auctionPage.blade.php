@@ -1,4 +1,4 @@
-<script src="{{ asset('js/pages1.js')}}"></script>
+<script src="{{ asset('js/pages1.js')}}" defer onload="addEventListeners();"></script>
 <main id="main">
 
     <!-- ======= Breadcrumbs ======= -->
@@ -212,12 +212,12 @@
 @php
 $time = strtotime($auction->toArray()['timeclose']);
 @endphp
-<script src="{{ asset('js/clock.js') }}" defer> </script>
+<script src="{{ asset('js/clock.js') }}" defer onload="startTime();"> </script>
 <p hidden id = "startValue">{{ floor($auction->pricenow * 1.05) }}</p>
 <p id="HighestBidder" hidden>{{$auction->highestbidder}}</p>
 
 <p hidden id = "hTime"><?php echo $time; ?></p>
-<body onload="startTime();addEventListeners();"> </body>
+
 
 
 

@@ -13,6 +13,7 @@ use App\Models\Auction;
 use App\Models\Car;
 use App\Models\Bid;
 use App\Models\Follow;
+use App\Models\Notification;
 
 class UserController extends Controller
 {
@@ -159,7 +160,7 @@ class UserController extends Controller
     }
 
     public function addFunds(Request $request){
-      if (parseInt($request->input('funds')) > 50000 || parseInt($request->input('funds')) < 500){
+      if ((int) $request->input('funds') > 50000 || (int) $request->input('funds') < 500){
         return header("HTTP/1.1 500 Internal Server Error");
       }
       $user = User::find($request->input('user'));
@@ -329,6 +330,32 @@ class UserController extends Controller
     }
     
 
+    public function markRead(Request $request){
+      DB::table('notification')->where('id',$request->input('id'))->update(['viewed' => true]);
+      return [$request->input('row'),$request->input('id')];
+    }
+
+    public function markAllRead(Request $request){
+      DB::table('notification')->where('viewed',false)->where('iduser',auth()->user()->id)->update(['viewed' => true]);
+      return true;
+    }
+
+    public function showNotifications($id,$pageNr){
+      $user = User::find($id);
+      if ($this->authorize('correctUser', $user)){
+        $limit = 20 * intval($pageNr);
+        $notifications = $user->getAllNotifications($id,$limit);
+        $totalCount = $user->getNotificationsCount($id);
+        $lastEl = $totalCount - (20 * (intval($pageNr)-1)); //if the page is not complete we dont want repetitives, if there are 7, first page gets 5, 2nd gets 2
+        $notifications = array_slice($notifications->toArray(), -$lastEl); //only get the last 5
+        $notifications = Notification::hydrate($notifications);
+        $totalPages = intval(ceil($totalCount /20)); //gets the total number of pages of auctions assuming each has 20
+        return view('pages.userNotifications', ['notifications' => $notifications,'totalPages' => $totalPages,'pageNr' => $pageNr,'id' => Auth::user()->id]);
+      }
+      else{
+        abort(403);
+      }
+    }
 
     
 

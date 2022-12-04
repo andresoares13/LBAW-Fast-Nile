@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Auth;
 use Exception;
 
 use App\Models\Auction;
+use App\Models\User;
+use App\Models\Notification;
 
 class HomeController extends Controller
 {
@@ -19,6 +21,7 @@ class HomeController extends Controller
       $auction = new Auction();
       $auctions = $auction->allAuctions();
       $soonAuction = $auction->getSoonAuction();
+
       return view('pages.home', ['auctions' => $auctions,'soonAuction' => $soonAuction]);
     }
 

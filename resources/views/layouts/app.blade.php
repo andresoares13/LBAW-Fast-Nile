@@ -16,6 +16,9 @@
     <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet'>
     <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">
     <link href="{{ asset('css/style.css')}}" rel="stylesheet">
+    
+    <!-- font awsome kit -->
+    <script src="https://kit.fontawesome.com/376a09c075.js" crossorigin="anonymous"></script>
 
 
     
@@ -23,7 +26,9 @@
         // Fix for Firefox autofocus CSS bug
         // See: http://stackoverflow.com/questions/18943276/html-5-autofocus-messes-up-css-loading/18945951#18945951
     </script>
-    
+
+    <script src="{{ asset('js/notification.js')}}"></script>
+  
 
 
 
@@ -45,11 +50,11 @@
     <nav class="navbar navbar-expand-lg navbar-dark">
   <div class="container-fluid header-flex">
     <a class="navbar-brand" href="{{ url('/home') }}">Fast Nile</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor02" aria-controls="navbarColor02" aria-expanded="false" aria-label="Toggle navigation">
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor02" aria-controls="navbarColor02" aria-expanded="true" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
     @if(substr(strrchr(url()->current(),"/"),1) != ('login') && substr(strrchr(url()->current(),"/"),1) != ('register') && substr(strrchr(url()->current(),"/"),1) != ('admin'))
-    <div class="navbar-collapse collapse show" id="navbarColor02" style="">
+    <div class="navbar-collapse collapse " id="navbarColor02" style="">
       <ul class="navbar-nav me-auto">
       @if (substr(strrchr(url()->current(),"/"),1) == ('home'))
         <li class="nav-item">
@@ -69,13 +74,17 @@
         </li>
         @endif
         <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Search</a>
+          <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button"  >Search</a>
           <div class="dropdown-menu">
             <a class="dropdown-item" href="{{ url('/auctions/1') }}">Auctions</a>
             <a class="dropdown-item" href="{{ url('/users/1') }}">Users</a>
             <a class="dropdown-item" href="{{ url('/search')}}">Advanced Search</a>
         </li>
         @if (Auth::check())
+        @php
+        $user = App\Models\User::find(auth()->user()->id);
+        $notifications = $user->getNotificationsUnread5(auth()->user()->id);
+        @endphp
         <li class="nav-item button">
           
           <a href="{{ url('/profile/'. strval(auth()->user()->id)) }}"><button id="buttonHeader">{{ Auth::user()->names }}</button></a>
@@ -84,9 +93,32 @@
         <li class="nav-item">
         <a id="headerWallet" class="nav-link wallet" href="{{ url('/profile/wallet/'. strval(auth()->user()->id))}}">Wallet: {{ Auth::user()->wallet }} €</a>
         </li>
+        <li  class="nav-item dropdown">
+          <a class="nav-link " data-bs-toggle="dropdown" href="#" role="button"  ><i class="fa-solid fa-bell"> 
+            @if (count($notifications)>0)
+            <div id="notificationNumber" class="bellnumbers">
+            {{count($notifications)}}
+            </div>
+            @endif
+            </i>
+          </a>
+          <div id="notificationDrop" class="dropdown-menu">
+          @foreach ($notifications as $i=>$notification)
+              @include('partials.headerNotifications', [$notification,$i])
+          @endforeach 
+          @if (count($notifications) == 0)
+          <p id="noNotis" class="dropdown-item header-noti" >No new notifications </p>
+          @else
+          <p id="noNotis" style ="display:none;" class="dropdown-item header-noti" >No new notifications </p>
+          <body onload="addNotificationListeners();"> </body>
+          @endif
+          <a style="border: none; text-align: center;" class="dropdown-item header-noti" href="{{ url('/profile/notifications/'.auth()->user()->id).'/1' }}"><p style="margin-bottom: 0;"><small>click to see all</small></p></a>
+      
+        </li>
+        
         <li class="nav-item button">
           
-          <a href="{{ url('/logout')}}"><button id="buttonHeader">Logout</button></a>
+          <a href="{{ url('/logout')}}"><button class="logout" id="buttonHeader">Logout</button></a>
         
         </li>
         @elseif (Auth::guard('admin')->check())

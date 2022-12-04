@@ -60,4 +60,18 @@ class User extends Authenticatable
         $auctions=Auction::where('highestbidder',$id)->where('states','Closed')->get();
         return $auctions;
     }
+
+    public function getNotificationsUnread5($id){
+        $notifications = Notification::where('iduser',$id)->where('viewed',false)->orderBy('id','desc')->limit(5)->get();
+        return $notifications;
+    }
+
+    public function getAllNotifications($id,$limit){
+        $notifications = Notification::where('iduser',$id)->orderBy('id','desc')->limit($limit)->get();
+        return $notifications;
+    }
+
+    public function getNotificationsCount($id){
+        return count(Notification::where('iduser',$id)->get()->toArray());
+    }
 }

@@ -45,10 +45,13 @@ Route::get('profile/picture/{id}', 'UserController@showPicture');
 Route::get('profile/auctions/{id}/{pageNr}', 'UserController@showUserAuctions');
 Route::get('profile/bids/{id}/{pageNr}', 'UserController@showUserBids');
 Route::get('profile/following/{id}/{pageNr}', 'UserController@showUserFollowed');
+Route::get('profile/notifications/{id}/{pageNr}','UserController@showNotifications');
 Route::post('api/wallet', 'UserController@addFunds');
 Route::post('edit', 'UserController@editProfile');
 Route::post('upgrade', 'UserController@becomeAuctioneer');
 Route::post('pictureProfile', 'UserController@updatePicture');
+Route::post('api/markRead','UserController@markRead');
+Route::post('api/markAllRead','UserController@markAllRead');
 
 //admin
 

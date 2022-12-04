@@ -937,3 +937,59 @@ h6 {
   color: #fff !important;
   background: #5c9f24;
 }
+
+.header-noti{
+  border: 2px solid #5c9f24;
+  border-radius: 2px;
+  border-color: #111111;
+}
+
+.bellnumbers {
+  position: absolute;
+  font-size:12px;
+  background-color: #5c9f24;
+  width:14px;
+  height:14px;
+  color:black;
+  top: 0;
+  right: 0;
+}
+
+@media (max-width: 991px){
+  .bellnumbers{
+    position: relative;
+    top: -25px;
+    right: -10px;
+  }
+  .logout{
+    margin-top: 5%;
+  }
+}
+
+
+.tooltiptext {
+  visibility: hidden;
+  width: 120px;
+  background-color: white;
+  color: #111;
+  text-align: center;
+  padding: 5px 0;
+  border-radius: 6px;
+  /* Position the tooltip text - see examples below! */
+  position: absolute;
+  right: 10px;
+  top: 40px;
+  z-index: 1;
+}
+
+.fa-regular.fa-eye:hover .tooltiptext {
+  visibility: visible;
+}
+
+.fa-regular.fa-eye{
+  cursor: pointer;
+}
+
+.unseen{
+  background-color: #e2d6d6;
+}

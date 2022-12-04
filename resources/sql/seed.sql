@@ -110,6 +110,7 @@ CREATE TABLE auction (
    idUser INT NOT NULL,
    idAuction INT NOT NULL,
    messages TEXT NOT NULL,
+   viewed BOOLEAN,
    CONSTRAINT fk_user FOREIGN KEY(idUser) REFERENCES users(id) ON DELETE CASCADE,
    CONSTRAINT fk_auction FOREIGN KEY(idAuction) REFERENCES auction(id) ON DELETE CASCADE
 );  
@@ -514,6 +515,32 @@ CREATE TRIGGER min_bid_delete_auction
      BEFORE DELETE ON auction
      FOR EACH ROW
      EXECUTE PROCEDURE min_bid_delete_auction_function();
+
+
+--t16
+
+CREATE OR REPLACE FUNCTION new_bid_notification_function() RETURNS TRIGGER AS
+$BODY$
+BEGIN
+      INSERT INTO notification (idUser,idAuction,messages,viewed)
+      SELECT distinct bid.idUser,new.idAuction,'New bid on participating auction',false
+	  FROM bid
+	  WHERE bid.idAuction = new.idAuction and bid.idUser != new.idUser;
+	  INSERT INTO notification (idUser,idAuction,messages,viewed)
+	  SELECT users.id,new.idAuction,'New bid on your auction',false
+	  FROM users
+	  WHERE users.id = (select idUser from auctioneer where idUser = (select owners from auction where id = new.idAuction ));
+    return new;
+END;
+$BODY$
+language plpgsql;
+
+
+CREATE TRIGGER new_bid_notification
+     AFTER INSERT ON bid
+     FOR EACH ROW
+     EXECUTE PROCEDURE new_bid_notification_function();
+
      
      
      
