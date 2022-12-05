@@ -4,6 +4,8 @@ namespace App\Console;
 
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+use App\Models\Auction;
+use Illuminate\Support\Facades\DB;
 
 class Kernel extends ConsoleKernel
 {
@@ -24,7 +26,23 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')->hourly();
+        $schedule->call(function () {
+            $auctions = Auction::where('states','Active')->where('ending',false)->get();
+            foreach($auctions as $auction){
+
+                $time = new \DateTime($auction->timeclose);
+                $diff = $time->diff(new \DateTime("now"));
+                $minutes = $diff->days * 24 * 60;
+                $minutes += $diff->h * 60;
+                $minutes += $diff->i;
+                
+                if ($minutes < 15){
+                    DB::table('auction')->where('id',$auction->id)->update(['ending' => true]);
+                }
+                
+            }
+            
+        })->everyTenMinutes();
     }
 
     /**

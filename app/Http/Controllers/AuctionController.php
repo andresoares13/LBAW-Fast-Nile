@@ -15,6 +15,17 @@ class AuctionController extends Controller
     {
       try{
         $auction = Auction::find($id);
+        $time = new \DateTime($auction->timeclose);
+        $diff = $time->diff(new \DateTime("now"));
+        $minutes = $diff->days * 24 * 60;
+        $minutes += $diff->h * 60;
+        $minutes += $diff->i;
+        //var_dump($diff);
+        //exit();
+        
+        //if ($minutes <= 0){
+            //DB::table('auction')->where('id',$auction->id)->update(['ending' => true]);
+        //}
       }
       catch(Illuminate\Database\QueryException $ex){
         dd($ex->getMessage()); 

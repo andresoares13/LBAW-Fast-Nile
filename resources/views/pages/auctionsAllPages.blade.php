@@ -17,8 +17,8 @@
           @else
             @if (isset($id))
               @if (isset($follow))
-
-              @lse
+              
+              @else
                 @if (auth()->check())
                   @if (auth()->user()->id == $userId)
                     <h1 style="font-weight: bold;">My Auctions Page {{$pageNr}}</a></h1>

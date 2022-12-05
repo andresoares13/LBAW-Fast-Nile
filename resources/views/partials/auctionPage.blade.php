@@ -217,9 +217,3 @@ $time = strtotime($auction->toArray()['timeclose']);
 <p id="HighestBidder" hidden>{{$auction->highestbidder}}</p>
 
 <p hidden id = "hTime"><?php echo $time; ?></p>
-
-
-
-
-
-

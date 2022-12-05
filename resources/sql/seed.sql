@@ -83,6 +83,7 @@ CREATE TABLE auction (
    owners INT,
    states statesAuction NOT NULL,
    title TEXT NOT NULL,
+   ending BOOLEAN,
    CONSTRAINT fk_car FOREIGN KEY(idCar) REFERENCES car(id) ON DELETE CASCADE,
    CONSTRAINT fk_bidder FOREIGN KEY(highestBidder) REFERENCES users(id),
    CONSTRAINT fk_owner FOREIGN KEY(owners) REFERENCES auctioneer(id)
@@ -108,11 +109,11 @@ CREATE TABLE auction (
  CREATE TABLE notification (
    id SERIAL PRIMARY KEY, 
    idUser INT NOT NULL,
-   idAuction INT NOT NULL,
+   idAuction INT,
    messages TEXT NOT NULL,
    viewed BOOLEAN,
    CONSTRAINT fk_user FOREIGN KEY(idUser) REFERENCES users(id) ON DELETE CASCADE,
-   CONSTRAINT fk_auction FOREIGN KEY(idAuction) REFERENCES auction(id) ON DELETE CASCADE
+   CONSTRAINT fk_auction FOREIGN KEY(idAuction) REFERENCES auction(id)
 );  
 
  CREATE TABLE rating (
@@ -192,6 +193,10 @@ DROP TRIGGER IF EXISTS update_average_grade ON rating;
 DROP TRIGGER IF EXISTS update_deleted_user_info ON users;
 DROP TRIGGER IF EXISTS update_deleted_auctioneer ON auction;
 DROP TRIGGER IF EXISTS min_bid_delete_auction ON auction;
+DROP TRIGGER IF EXISTS new_bid_notification ON auction;
+DROP TRIGGER IF EXISTS ending_notification ON auction;
+DROP TRIGGER IF EXISTS ended_notification ON auction;
+
 
 
 
@@ -505,6 +510,19 @@ $BODY$
 BEGIN
     IF (select count(bid.id) from auction,bid where bid.idAuction = old.id) > 0 THEN 
         RAISE EXCEPTION 'An auction can´t be deleted if it has more than 0 bids';
+	ELSE
+
+     INSERT INTO notification (idUser,idAuction,messages,viewed)
+	  SELECT users.id,NULL,(SELECT CONCAT('Your auction was canceled - ',old.title)),false
+	  FROM users
+	  WHERE users.id = (select idUser from auctioneer where id = old.owners); 
+
+	  INSERT INTO notification (idUser,idAuction,messages,viewed)
+      SELECT follow.idUser,NULL,(SELECT CONCAT('Followed auction was canceled - ',old.title)),false
+	  FROM follow
+	  WHERE follow.idAuction = old.id;
+	  
+	  
     END IF;
     RETURN old;
 END;
@@ -515,6 +533,7 @@ CREATE TRIGGER min_bid_delete_auction
      BEFORE DELETE ON auction
      FOR EACH ROW
      EXECUTE PROCEDURE min_bid_delete_auction_function();
+
 
 
 --t16
@@ -529,7 +548,7 @@ BEGIN
 	  INSERT INTO notification (idUser,idAuction,messages,viewed)
 	  SELECT users.id,new.idAuction,'New bid on your auction',false
 	  FROM users
-	  WHERE users.id = (select idUser from auctioneer where idUser = (select owners from auction where id = new.idAuction ));
+	  WHERE users.id = (select idUser from auctioneer where id = (select owners from auction where id = new.idAuction ));
     return new;
 END;
 $BODY$
@@ -540,6 +559,76 @@ CREATE TRIGGER new_bid_notification
      AFTER INSERT ON bid
      FOR EACH ROW
      EXECUTE PROCEDURE new_bid_notification_function();
+
+
+--t17
+
+CREATE OR REPLACE FUNCTION ending_notification_function() RETURNS TRIGGER AS
+$BODY$
+BEGIN
+	IF new.ending=true AND (select ending from auction where id = new.id) = false THEN
+      INSERT INTO notification (idUser,idAuction,messages,viewed)
+      SELECT distinct bid.idUser,bid.idAuction,'Participating auction is ending',false
+	  FROM bid
+	  WHERE bid.idAuction = new.id;
+	  INSERT INTO notification (idUser,idAuction,messages,viewed)
+	  SELECT users.id,new.id,'Your auction is ending',false
+	  FROM users
+	  WHERE users.id = (select idUser from auctioneer where id = (select owners from auction where id = new.id ));
+	END IF;  
+    return new;
+END;
+$BODY$
+language plpgsql;
+
+
+CREATE TRIGGER ending_notification
+     BEFORE UPDATE ON auction
+     FOR EACH ROW
+     EXECUTE PROCEDURE ending_notification_function();
+
+
+
+--t18
+
+
+CREATE OR REPLACE FUNCTION ended_notification_function() RETURNS TRIGGER AS
+$BODY$
+BEGIN
+	IF new.states='Closed' AND (select states from auction where id = new.id) = 'Active' AND (select highestBidder from auction where id = new.id) IS NOT NULL THEN
+      INSERT INTO notification (idUser,idAuction,messages,viewed)
+      SELECT distinct bid.idUser,bid.idAuction,'Auction has ended',false
+	  FROM bid
+	  WHERE bid.idAuction = new.id;
+	  
+	  INSERT INTO notification (idUser,idAuction,messages,viewed)
+	  SELECT users.id,new.id,'Your auction has ended',false
+	  FROM users
+	  WHERE users.id = (select idUser from auctioneer where id = (select owners from auction where id = new.id ));
+	  
+	  INSERT INTO notification (idUser,idAuction,messages,viewed)
+      SELECT distinct bid.idUser,bid.idAuction,(SELECT CONCAT('The winner of the auction was ', (select names FROM users where id= (select highestBidder from auction where id=new.id)))),false
+	  FROM bid
+	  WHERE bid.idAuction = new.id;
+	  
+	  INSERT INTO notification (idUser,idAuction,messages,viewed)
+	  SELECT users.id,new.id,(SELECT CONCAT('The winner of your auction was ', (select names FROM users where id= (select highestBidder from auction where id=new.id)))),false
+	  FROM users
+	  WHERE users.id = (select idUser from auctioneer where id = (select owners from auction where id = new.id ));
+	END IF;  
+    return new;
+END;
+$BODY$
+language plpgsql;
+
+
+CREATE TRIGGER ended_notification
+     BEFORE UPDATE ON auction
+     FOR EACH ROW
+     EXECUTE PROCEDURE ended_notification_function();
+
+
+
 
      
      
