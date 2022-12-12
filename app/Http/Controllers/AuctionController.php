@@ -19,13 +19,20 @@ class AuctionController extends Controller
         $diff = $time->diff(new \DateTime("now"));
         $minutes = $diff->days * 24 * 60;
         $minutes += $diff->h * 60;
-        $minutes += $diff->i;
-        //var_dump($diff);
-        //exit();
-        
-        //if ($minutes <= 0){
-            //DB::table('auction')->where('id',$auction->id)->update(['ending' => true]);
-        //}
+        $minutes += $diff->i;     
+        $seconds = $diff->days * 24 * 60 * 60;
+        $seconds +=$diff->h * 60 *60;
+        $seconds += $minutes * 60;
+        $seconds += $diff->s;
+
+        if ($minutes <= 0 && $auction->states != 'Closed' && $seconds <=0){
+          DB::table('auction')->where('id',$auction->id)->update(['states' => 'Closed']);
+          $auction = Auction::find($id);
+        }
+        else if ($minutes < 15 && !$auction->ending){
+          DB::table('auction')->where('id',$auction->id)->update(['ending' => true]);
+          $auction = Auction::find($id);
+        }
       }
       catch(Illuminate\Database\QueryException $ex){
         dd($ex->getMessage()); 
@@ -92,6 +99,50 @@ class AuctionController extends Controller
       }
       abort(404);
       
+    }
+
+    public function getAuctionAPI(Request $request){
+      $auction = Auction::find($request->input('id'));
+      return $auction;
+    }
+
+    public function closeAuctionAPI(Request $request){
+      
+      $auction = Auction::find($request->input('id'));
+      $time = new \DateTime($auction->timeclose);
+      $diff = $time->diff(new \DateTime("now"));
+      $minutes = $diff->days * 24 * 60;
+      $minutes += $diff->h * 60;
+      $minutes += $diff->i; 
+      $seconds = $diff->days * 24 * 60 * 60;
+      $seconds +=$diff->h * 60 *60;
+      $seconds += $minutes * 60;
+      $seconds += $diff->s;
+      if ($minutes < 0 || $auction->states == 'Closed'){
+        return header("HTTP/1.1 500 Internal Server Error");
+      }
+      if ($minutes > 0 && $seconds >0 &&$auction->states != 'Closed'){
+        DB::table('auction')->where('id',$auction->id)->update(['states' => 'Closed']);
+        $auction = Auction::find($id);
+      } 
+      return $auction;
+    }
+
+    public function endingAuctionAPI(Request $request){
+      $auction = Auction::find($request->input('id'));
+      $time = new \DateTime($auction->timeclose);
+      $diff = $time->diff(new \DateTime("now"));
+      $minutes = $diff->days * 24 * 60;
+      $minutes += $diff->h * 60;
+      $minutes += $diff->i; 
+      if ($minutes >15 || $auction->ending){
+        return header("HTTP/1.1 500 Internal Server Error");
+      }
+      if ($minutes < 15 && !$auction->ending){
+        DB::table('auction')->where('id',$auction->id)->update(['ending' => true]);
+        $auction = Auction::find($id);
+      } 
+      return $auction;
     }
 
 }

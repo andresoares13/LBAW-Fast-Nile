@@ -83,7 +83,18 @@ Route::post('auctionEdit', 'AuctionController@editAuction');
 Route::post('auctionCancel', 'AuctionController@deleteAuction');
 Route::post('api/auctionFollow','UserController@followAuction');
 Route::post('api/auctionUnFollow','UserController@unfollowAuction');
+Route::post('api/getAuction','AuctionController@getAuctionAPI'); //to be used by js clock, to know if it should send requests to set the auction to ending
+Route::post('api/closeAuction','AuctionController@closeAuctionAPI');
+Route::post('api/endingAuction','AuctionController@endingAuctionAPI');
+
 
 //users
 
 Route::get('users/{pageNr}', 'UserController@showUsersPage');
+
+
+// Static Pages
+
+Route::get('/aboutUs', 'AboutUsController@showAboutUs');
+Route::get('/contacts', 'ContactsController@showContacts');
+Route::get('/features', 'FeaturesController@showFeatures');

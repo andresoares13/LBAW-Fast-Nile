@@ -1,6 +1,53 @@
+let auction = null;
+var path = window.location.pathname;
+var page = path.split("/").pop();
+
+function encodeForAjaxx(data) {
+  return Object.keys(data).map(function(k){
+    return encodeURIComponent(k) + '=' + encodeURIComponent(data[k])
+  }).join('&')
+}
+
+function sendAjaxxRequest(method, url, data, handler) {
+  let request = new XMLHttpRequest();
+  
+  request.open(method, url, true);
+  request.setRequestHeader('X-CSRF-TOKEN', document.querySelector('meta[name="csrf-token"]').content);
+  request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+  request.addEventListener('load', handler);
+  request.send(encodeForAjaxx(data));
+}
+
+function receiveAuctionHandler(){
+  if (this.status != 200){
+    return;
+  }
+  
+  auction = JSON.parse(this.responseText);
+}
+
+function closeAuctionHandler(){
+  if (this.status != 200){
+    return;
+  }
+  console.log(JSON.parse(this.responseText));
+
+}
+
+function endingAuctionHandler(){
+  if (this.status != 200){
+    return;
+  }
+}
+
+
+
 function startTime() {
     date = document.getElementById('hTime').innerHTML
     var jsDate = new Date(date * 1000);
+    if (auction != null){
+      jsDate = new Date(auction.timeclose);
+    }
     const today = new Date();
 
     var diffTime = Math.abs(jsDate - today) /1000;
@@ -14,7 +61,12 @@ function startTime() {
         days = ""
     }
 
+    if (auction == null){
+      sendAjaxxRequest('post', '/api/getAuction/',{"id":page},receiveAuctionHandler);
 
+    }
+    
+    
     // calculate (and subtract) whole hours
     var hours = Math.floor(diffTime / 3600) % 24;
     diffTime -= hours * 3600;
@@ -39,6 +91,14 @@ function startTime() {
     }
     else{
        minutes = ""
+    }
+    if (parseInt(days) < 0 && parseInt(hours) < 0 && auction != null){
+      if (parseInt(minutes) <= 0 && parseInt(seconds) <= 0 && auction.states != "Closed"){
+        sendAjaxxRequest('post', '/api/closeAuction/',{"id":page},closeAuctionHandler);
+      }
+      else if (minutes < 15 && !auction.ending){
+        sendAjaxxRequest('post', '/api/endingAuction/',{"id":page},endingAuctionHandler);
+      }
     }
     
     document.getElementById('clock').innerHTML =days + hours + minutes + seconds + "s";

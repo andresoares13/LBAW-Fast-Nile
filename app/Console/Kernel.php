@@ -36,13 +36,39 @@ class Kernel extends ConsoleKernel
                 $minutes += $diff->h * 60;
                 $minutes += $diff->i;
                 
+
                 if ($minutes < 15){
                     DB::table('auction')->where('id',$auction->id)->update(['ending' => true]);
                 }
                 
             }
             
-        })->everyTenMinutes();
+        })->everyFiveMinutes();
+
+
+
+        $schedule->call(function () {
+            $auctions = Auction::where('states','Active')->where('ending',true)->get();
+            foreach($auctions as $auction){
+
+                $time = new \DateTime($auction->timeclose);
+                $diff = $time->diff(new \DateTime("now"));
+                $minutes = $diff->days * 24 * 60;
+                $minutes += $diff->h * 60;
+                $minutes += $diff->i;
+                $seconds = $diff->days * 24 * 60 * 60;
+                $seconds +=$diff->h * 60 *60;
+                $seconds += $minutes * 60;
+                $seconds += $diff->s;
+                
+                
+                if ($minutes <= 0 && $seconds <= 0){
+                    DB::table('auction')->where('id',$auction->id)->update(['states' => 'Closed']);
+                }
+                
+            }
+            
+        })->everyMinute();
     }
 
     /**
