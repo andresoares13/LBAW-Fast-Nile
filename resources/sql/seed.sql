@@ -777,10 +777,10 @@ insert into auctioneer (id, idUser, phone) values (39, 39, '9229614888');
 insert into auctioneer (id, idUser, phone) values (40, 40, '2848768899');
 
 
-insert into administrator (id, names, passwords, email, address) values (1, 'Marline', 'tczbZa6UujE8', 'mvandervelden0@a8.net', '64 Loomis Circle');
-insert into administrator (id, names, passwords, email, address) values (2, 'Rianon', 'OWB1vDbSC8q', 'ryggo1@skyrock.com', '768 Riverside Plaza');
-insert into administrator (id, names, passwords, email, address) values (3, 'Kirsteni', 'UpeSdvqnqA', 'kcornels2@go.com', '41189 Di Loreto Parkway');
-insert into administrator (id, names, passwords, email, address) values (4, 'Thekla', 'UdZtJCOeENmr', 'tcustard3@harvard.edu', '2732 Oakridge Terrace');
+insert into administrator (id, names, password, email, address) values (1, 'Marline', 'tczbZa6UujE8', 'mvandervelden0@a8.net', '64 Loomis Circle');
+insert into administrator (id, names, password, email, address) values (2, 'Rianon', 'OWB1vDbSC8q', 'ryggo1@skyrock.com', '768 Riverside Plaza');
+insert into administrator (id, names, password, email, address) values (3, 'Kirsteni', 'UpeSdvqnqA', 'kcornels2@go.com', '41189 Di Loreto Parkway');
+insert into administrator (id, names, password, email, address) values (4, 'Thekla', 'UdZtJCOeENmr', 'tcustard3@harvard.edu', '2732 Oakridge Terrace');
 
 insert into car (id, names, category, states, color, consumption, kilometers) values (1, 'Dodge', 'Coupe', 'Brand New', 'Violet', 9.2, 566);
 insert into car (id, names, category, states, color, consumption, kilometers) values (2, 'Mercedes-Benz', 'Sport', 'Normal Condition', 'Indigo', 11.8, 651);

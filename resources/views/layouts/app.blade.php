@@ -161,7 +161,7 @@
 
   <footer id="sticky-footer" class="flex-shrink-0 py-4 bg-dark text-white-50">
     <div class="container text-center">
-      <small>Fast Nile | Email: fastnileweb@gmail.com | <a href="/aboutUs">About Us</a></small>
+      <small>Fast Nile | Email: fastnileweb@gmail.com | <a href="/aboutUs">About Us | <a href="/contacts">Contacts</a> | <a href="/features">Features</a></small>
     </div>
   </footer>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ" crossorigin="anonymous"></script>    

@@ -9,7 +9,7 @@
 </div>
 
 <div class="pic-section">
-  <img class="office" src="{{asset('img/office.jpg/')}}">
+  <img class="office" src="{{asset('img/backgrounds/office.jpg/')}}">
   <h3>Totally legitimate photo of our headquarters!</h3>
 </div>
 
@@ -37,7 +37,7 @@ html {
 .pic-section {
   padding: 0px 50px 7px 50px;
   text-align: center;
-  background-image:url({{asset('img/office_fundo.jpg')}});;
+  background-image:url({{asset('img/backgrounds/office_fundo.jpg')}});;
 }
 
 h3{

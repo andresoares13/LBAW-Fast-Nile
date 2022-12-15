@@ -14,7 +14,7 @@
 <div class="row">
   <div class="column">
     <div class="card">
-      <img class="pfp" src="{{asset('img/andre.jpg/')}}">
+      <img class="pfp" src="{{asset('img/owners/andre.jpg/')}}">
       <div class="container">
         <h2>André Soares</h2>
         <p class="title">CEO & Founder</p>
@@ -28,7 +28,7 @@
 
   <div class="column">
     <div class="card">
-      <img class="pfp" src="{{asset('img/antonio.jpg/')}}">
+      <img class="pfp" src="{{asset('img/owners/antonio.jpg/')}}">
       <div class="container">
         <h2>António Matos</h2>
         <p class="title">Art Director</p>
@@ -42,7 +42,7 @@
 
   <div class="column">
     <div class="card">
-      <img class="pfp" src="{{asset('img/joao.jpg/')}}">
+      <img class="pfp" src="{{asset('img/owners/joao.jpg/')}}">
       <div class="container">
         <h2>João Moura</h2>
         <p class="title">Designer</p>
@@ -56,7 +56,7 @@
 
   <div class="column">
     <div class="card">
-      <img class="pfp" src="{{asset('img/miguel.jpg/')}}">
+      <img class="pfp" src="{{asset('img/owners/miguel.jpg/')}}">
       <div class="container">
         <h2>Miguel Teixeira</h2>
         <p class="title">Creative Director</p>

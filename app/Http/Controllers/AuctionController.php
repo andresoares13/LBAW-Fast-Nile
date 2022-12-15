@@ -51,15 +51,26 @@ class AuctionController extends Controller
     }
 
 
-    public function showAuctionsPage($pageNr){ //gets 6 results based on the page number
+    public function showAuctionsPage($pageNr, Request $request){ //gets 6 results based on the page number
       $limit = 6 * intval($pageNr);
-      $auctions = Auction::where('states','Active')->orderBy('timeclose')->limit($limit)->get();
+      if ($request->input('category') == null){
+        $auctions = Auction::where('states','Active')->orderBy('timeclose')->limit($limit)->get();
+      }
+      else{
+        $auctions = DB::table('auction')->join('car', 'auction.idcar', '=', 'car.id')->where('auction.states','Active')->where('category',$request->input('category'))->orderBy('timeclose')->limit($limit)->get();
+      }
+      
       $totalCount = count(Auction::where('states','Active')->get());
       $lastEl = $totalCount - (6 * (intval($pageNr)-1)); //if the page is not complete we dont want repetitives, if there are 7, first page gets 6, 2nd gets 1
       $auctions = array_slice($auctions->toArray(), -$lastEl); //only get the last 6
       $auctions = Auction::hydrate($auctions);
       $totalPages = intval(ceil($totalCount /6)); //gets the total number of pages of auctions assuming each has 20
-      return view('pages.auctionsAllPages', ['auctions' => $auctions,'totalPages' => $totalPages,'pageNr' => $pageNr]);
+      if ($request->input('category') == null){
+        return view('pages.auctionsAllPages', ['auctions' => $auctions,'totalPages' => $totalPages,'pageNr' => $pageNr]);
+      }
+      else{
+        return view('pages.auctionsAllPages', ['auctions' => $auctions,'totalPages' => $totalPages,'pageNr' => $pageNr,'category' => $request->input('category')]);
+      }
 
     }
 

@@ -3,6 +3,15 @@
 @section('title', 'Home')
 
 @section('content')
+
+
+@if (isset($category))
+@else
+@php
+$category = 'Category';
+@endphp
+@endif
+
         <!-- ======= Breadcrumbs ======= -->
     <section id="breadcrumbs" class="breadcrumbs">
       <div class="container">
@@ -36,8 +45,23 @@
               <h1 style="font-weight: bold;">Followed Auctions Page {{$pageNr}}</h1>
               @endif
             @endif
+            
           @endif
+          <form id="searchForms" class="d-flex"  action="/auctions/{{$pageNr}}"  method="get" role="search" >
+              <select  class="form-select" id="categorie" name='category' onchange="this.form.submit()" required>
+              <option value="" selected>{{$category}}</option>
+                <option value="Sport">Sport</option>
+                <option value="Coupe">Coupe</option>
+                <option value="Convertible">Convertible</option>
+                <option value="SUV">SUV</option>
+                <option value="Pickup Truck">Pickup Truck</option>
+              </select>
+            </form>
+            
         </div>
+        @if ($category!="Category")
+            <h1 style="font-weight: bold;" class="d-flex" style="margin-left:auto;">Category: {{$category}}</h1>
+            @endif
         <form id="searchForms" class="d-flex"  action="/search/auction"  method="get" role="search">
         <input class="form-control me-sm-2" type="search" placeholder="Search for an Auction..." id="query" name="q">
         <button class="btn btn-secondary my-2 my-sm-0" type="submit">Search</button>
