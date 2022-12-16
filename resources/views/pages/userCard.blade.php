@@ -30,6 +30,7 @@
         </div>
         </div>
         </div>
+        @if (count($users)!=0 && $totalPages > 1)
         <p id="pageLinks">
         <div class="bg pageNum">
         <ul class="pagination">
@@ -61,6 +62,7 @@
         </ul>
         </div>
         </p>
+        @endif
         </section>
  
 

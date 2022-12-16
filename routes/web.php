@@ -36,6 +36,14 @@ Route::get('/login/admin', 'Auth\LoginController@showAdminLoginForm');
 Route::post('/login/admin', 'Auth\LoginController@adminLogin');
 
 
+Route::get('forgotPassword','Auth\LoginController@resetPasswordForm');
+Route::post('resetPassword', 'UserController@resetPasswordLink');
+Route::get('password/reset/{token}','UserController@showResetForm')->name('reset.password.form');
+Route::post('resetPasswordConfirm', 'UserController@resetPasswordConfirm');
+
+
+
+
 // profile
 Route::get('profile/{id}', 'UserController@show');
 Route::get('profile/edit/{id}', 'UserController@showEdit');

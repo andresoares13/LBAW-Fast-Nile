@@ -16,6 +16,11 @@
                   <form  method="POST" action="{{ url('login/admin') }}">
                   @else
                   <h1 class="card-title text-center mb-5 "><strong> User Login</strong></h1>
+                  @if (Session::get('info'))
+                  <div class="alert alert-info">
+                    {{Session::get('info')}}
+                  </div>
+                  @endif
                   <form   method="POST" action="{{ route('login') }}">
                   @endisset
                       {{ csrf_field() }}
@@ -42,7 +47,7 @@
                     <input type="checkbox" name="remember" {{ old('remember') ? 'checked' : '' }}> Remember Me
 
                       <br>
-                      <label class="form-check-label"><a class="text-white-50" href="#!">Forgot password?</a></label>
+                      <label class="form-check-label"><a class="text-white-50" href="{{ url('/forgotPassword') }}">Forgot password?</a></label>
                     </div>
                     <div class="d-grid">
                       <button id="buttonOver" class="btn btn-outline-light btn-lg px-5" style="width: 60%; margin-left:auto; margin-right:auto;" type="submit">Login</button>

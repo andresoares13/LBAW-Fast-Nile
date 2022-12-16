@@ -46,18 +46,7 @@ $category = 'Category';
               @endif
             @endif
             
-          @endif
-          <form id="searchForms" class="d-flex"  action="/auctions/{{$pageNr}}"  method="get" role="search" >
-              <select  class="form-select" id="categorie" name='category' onchange="this.form.submit()" required>
-              <option value="" selected>{{$category}}</option>
-                <option value="Sport">Sport</option>
-                <option value="Coupe">Coupe</option>
-                <option value="Convertible">Convertible</option>
-                <option value="SUV">SUV</option>
-                <option value="Pickup Truck">Pickup Truck</option>
-              </select>
-            </form>
-            
+          @endif  
         </div>
         @if ($category!="Category")
             <h1 style="font-weight: bold;" class="d-flex" style="margin-left:auto;">Category: {{$category}}</h1>
@@ -68,6 +57,28 @@ $category = 'Category';
         </form>
       </div>
     </section><!-- End Breadcrumbs -->
+
+    <section  style="margin-top:1%;" class="breadcrumbs">
+      <div class="container">
+
+        <div class="d-flex justify-content-between align-items-center">
+          
+        <form id="searchForms" class="d-flex"  action="/auctions/{{$pageNr}}"  method="get" role="search" >
+              <select  class="form-select" id="categorie" name='category' onchange="this.form.submit()" required>
+              <option value="" selected>{{$category}}</option>
+                <option value="Sport">Sport</option>
+                <option value="Coupe">Coupe</option>
+                <option value="Convertible">Convertible</option>
+                <option value="SUV">SUV</option>
+                <option value="Pickup Truck">Pickup Truck</option>
+              </select>
+            </form>
+        </div>
+      </div>
+    </section><!-- End Breadcrumbs -->
+
+
+   
 
     <section id="auctionAll">
   <div class="py-5">
@@ -88,18 +99,30 @@ $category = 'Category';
         </li>
         @else
         <li class="page-item">
+          @if ($category!="Category")
+          <a class="page-link" href="{{url('/auctions/'.($pageNr-1).'?category='.$category)}}">&laquo;</a>
+          @else
           <a class="page-link" href="/auctions/{{$pageNr-1}}">&laquo;</a>
+          @endif
         </li>
         @endif
         @for ($i = 0; $i < $totalPages; $i++)
         @if ($pageNr != $i+1)
         @if (isset($id))
         <li class="page-item ">
+        @if ($category!="Category")
+          <a class="page-link" href="{{url('/profile/auctions/'.$id.'/'.($i+1).($pageNr-1).'?category='.$category)}}">{{$i+1}}</a>
+          @else
         <a class="page-link" href="/profile/auctions/{{$id}}/{{$i+1}}">{{$i+1}}</a>
+        @endif
         </li>
         @else
         <li class="page-item ">
+        @if ($category!="Category")
+          <a class="page-link" href="{{url('/auctions/'.($i+1).'?category='.$category)}}">{{$i+1}}</a>
+          @else
         <a class="page-link" href="/auctions/{{$i+1}}">{{$i+1}}</a>
+        @endif
         </li>
         @endif
         @endif

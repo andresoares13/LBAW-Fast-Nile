@@ -12,6 +12,7 @@ DROP TABLE IF EXISTS car CASCADE;
 DROP TABLE IF EXISTS rating CASCADE;
 DROP TABLE IF EXISTS auctioneer CASCADE;
 DROP TABLE IF EXISTS users CASCADE;
+DROP TABLE IF EXISTS password_resets CASCADE;
 
 DROP TYPE IF EXISTS categories;
 DROP TYPE IF EXISTS statesAuction;
@@ -123,6 +124,13 @@ CREATE TABLE auction (
    grade INT,
    CONSTRAINT fk_user FOREIGN KEY(idUser) REFERENCES users(id),
    CONSTRAINT fk_auctioneer FOREIGN KEY(idAuctioneer) REFERENCES auctioneer(id) ON DELETE CASCADE
+);
+
+CREATE TABLE password_resets (
+   id SERIAL PRIMARY KEY,
+   email TEXT,
+   token TEXT,
+   created_at TIMESTAMP
 );
 
 

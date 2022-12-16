@@ -6,6 +6,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Policies\UserPolicy;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\Mailtrap;
+use Illuminate\Support\Facades\Hash;
 
 use App\Models\User;
 use App\Models\Auctioneer;
@@ -102,6 +106,9 @@ class UserController extends Controller
         $auctions = array_slice($auctions->toArray(), -$lastEl); //only get the last 5
         $auctions = Auction::hydrate($auctions);
         $totalPages = intval(ceil($totalCount /5)); //gets the total number of pages of auctions assuming each has 20
+        if ($limit > $totalCount + 5){
+          $auctions = [];
+        }
         return view('pages.auctionsAllPages', ['auctions' => $auctions,'totalPages' => $totalPages,'pageNr' => $pageNr,'id' =>$id,'name' => $name,'userId'=>$userId]);
       }
       else{
@@ -125,6 +132,9 @@ class UserController extends Controller
         $bids = array_slice($bids->toArray(), -$lastEl); //only get the last 5
         $bids = Bid::hydrate($bids);
         $totalPages = intval(ceil($totalCount /20)); //gets the total number of pages of auctions assuming each has 20
+        if ($limit > $totalCount + 20){
+          $bids = [];
+        }
         return view('pages.userBids', ['bids' => $bids,'totalPages' => $totalPages,'pageNr' => $pageNr, 'name' => $user->names,'id' => $id]);
       }
       else if ($this->authorize('correctUser', $user)){
@@ -135,6 +145,9 @@ class UserController extends Controller
         $bids = array_slice($bids->toArray(), -$lastEl); //only get the last 5
         $bids = Bid::hydrate($bids);
         $totalPages = intval(ceil($totalCount /20)); //gets the total number of pages of auctions assuming each has 20
+        if ($limit > $totalCount + 20){
+          $bids = [];
+        }
         return view('pages.userBids', ['bids' => $bids,'totalPages' => $totalPages,'pageNr' => $pageNr,'id' => Auth::user()->id]);
       }
       else{
@@ -155,6 +168,9 @@ class UserController extends Controller
       $lastEl = $totalCount - (5 * (intval($pageNr)-1)); //if the page is not complete we dont want repetitives, if there are 7, first page gets 5, 2nd gets 2
       $auctions = array_slice($auctions, -$lastEl); //only get the last 5
       $totalPages = intval(ceil($totalCount /5)); //gets the total number of pages of auctions assuming each has 20
+      if ($limit > $totalCount + 5){
+        $auctions = [];
+      }
       return view('pages.auctionsAllPages', ['auctions' => $auctions,'totalPages' => $totalPages,'pageNr' => $pageNr,'follow' => true]);
 
     }
@@ -305,6 +321,9 @@ class UserController extends Controller
       $users = array_slice($users->toArray(), -$lastEl); //only get the last 30
       $users = User::hydrate($users);
       $totalPages = intval(ceil($totalCount /30)); //gets the total number of pages of auctions assuming each has 30
+      if ($limit > $totalCount + 30){
+        $users = [];
+      }
       return view('pages.userCard', ['users' => $users,'totalPages' => $totalPages,'pageNr' => $pageNr]);
 
     }
@@ -350,11 +369,70 @@ class UserController extends Controller
         $notifications = array_slice($notifications->toArray(), -$lastEl); //only get the last 5
         $notifications = Notification::hydrate($notifications);
         $totalPages = intval(ceil($totalCount /20)); //gets the total number of pages of auctions assuming each has 20
+        if ($limit > $totalCount + 20){
+          $notifications = [];
+        }
         return view('pages.userNotifications', ['notifications' => $notifications,'totalPages' => $totalPages,'pageNr' => $pageNr,'id' => Auth::user()->id]);
       }
       else{
         abort(403);
       }
+    }
+
+
+
+    public function resetPasswordLink(Request $request){
+
+      $request->validate([
+        'email' => 'required|email|exists:users,email'
+      ]);
+
+      $token = \Str::random(64);
+      DB::table('password_resets')->insert(['email' => $request->email,'token' => $token,'created_at' => Carbon::now()]);
+      
+      $action_link = route('reset.password.form',['token' => $token,'email' => '']);
+      $action_link = $action_link. $request->email;
+      $body = "We received a request to reset the password for Fast Nile accont associated with ".$request->email.
+      ". You can reset the password by clicking the link below.";
+
+      $mailData = [
+        'body' => $body,
+        'action_link' => $action_link
+      ];
+
+
+      Mail::to($request->email)->send(new Mailtrap($mailData));
+
+      return back()->with('success', 'We have sent you an email with a link to reset your password!');
+
+    }
+
+    public function showResetForm(Request $request,$token){
+      if (Auth::check()){
+        return redirect('/home');
+      }
+      return view('auth.resetPassword',['token' => $token,'email' => $request->email]);
+    }
+
+    public function resetPasswordConfirm(Request $request){
+      $request->validate([
+        'email' => 'required|email|exists:users,email',
+        'password' => 'required|string|min:6|confirmed',
+        'password_confirmation' => 'required'
+      ]);
+
+      $check_token = DB::table('password_resets')->where('email',$request->email)->where('token',$request->token)->first();
+
+      if(!$check_token){
+        return back()->withInput()->with('fail','Invalid or Expired Token');
+      }
+      else{
+        User::where('email', $request->email)->update(['password' => Hash::make($request->password)] );
+        DB::table('password_resets')->where('email',$request->email)->delete();
+      }
+
+      return redirect()->route('login')->with('info','Your password has been changed!');
+      
     }
 
     

@@ -57,6 +57,13 @@ class LoginController extends Controller
         return view('auth.login', ['url' => 'admin']);
     }
 
+    public function resetPasswordForm(){
+        if (Auth::check()){
+            return redirect('/home');
+        }
+        return view('auth.forgotPassword');
+    }
+
     public function adminLogin(Request $request)
     {
 
