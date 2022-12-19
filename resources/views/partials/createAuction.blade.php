@@ -73,7 +73,7 @@
               </div>
               </div>
               <label for="file">Upload car photo</label>
-              <input type="file" id="imageInput" name="image" class="form-control" required="required"><br><br>
+              <input type="file" id="imageInput" name="image" class="form-control" required="required" onchange="checkSize()"><br><br>
 
               <label for="priceStart">Starting Price</label>
               <div class="input-group mb-3">
@@ -91,7 +91,7 @@
             
             <input type="hidden" name="user" value="{{ Auth::user()->id }}">
 
-            <button id="buttonInvBack" class="btn btn-outline-light btn-lg px-5" type="submit" onclick="return !!(checkCarValue() & verifyFileUpload(event))" >Create</button>
+            <button id="buttonInvBack" class="btn btn-outline-light btn-lg px-5" type="submit" onclick="return checkCarValue()" >Create</button>
 
           </form>
           </div>

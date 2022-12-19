@@ -36,7 +36,7 @@ class AuctionController extends Controller
           DB::table('auction')->where('id',$auction->id)->update(['states' => 'Closed']);
           $auction = Auction::find($id);
         }
-        else if ($minutes < 15 && !$auction->ending){
+        else if ($minutes < 15 && !$auction->ending && $auction->states != 'Closed'){
           DB::table('auction')->where('id',$auction->id)->update(['ending' => true]);
           $auction = Auction::find($id);
         }
@@ -132,12 +132,28 @@ class AuctionController extends Controller
 
     public function deleteAuction(Request $request){
       $auction = Auction::find($request->input('auction'));
-      if (!$auction->hasBids($auction->id)){
-        $auction->delete();
-        return redirect('/');
+      if (auth()->check()){
+        if ($this->authorize('showEdit', $auction)){ 
+          if (!$auction->hasBids($auction->id) && $auction->states != 'Closed'){
+            $auction->delete();
+            return redirect('/');
+          }
+          abort(404);
+        }
+        else{
+          abort(403);
+        }
+      }  
+      elseif(auth()->guard('admin')->check()){
+        if (!$auction->hasBids($auction->id) && $auction->states != 'Closed'){
+          $auction->delete();
+          return redirect('/');
+        }
+        abort(404);
       }
-      abort(404);
-      
+      else{
+        abort(403);
+      } 
     }
 
     public function getAuctionAPI(Request $request){

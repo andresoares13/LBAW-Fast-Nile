@@ -22,7 +22,7 @@
               <img id="uploadPictureForm" src="{{asset('img/profile/' . $user->picture)}}" alt="ProfilePic">
             </div><br><br></label>
               <input class="form-control" type="file" name="image" required="required">
-              <input type="hidden" name="user" value="{{ Auth::user()->id }}">
+              <input type="hidden" name="user" value="{{ substr(strrchr(url()->current(),"/"),1) }}">
               <button id="buttonInvBack" class="btn btn-outline-light btn-lg px-5" type="submit" >Upload</button>
           </form>
           </div>

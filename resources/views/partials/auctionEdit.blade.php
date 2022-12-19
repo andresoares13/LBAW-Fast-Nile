@@ -21,7 +21,7 @@
       <div class="col-lg-4" style="margin-left:auto;margin-right:auto;">
         <div class="portfolio-info bidFormBox" >
         <h3>Update your Auction</h3>
-          <form action="/auctionEdit" method="POST" id="auctionForm" class="profile" enctype="multipart/form-data">
+          <form action="/auctionEdit"  method="POST" id="auctionForm" class="profile" enctype="multipart/form-data">
           <caption>Edit auction title and description <br> <br></caption>
             {{ csrf_field() }}
             <div class="form-group">
@@ -35,7 +35,7 @@
               </div>
 
               <label for="file">Change car photo</label>
-              <input type="file" id="imageInput" name="image" class="form-control" ><br><br>
+              <input type="file" id="imageInput" name="image" class="form-control" onchange="checkSize()" ><br><br>
             </div>  
             
             
@@ -45,7 +45,7 @@
 
             <label id="error"></label> <br> 
 
-            <button id="buttonInvBack" class="btn btn-outline-light btn-lg px-5" type="submit"  onclick="return verifyFileUpload(event)">Save</button>
+            <button id="buttonInvBack" class="btn btn-outline-light btn-lg px-5" type="submit" >Save</button>
 
           </form>
 

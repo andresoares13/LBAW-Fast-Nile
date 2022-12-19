@@ -65,7 +65,7 @@ Route::post('api/markAllRead','UserController@markAllRead');
 
 //admin
 
-Route::get('profileAdmin/{id}', 'AdminController@show');
+Route::get('profileAdmin/{id}', 'AdminController@show')->name('profileAdmin');
 Route::get('profileAdmin/edit/{id}', 'AdminController@showEdit');
 Route::get('profileAdmin/picture/{id}', 'AdminController@showPicture');
 Route::post('editAdmin', 'AdminController@editProfile');

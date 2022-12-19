@@ -76,7 +76,10 @@ class UserController extends Controller
 
     public function showPicture($id){
       $user = User::find($id);
-      if ($this->authorize('correctUser', $user)){
+      if (Auth::guard('admin')->check()){
+        return view('pages.profilePicture', ['user' => $user]);
+      }
+      else if ($this->authorize('correctUser', $user)){
         return view('pages.profilePicture', ['user' => $user]);
       }
       else{
@@ -191,7 +194,11 @@ class UserController extends Controller
 
     public function showDelete($id){
       $user = User::find($id);
-      if ($this->authorize('correctUser', $user)){
+      
+      if(Auth::guard('admin')->check()){
+        return view('pages.profileDelete', ['user' => $user]);
+      }
+      else if ($this->authorize('correctUser', $user)){
         return view('pages.profileDelete', ['user' => $user]);
       }
       else{
@@ -266,7 +273,19 @@ class UserController extends Controller
     public function updatePicture(Request $request)
     {
       $user = User::find($request->input('user'));
-      if ($this->authorize('correctUser', $user)){
+      if (Auth::guard('admin')->check()){
+        if($request->hasFile('image')){
+          $filename = $request->image->getClientOriginalName();
+          $filename = $request->input('user') . "." .pathinfo($filename,PATHINFO_EXTENSION);
+          
+          $request->image->storeAs('',$filename,'my_files');
+          $user->picture = $filename;
+          $user->save();
+          
+        }
+        return redirect('profile/'.$request->input('user'));
+      }
+      else if ($this->authorize('correctUser', $user)){
         if($request->hasFile('image')){
             $filename = $request->image->getClientOriginalName();
             $filename = $request->input('user') . "." .pathinfo($filename,PATHINFO_EXTENSION);
@@ -286,7 +305,25 @@ class UserController extends Controller
 
     public function deleteAccount(Request $request){
       $user = User::find($request->input('user'));
-      if ($this->authorize('correctUser', $user)){
+      if(Auth::guard('admin')->check()){
+        try{
+          $user->delete();
+          $id = Auth::guard('admin')->user()->id;
+          return redirect()->route('profileAdmin',[$id])->with('info'," User's account has been deleted.");
+        }
+        catch(\Illuminate\Database\QueryException $ex){
+          $message = explode('ERROR:  ', $ex->getMessage());
+          $message = end($message);
+          $message = explode('CONTEXT',$message);
+          $error = $message[0];
+          if (strcmp($error[4],"u") == 0){
+            return back()->withInput()->with('fail',"This user has an active auction with bids and cannot be deleted");
+          }
+          return back()->withInput()->with('fail',"There was an error deleting this user's account");
+          
+        }
+      }
+      else if ($this->authorize('correctUser', $user)){
         try{
           $user->delete();
           Auth::logout();

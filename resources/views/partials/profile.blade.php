@@ -77,6 +77,12 @@
                 <a href="{{ url('/profile/edit/'. substr(strrchr(url()->current(),"/"),1) )}}">
                   <button id="buttonInvBack" style="margin-top: 0" class="btn btn-outline-light btn-lg px-5" type="button">Edit Profile Information</button> 
                 </a>
+                <a href="{{ url('/profile/picture/'. substr(strrchr(url()->current(),"/"),1))}}">
+                    <button id="buttonInvBack" style="margin-top: 0" class="btn btn-outline-light btn-lg px-5" type="button">Change profile picture</button> 
+                  </a>
+                <a href="{{ url('/profile/delete/'. substr(strrchr(url()->current(),"/"),1))}}">
+                    <button id="buttonInvBack" style="margin-top: 0" class="btn btn-outline-light btn-lg px-5" type="button">Delete User</button> 
+                  </a>
               </div>
               @endif
               @if (auth()->check())

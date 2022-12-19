@@ -244,48 +244,32 @@ function footerFix(){
 
 
 
-
-function verifyFileUpload(e)
-{
-  window.URL = window.URL || window.webkitURL;  
+function checkSize(){
+    window.URL = window.URL || window.webkitURL;  
   var file = document.getElementById("imageInput");
-
   
   if (file && file.files.length > 0) 
   {
         var img = new Image();
         
+        
         img.src = window.URL.createObjectURL( file.files[0] );
-        img.onload = function() 
+        return img.onload = function(width,height) 
         {
-            var width = this.naturalWidth,
-                height = this.naturalHeight;
+            width = this.naturalWidth,
+            height = this.naturalHeight;
+           
                 
           if (width < 800 || height < 700){
             errorMessage("The car picture needs to be at least 800x700")
-
-            return false;
+            file.value="";
           }
-          else{
-            errorMessage("")
-
-            return true;
-          }
+          
+     
         };
-
-    }
-    else{
-        return true;
     }
    
 }
-
-
-
-
-
-
-
 
 
 

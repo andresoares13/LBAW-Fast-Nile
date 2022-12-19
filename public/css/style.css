@@ -581,6 +581,7 @@ h6 {
 
 
 .custom-table {
+  
   max-width: 15em;
   text-align: center;
   min-width: 500px;}
@@ -1051,3 +1052,4 @@ h6 {
   height: 170px;
   filter: brightness(100%);
 }
+

@@ -25,7 +25,7 @@
 
             <label ><strong> This will permanently delete your account. <br> <small>Forever is a long time.</small></strong> <br> <br></label>
             
-            <input type="hidden" name="user" value="{{ Auth::user()->id }}">
+            <input type="hidden" name="user" value="{{ substr(strrchr(url()->current(),"/"),1) }}">
 
             @if (Session::get('fail'))
             <div class="alert alert-danger">

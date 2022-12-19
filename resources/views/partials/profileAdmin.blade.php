@@ -20,6 +20,11 @@
               <br>
               @if(auth()->guard('admin')->user()->id == substr(strrchr(url()->current(),"/"),1))
               <div id="profileOptions">
+              @if (Session::get('info'))
+                  <div class="alert alert-info">
+                    {{Session::get('info')}}
+                  </div>
+                  @endif
                 <a href="{{ url('/profileAdmin/edit/'. strval(auth()->guard('admin')->user()->id))}}">
                   <button id="buttonInvBack" style="margin-top: 0" class="btn btn-outline-light btn-lg px-5" type="button">Edit Profile Information</button> 
                 </a>  

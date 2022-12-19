@@ -1,4 +1,8 @@
+@if ($bid->iduser == null)
+<tr style="text-decoration: line-through;">
+@else
 <tr>
+@endif
 @if (isset($pageNr))    
 <td>{{($i+($pageNr-1)*20)+1}} </td>
 @else
@@ -11,7 +15,7 @@
 @if ($bid->iduser != null)
 <td><a href="/users/{{$bid->iduser}}">{{ $bid->getUserName($bid->iduser)}}</a></td>
 @else
-<td><a style="text-decoration:none">Anonymous</a> </td>
+<td><a >Anonymous</a> </td>
 @endif
 @endif
 </tr>
