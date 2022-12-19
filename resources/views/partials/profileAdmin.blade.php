@@ -34,6 +34,9 @@
                 <a href="{{ url('/profileAdmin/picture/'. strval(auth()->guard('admin')->user()->id))}}">
                     <button id="buttonInvBack" style="margin-top: 0" class="btn btn-outline-light btn-lg px-5" type="button">Change profile picture</button> 
                   </a>
+                  <a href="{{ url('/users/blocked/1')}}">
+                    <button id="buttonInvBack" style="margin-top: 0" class="btn btn-outline-light btn-lg px-5" type="button">Blocked Users List</button> 
+                  </a>  
               </div>
               @endif 
           </div>

@@ -19,6 +19,7 @@ use App\Models\Car;
 use App\Models\Bid;
 use App\Models\Follow;
 use App\Models\Notification;
+use App\Models\Block;
 
 class UserController extends Controller
 { 
@@ -206,6 +207,29 @@ class UserController extends Controller
       }
     }
 
+    public function showBlock($id){
+      $user = User::find($id);
+      
+      if(Auth::guard('admin')->check()){
+        return view('pages.block', ['user' => $user]);
+      }
+      else{
+        abort(403);
+      }
+    }
+
+    public function showUnblock($id){
+      $user = User::find($id);
+      
+      if(Auth::guard('admin')->check()){
+        $block = DB::table('block')->where('iduser',$id)->get();
+        return view('pages.unblock', ['user' => $user,'block' => $block[0]]);
+      }
+      else{
+        abort(403);
+      }
+    }
+
     public function addFunds(Request $request){
       if ((int) $request->input('funds') > 50000 || (int) $request->input('funds') < 500){
         return header("HTTP/1.1 500 Internal Server Error");
@@ -341,6 +365,48 @@ class UserController extends Controller
           
         }
         
+      }
+      else{
+        abort(403);
+      }
+    }
+
+
+    public function blockAccount(Request $request){
+      $user = User::find($request->input('user'));
+      if(Auth::guard('admin')->check()){
+        try{
+          $block = new Block();
+          $id = Auth::guard('admin')->user()->id;
+          $block->idadmin = $id;
+          $block->iduser = $user->id;
+          $block->justification = $request->justification;
+          $block->save();
+
+          return redirect()->route('profileAdmin',[$id])->with('info'," User's account has been blocked.");
+        }
+        catch(\Illuminate\Database\QueryException $ex){
+          return back()->withInput()->with('fail',"There was an error blocking this user's account");
+        }
+      }
+      else{
+        abort(403);
+      }
+    }
+
+    public function unblockAccount(Request $request){
+      $user = User::find($request->input('user'));
+      if(Auth::guard('admin')->check()){
+        try{
+          $block = Block::find($request->block);
+          $id = $block->iduser;
+          $block->delete();
+
+          return redirect()->route('profileUser',[$id])->with('info'," User's account has been unblocked.");
+        }
+        catch(\Illuminate\Database\QueryException $ex){
+          return back()->withInput()->with('fail',"There was an error unblocking this user's account");
+        }
       }
       else{
         abort(403);
@@ -527,8 +593,36 @@ class UserController extends Controller
     }
 
     
+    public function blockList($pageNr){
+      if (Auth::guard('admin')->check()){
+        $limit = 20 * intval($pageNr);
+        $blocks = DB::table("block")->limit($limit)->get();
+        $all= DB::table("block")->get()->toArray();
+        $totalCount=count($all);
+        $lastEl = $totalCount - (20 * (intval($pageNr)-1)); //if the page is not complete we dont want repetitives, if there are 7, first page gets 5, 2nd gets 2
+        $blocks = array_slice($blocks->toArray(), -$lastEl); //only get the last 5
+        $blocks = Block::hydrate($blocks);
+        $totalPages = intval(ceil($totalCount /20)); //gets the total number of pages of auctions assuming each has 20
+        if ($limit > $totalCount + 20){
+          $blocks = [];
+        }
+       
+        return view('pages.blocks', ['blocks' => $blocks,'totalPages' => $totalPages,'pageNr' => $pageNr]);
+      }
+      else{
+        abort(403);
+      }
+    }
 
-    
+    /*
+
+    DB::table("users")->select('*')->whereNotIn('user_name',function($query) {
+
+      $query->select('user_name')->from('buy_courses');
+
+    })->get();
+
+    */
 
    
 }

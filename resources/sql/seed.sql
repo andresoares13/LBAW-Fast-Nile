@@ -13,6 +13,7 @@ DROP TABLE IF EXISTS rating CASCADE;
 DROP TABLE IF EXISTS auctioneer CASCADE;
 DROP TABLE IF EXISTS users CASCADE;
 DROP TABLE IF EXISTS password_resets CASCADE;
+DROP TABLE IF EXISTS block CASCADE;
 
 DROP TYPE IF EXISTS categories;
 DROP TYPE IF EXISTS statesAuction;
@@ -132,6 +133,15 @@ CREATE TABLE password_resets (
    token TEXT,
    created_at TIMESTAMP
 );
+
+ CREATE TABLE block (
+   id SERIAL PRIMARY KEY, 
+   idUser INT NOT NULL,
+   idAdmin INT NOT NULL,
+   justification TEXT NOT NULL,
+   CONSTRAINT fk_user FOREIGN KEY(idUser) REFERENCES users(id) ON DELETE CASCADE,
+   CONSTRAINT fk_admin FOREIGN KEY(idAdmin) REFERENCES administrator(id)
+);  
 
 
 -----------------------------------------

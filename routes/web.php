@@ -45,7 +45,7 @@ Route::post('resetPasswordConfirm', 'UserController@resetPasswordConfirm');
 
 
 // profile
-Route::get('profile/{id}', 'UserController@show');
+Route::get('profile/{id}', 'UserController@show')->name('profileUser');;
 Route::get('profile/edit/{id}', 'UserController@showEdit');
 Route::get('profile/wallet/{id}', 'UserController@showWallet');
 Route::get('profile/upgrade/{id}', 'UserController@showUpgrade');
@@ -70,6 +70,11 @@ Route::get('profileAdmin/edit/{id}', 'AdminController@showEdit');
 Route::get('profileAdmin/picture/{id}', 'AdminController@showPicture');
 Route::post('editAdmin', 'AdminController@editProfile');
 Route::post('pictureAdminProfile', 'AdminController@updatePicture');
+Route::get('profile/block/{id}','UserController@showBlock');
+Route::post('block', 'UserController@blockAccount');
+Route::get('/users/blocked/{pageNr}','UserController@blockList');
+Route::get('profile/unblock/{id}','UserController@showUnblock');
+Route::post('unblock', 'UserController@unblockAccount');
 
 
 // Search

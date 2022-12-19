@@ -63,6 +63,11 @@
               @endif
               @if(Auth::guard('admin')->check())
               <div id="profileOptions">
+              @if (Session::get('info'))
+                  <div class="alert alert-info">
+                    {{Session::get('info')}}
+                  </div>
+                  @endif
                 @if ($user->isAuctioneer($user->id))
               <a href="{{ url('/profile/auctions/'. $auctioneer[0]['id'].'/1')}}">
                   <button id="buttonInvBack" style="margin-top: 0;margin-bottom: 10px;" class="btn btn-outline-light btn-lg px-5" type="button">{{$user->names}} auctions</button> 
@@ -80,6 +85,15 @@
                 <a href="{{ url('/profile/picture/'. substr(strrchr(url()->current(),"/"),1))}}">
                     <button id="buttonInvBack" style="margin-top: 0" class="btn btn-outline-light btn-lg px-5" type="button">Change profile picture</button> 
                   </a>
+                  @if ($user->isBlocked($user->id))
+                  <a href="{{ url('/profile/unblock/'. substr(strrchr(url()->current(),"/"),1))}}">
+                    <button id="buttonInvBack" style="margin-top: 0" class="btn btn-outline-light btn-lg px-5" type="button">Unblock User</button> 
+                  </a>
+                  @else
+                  <a href="{{ url('/profile/block/'. substr(strrchr(url()->current(),"/"),1))}}">
+                    <button id="buttonInvBack" style="margin-top: 0" class="btn btn-outline-light btn-lg px-5" type="button">Block User</button> 
+                  </a>
+                  @endif
                 <a href="{{ url('/profile/delete/'. substr(strrchr(url()->current(),"/"),1))}}">
                     <button id="buttonInvBack" style="margin-top: 0" class="btn btn-outline-light btn-lg px-5" type="button">Delete User</button> 
                   </a>

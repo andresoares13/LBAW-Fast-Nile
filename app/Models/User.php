@@ -74,4 +74,13 @@ class User extends Authenticatable
     public function getNotificationsCount($id){
         return count(Notification::where('iduser',$id)->get()->toArray());
     }
+
+    public function isBlocked($id){
+        $block = DB::table('block')->where('iduser',$id)->get()->toArray();
+        
+        if (count($block) > 0){
+            return true;
+        }
+        return false;
+    }
 }
