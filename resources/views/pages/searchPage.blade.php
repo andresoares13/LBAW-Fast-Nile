@@ -46,8 +46,28 @@
     </section><!-- End Breadcrumbs -->
 
 
+
     <section id="breadcrumbs" class="breadcrumbs">
-      <div class="container" style="text-align: center">
+      <div class="container" style="text-align: center"> 
+
+        <div class=" justify-content-between align-items-center">
+          <h1 style="font-weight: bold;">Browse auction by category</h1>
+          <div class="d-flex categoriesBrowse" >
+            <a class="category-icon" href="{{url('/auctions/1?category=Sport')}}"><img src="{{asset('img/icons/sport.png')}}" alt=""></a>
+            <a class="category-icon" href="{{url('/auctions/1?category=Coupe')}}"><img src="{{asset('img/icons/Coupe.png')}}" alt=""></a>
+            <a class="category-icon" href="{{url('/auctions/1?category=Convertible')}}"><img src="{{asset('img/icons/Convertible.png')}}" alt=""></a>
+            <a class="category-icon" href="{{url('/auctions/1?category=SUV')}}"><img src="{{asset('img/icons/SUV.png')}}" alt=""></a>
+            <a class="category-icon" href="{{url('/auctions/1?category=Pickup Truck')}}"><img src="{{asset('img/icons/PickupTruck.png')}}" alt=""></a>
+            
+          </div>
+        </div>
+
+      </div>
+    </section><!-- End Breadcrumbs -->
+
+
+    <section id="breadcrumbs" class="breadcrumbs" style="margin-bottom: 5%">
+      <div class="container" style="text-align: center;">
 
         <div class="justify-content-between align-items-center">
           <h1 style="font-weight: bold;">Search for a User by Name</h1>

@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Mail;
 use App\Mail\Mailtrap;
 use Illuminate\Support\Facades\Hash;
 
+
 use App\Models\User;
 use App\Models\Auctioneer;
 use App\Models\Auction;
@@ -20,12 +21,18 @@ use App\Models\Follow;
 use App\Models\Notification;
 
 class UserController extends Controller
-{
+{ 
 
     public function show($id)
     {
       $user = User::find($id);
-      return view('pages.profile', ['user' => $user]);
+      if ($user != null){
+        return view('pages.profile', ['user' => $user]);
+      }
+      else{
+        abort(404);
+      }
+      
     }
 
     public function showEdit($id){
@@ -123,6 +130,9 @@ class UserController extends Controller
         abort(404);
       }
       $user = User::find($id);
+      if ($user == null){
+        abort(404);
+      }
       if (Auth::guard('admin')->check()){
         $user = User::find($id);
         $limit = 20 * intval($pageNr);
@@ -157,6 +167,10 @@ class UserController extends Controller
     }
 
     public function showUserFollowed($id,$pageNr){
+      $user = User::find($id);
+      if ($user == null){
+        abort(404);
+      }
       $limit = 5 * intval($pageNr);
       $auctions = [];
       $follows = Follow::where('iduser',$id)->limit($limit)->get()->toArray();
@@ -175,6 +189,16 @@ class UserController extends Controller
 
     }
 
+    public function showDelete($id){
+      $user = User::find($id);
+      if ($this->authorize('correctUser', $user)){
+        return view('pages.profileDelete', ['user' => $user]);
+      }
+      else{
+        abort(403);
+      }
+    }
+
     public function addFunds(Request $request){
       if ((int) $request->input('funds') > 50000 || (int) $request->input('funds') < 500){
         return header("HTTP/1.1 500 Internal Server Error");
@@ -189,6 +213,8 @@ class UserController extends Controller
         abort(403);
       }
     }
+
+    
 
 
     public function editProfile(Request $request){
@@ -258,6 +284,33 @@ class UserController extends Controller
     }
 
 
+    public function deleteAccount(Request $request){
+      $user = User::find($request->input('user'));
+      if ($this->authorize('correctUser', $user)){
+        try{
+          $user->delete();
+          Auth::logout();
+          return redirect()->route('login')->with('info','Your account has been deleted.');
+        }
+        catch(\Illuminate\Database\QueryException $ex){
+          $message = explode('ERROR:  ', $ex->getMessage());
+          $message = end($message);
+          $message = explode('CONTEXT',$message);
+          $error = $message[0];
+          if (strcmp($error[4],"u") == 0){
+            return back()->withInput()->with('fail',"You can only delete your account if none of your active auctions have bids on them");
+          }
+          return back()->withInput()->with('fail','There was an error deleting your account');
+          
+        }
+        
+      }
+      else{
+        abort(403);
+      }
+    }
+
+
     public function createAuction(Request $request){
       $user = User::find($request->input('user'));
       if ($this->authorize('correctUser', $user)){
@@ -288,6 +341,7 @@ class UserController extends Controller
           $auction->descriptions = $request->input('description');
           $auction->pricestart = $request->input('priceStart');
           $auction->pricenow = $request->input('priceStart');
+          $auction->ending = false;
 
           //calculate date
           $date1 = strtotime($request->input('timeClose'));

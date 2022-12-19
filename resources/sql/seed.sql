@@ -204,7 +204,7 @@ DROP TRIGGER IF EXISTS min_bid_delete_auction ON auction;
 DROP TRIGGER IF EXISTS new_bid_notification ON auction;
 DROP TRIGGER IF EXISTS ending_notification ON auction;
 DROP TRIGGER IF EXISTS ended_notification ON auction;
-
+DROP TRIGGER IF EXISTS fix_auction_price ON auction;
 
 
 
@@ -468,8 +468,8 @@ BEGIN
       SET idUser = NULL
       WHERE old.id = rating.idUser;
    UPDATE auction 
-      SET highestBidder = (select bid.idUser from auction,bid where bid.idAuction = auction.id and bid.idUser is not NULL order by valuee desc limit 1),
-      priceNow = (select bid.valuee from auction,bid where bid.idAuction = auction.id and bid.idUser is not NULL order by valuee desc limit 1)
+      SET highestBidder = (select bid.idUser from auction,bid where bid.idAuction = auction.id and old.id = auction.highestBidder and bid.idUser is not NULL order by valuee desc limit 1),
+      priceNow = (select bid.valuee from auction,bid where bid.idAuction = auction.id and old.id = auction.highestBidder and bid.idUser is not NULL order by valuee desc limit 1)
       WHERE old.id = auction.highestBidder and auction.states = 'Active';   
     return old;
 END;
@@ -517,7 +517,7 @@ CREATE OR REPLACE FUNCTION min_bid_delete_auction_function() RETURNS TRIGGER AS
 $BODY$
 BEGIN
     IF (select count(bid.id) from auction,bid where bid.idAuction = old.id) > 0 THEN 
-        RAISE EXCEPTION 'An auction can´t be deleted if it has more than 0 bids';
+        RAISE EXCEPTION 'An auction cannot be deleted if it has more than 0 bids';
 	ELSE
 
      INSERT INTO notification (idUser,idAuction,messages,viewed)
@@ -635,6 +635,26 @@ CREATE TRIGGER ended_notification
      FOR EACH ROW
      EXECUTE PROCEDURE ended_notification_function();
 
+
+--t19
+
+CREATE OR REPLACE FUNCTION fix_auction_price_function() RETURNS TRIGGER AS
+$BODY$
+BEGIN
+   IF (new.priceNow is null) THEN
+      UPDATE auction
+         SET priceNow = priceStart where id = new.id;
+   END IF;
+   return new;
+END;
+$BODY$
+language plpgsql;
+
+
+CREATE TRIGGER fix_auction_price
+     AFTER UPDATE ON auction
+     FOR EACH ROW
+     EXECUTE PROCEDURE fix_auction_price_function();     
 
 
 

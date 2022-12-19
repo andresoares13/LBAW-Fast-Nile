@@ -112,7 +112,7 @@
           <p id="noNotis" style ="display:none;" class="dropdown-item header-noti" >No new notifications </p>
           <body onload="addNotificationListeners();"> </body>
           @endif
-          <a style="border: none; text-align: center;" class="dropdown-item header-noti" href="{{ url('/profile/notifications/'.auth()->user()->id).'/1' }}"><p style="margin-bottom: 0;"><small>click to see all</small></p></a>
+          <a style="border: none; text-align: center;margin-bottom:0" class="dropdown-item header-noti" href="{{ url('/profile/notifications/'.auth()->user()->id).'/1' }}"><p style="margin-bottom: 0;"><small>click to see all</small></p></a>
       
         </li>
         

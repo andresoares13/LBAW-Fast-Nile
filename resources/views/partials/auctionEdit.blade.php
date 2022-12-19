@@ -33,18 +33,20 @@
                 <textarea id="description" name="description" class="form-control" required="required" minlength="10" maxlength="250" rows="4" cols="50" style="height:200px;">{{$auction->descriptions}}</textarea>
                 <label for="description">Description</label>
               </div>
+
+              <label for="file">Change car photo</label>
+              <input type="file" id="imageInput" name="image" class="form-control" ><br><br>
             </div>  
             
             
-
+            
 
             <input type="hidden" name="auction" value="{{ $auction->id }}">
 
-            <button id="buttonInvBack" class="btn btn-outline-light btn-lg px-5" type="submit"  >Save</button>
+            <label id="error"></label> <br> 
 
-            <p id="error_messages" style="color: black">
-              <?php if(isset($_SESSION['ERROR'])) echo htmlentities($_SESSION['ERROR']); unset($_SESSION['ERROR'])?>
-            </p>
+            <button id="buttonInvBack" class="btn btn-outline-light btn-lg px-5" type="submit"  onclick="return verifyFileUpload(event)">Save</button>
+
           </form>
 
 <script type="text/javascript">

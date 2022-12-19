@@ -4,8 +4,14 @@
 
 @section('content')
 
+<script src="{{ asset('js/auctionsPagesFilters.js') }}" defer> </script>
+
+@if (isset($filter))
+<p hidden id="filter"></p>
+@endif
 
 @if (isset($category))
+<p hidden id="categoryFilter">{{$category}}</p>
 @else
 @php
 $category = 'Category';
@@ -47,35 +53,50 @@ $category = 'Category';
             @endif
             
           @endif  
-        </div>
-        @if ($category!="Category")
-            <h1 style="font-weight: bold;" class="d-flex" style="margin-left:auto;">Category: {{$category}}</h1>
-            @endif
-        <form id="searchForms" class="d-flex"  action="/search/auction"  method="get" role="search">
+          <form id="searchForms" class="d-flex"  action="/search/auction"  method="get" role="search">
         <input class="form-control me-sm-2" type="search" placeholder="Search for an Auction..." id="query" name="q">
         <button class="btn btn-secondary my-2 my-sm-0" type="submit">Search</button>
         </form>
-      </div>
-    </section><!-- End Breadcrumbs -->
-
-    <section  style="margin-top:1%;" class="breadcrumbs">
-      <div class="container">
-
-        <div class="d-flex justify-content-between align-items-center">
-          
-        <form id="searchForms" class="d-flex"  action="/auctions/{{$pageNr}}"  method="get" role="search" >
-              <select  class="form-select" id="categorie" name='category' onchange="this.form.submit()" required>
-              <option value="" selected>{{$category}}</option>
-                <option value="Sport">Sport</option>
-                <option value="Coupe">Coupe</option>
-                <option value="Convertible">Convertible</option>
-                <option value="SUV">SUV</option>
-                <option value="Pickup Truck">Pickup Truck</option>
+        </div>
+        <div class="d-flex justify-content-between align-items-center" style="margin-top: 2%;">
+        <form id="categoriesForm" class="d-flex"  action="{{Request::getRequestUri()}}"  method="get" role="search" >
+              <select class="form-select" id="categories" name='category' onchange="updateForms('categories');this.form.submit()" required>
+              <option value="">Category</option>
+                <option id="Sport" value="Sport">Sport</option>
+                <option id="Coupe" value="Coupe">Coupe</option>
+                <option id="Convertible" value="Convertible">Convertible</option>
+                <option id="SUV" value="SUV">SUV</option>
+                <option id="PickupTruck" value="Pickup Truck">Pickup Truck</option>
               </select>
             </form>
+
+            <form id="statesForm" class="d-flex"  action="{{Request::getRequestUri()}}"  method="get" role="search" >
+              <select class="form-select" id="states" name='state' onchange="updateForms('states');" required>
+              <option value="">Car States</option>
+              <option value="Wreck">Wreck</option>
+                <option value="Poor Condition">Poor Condition</option>
+                <option value="Normal Condition">Normal Condition</option>
+                <option value="High Condition">High Condition</option>
+                <option value="Brand New">Brand New</option>
+              </select>
+            </form>
+
+            <form id="searchForms" class="d-flex"  action="/auctions/{{$pageNr}}"  method="get" role="search" >
+              <select class="form-select" id="" name='category' onchange="this.form.submit()" required>
+              <option value="">Category</option>
+                <option id="Sport" value="Sport">Sport</option>
+                <option id="Coupe" value="Coupe">Coupe</option>
+                <option id="Convertible" value="Convertible">Convertible</option>
+                <option id="SUV" value="SUV">SUV</option>
+                <option id="PickupTruck" value="Pickup Truck">Pickup Truck</option>
+              </select>
+            </form>
+
         </div>
       </div>
     </section><!-- End Breadcrumbs -->
+
+
 
 
    

@@ -942,6 +942,27 @@ h6 {
   border: 2px solid #5c9f24;
   border-radius: 2px;
   border-color: #111111;
+  
+}
+
+#notificationDrop{
+  text-align: center;
+  height: auto;
+}
+
+
+
+@media (min-width: 1166px){
+  #notificationDrop{
+    left: 50%;
+    transform: translateX(-50%);
+  }
+}
+
+@media (max-width: 1165px){
+  #notificationDrop{
+   max-width: 90vw;
+  }
 }
 
 .bellnumbers {
@@ -955,7 +976,7 @@ h6 {
   right: 0;
 }
 
-@media (max-width: 991px){
+@media (max-width: 1165px){
   .bellnumbers{
     position: relative;
     top: -25px;
@@ -992,4 +1013,41 @@ h6 {
 
 .unseen{
   background-color: #e2d6d6;
+}
+
+
+
+.categoriesBrowse{
+  flex-wrap: wrap; 
+  justify-content: space-between; 
+  margin-top: 5%; 
+  margin-bottom:  5%;
+  gap: 10px; 
+  column-gap: 10px; 
+  flex-direction: row;
+  flex: 1;
+  align-items: center;
+  align-content: center;
+}
+
+
+.category-icon img{
+  width: 100%;
+  width: 180px;
+  height: 150px;
+  box-shadow: 0 4px 8px 0 rgba(117, 116, 116, 0.5), 0 6px 20px 0 rgba(117, 116, 116, 0.5);
+  border-radius: 5%;
+  filter: brightness(80%);
+  transition: 200ms ease-in-out;
+  margin: 20px;
+  
+}
+
+
+
+.category-icon img:hover{
+  transition: 200ms ease-in-out;
+  width: 200px;
+  height: 170px;
+  filter: brightness(100%);
 }

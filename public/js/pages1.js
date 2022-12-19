@@ -7,9 +7,16 @@ function checkNumber(event) {
 
 
 function checkBidValue() {
+    var r = /\d+/;
+    var wal = document.getElementById('headerWallet').innerHTML
     if (parseInt(document.getElementById('bidInput').value) < parseInt(document.getElementById('startValue').innerHTML) + 1){
 
         errorMessage("The value of the bid has to be at least " + (parseInt(document.getElementById('startValue').innerHTML) +1 ))
+        return false
+    }
+    
+    else if (parseInt(document.getElementById('bidInput').value) > parseInt(wal.match(r)[0])){
+        errorMessage("You don't have enough funds")
         return false
     }
     else if (document.getElementById('HighestBidder')!=null){
@@ -19,6 +26,7 @@ function checkBidValue() {
             return false
         }
     }
+ 
     document.getElementById('bidConfirm').style.display = "block"
     return true;
 }
@@ -241,11 +249,12 @@ function verifyFileUpload(e)
 {
   window.URL = window.URL || window.webkitURL;  
   var file = document.getElementById("imageInput");
+
   
   if (file && file.files.length > 0) 
   {
         var img = new Image();
-
+        
         img.src = window.URL.createObjectURL( file.files[0] );
         img.onload = function() 
         {
@@ -254,11 +263,21 @@ function verifyFileUpload(e)
                 
           if (width < 800 || height < 700){
             errorMessage("The car picture needs to be at least 800x700")
+
             return false;
           }
+          else{
+            errorMessage("")
+
+            return true;
+          }
         };
+
     }
-    return true;
+    else{
+        return true;
+    }
+   
 }
 
 
@@ -288,7 +307,6 @@ if (page[1]=='auction'){
     bid=JSON.stringify(data);
     bid = JSON.parse(bid);
 
-    console.log(bid.users);
 
     if (document.getElementById('bidConfirm') !=null){
         document.getElementById('bidConfirm').style.display = "none"
@@ -320,16 +338,23 @@ if (page[1]=='auction'){
         tbl.querySelector('tbody').insertBefore(tr2,tbl.querySelector('tbody').children[0]);
         for (let i=0;i<previousRows.length;i++){
             if (i!=0){
-                previousRows[i].firstChild.innerHTML = i+1;
+                previousRows[i].children[0].innerHTML = parseInt(i)+1;
             }
         }
         while (previousRows.length > 5){
             previousRows[5].parentNode.removeChild(previousRows[5])
         }
+
+        if (document.getElementById('auctionCancel') != null){
+            button = document.getElementById('auctionCancel').getElementsByTagName('button')[0];
+            button.parentNode.removeChild(button);
+        }
    
         
     });
 }
+
+
 
 
 

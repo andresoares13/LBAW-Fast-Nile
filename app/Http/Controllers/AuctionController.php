@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
 use App\Models\Auction;
+use App\Models\Car;
 
 class AuctionController extends Controller
 {
@@ -15,6 +16,9 @@ class AuctionController extends Controller
     {
       try{
         $auction = Auction::find($id);
+        if (!$auction){
+          abort(404);
+        }
         $time = new \DateTime($auction->timeclose);
         $diff = $time->diff(new \DateTime("now"));
         $minutes = $diff->days * 24 * 60;
@@ -24,7 +28,10 @@ class AuctionController extends Controller
         $seconds +=$diff->h * 60 *60;
         $seconds += $minutes * 60;
         $seconds += $diff->s;
-
+        if ($diff->invert == 0){
+          $minutes = $minutes * (-1);
+          $seconds = $seconds * (-1);
+        }
         if ($minutes <= 0 && $auction->states != 'Closed' && $seconds <=0){
           DB::table('auction')->where('id',$auction->id)->update(['states' => 'Closed']);
           $auction = Auction::find($id);
@@ -34,7 +41,7 @@ class AuctionController extends Controller
           $auction = Auction::find($id);
         }
       }
-      catch(Illuminate\Database\QueryException $ex){
+      catch(\Illuminate\Database\QueryException $ex){
         dd($ex->getMessage()); 
       }
       return view('pages.auction', ['auction' => $auction]);
@@ -81,7 +88,7 @@ class AuctionController extends Controller
         return view('pages.auctionsAllPages', ['auctions' => $auctions,'totalPages' => $totalPages,'pageNr' => $pageNr]);
       }
       else{
-        return view('pages.auctionsAllPages', ['auctions' => $auctions,'totalPages' => $totalPages,'pageNr' => $pageNr,'category' => $request->input('category')]);
+        return view('pages.auctionsAllPages', ['auctions' => $auctions,'totalPages' => $totalPages,'pageNr' => $pageNr,'category' => $request->input('category'),'filter' =>true]);
       }
 
     }
@@ -90,6 +97,15 @@ class AuctionController extends Controller
       $auction = Auction::find($request->input('auction'));
       $auction->title = $request->input('title');
       $auction->descriptions = $request->input('description');
+      if($request->hasFile('image')){
+        $filename = $request->image->getClientOriginalName();
+        $filename = $request->input('auction') . "." .pathinfo($filename,PATHINFO_EXTENSION);
+
+        $request->image->storeAs('',$filename,'my_files2');
+        $car = Car::find($auction->idcar);
+        $car->picture = $filename;
+        $car->save();
+      }
       $auction->save();
       return redirect('auction/'.$auction->id);
     }

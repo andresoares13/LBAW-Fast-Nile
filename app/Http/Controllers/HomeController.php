@@ -25,6 +25,28 @@ class HomeController extends Controller
       return view('pages.home', ['auctions' => $auctions,'soonAuction' => $soonAuction]);
     }
 
+    public function showAboutUs()
+    {
+        
+      return view('pages.aboutUs');
+      
+    }
+
+    public function showContacts()
+    {
+        
+      return view('pages.contacts');
+      
+    }
+
+
+    public function showFeatures()
+    {
+        
+      return view('pages.features');
+      
+    }
+
 
 
 }

@@ -93,9 +93,6 @@
 
             <button id="buttonInvBack" class="btn btn-outline-light btn-lg px-5" type="submit" onclick="return !!(checkCarValue() & verifyFileUpload(event))" >Create</button>
 
-            <p id="error_messages" style="color: black">
-              <?php if(isset($_SESSION['ERROR'])) echo htmlentities($_SESSION['ERROR']); unset($_SESSION['ERROR'])?>
-            </p>
           </form>
           </div>
       </div>

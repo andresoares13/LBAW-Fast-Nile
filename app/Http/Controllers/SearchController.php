@@ -17,7 +17,7 @@ class SearchController extends Controller
     }
 
     public function viewSearchExact(Request $request){
-        $result = Auction::where('title',$request->input('q'))->orWhere('descriptions',$request->input('q'))->get();
+        $result = Auction::whereRaw('LOWER(title) = (?)',[strtolower($request->input('q'))])->orWhereRaw('LOWER(descriptions) = (?)', [strtolower($request->input('q'))])->get();
         return view('pages.searchAuctionM', ['auctions' => $result,'query' => $request->input('q')]);
     }
 

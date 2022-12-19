@@ -28,13 +28,18 @@
             <div class="portfolio-info">
               <h3>Auction Details</h3>
               <ul>
+                @if ($auction->owners == null)
+                <li><strong>Owner</strong>: Anonymous</li>
+                @else
                 <li><strong>Owner</strong>: <a href="/profile/{{$auction->getUser($auction->owners)->id}}">{{$auction->getAuctioneerName($auction->owners)}}</a></li>
+                @endif
                 <li><strong>Car</strong>: {{$auction->getCar($auction->idcar)->names}}</li>
                 <li><strong>Type</strong>: {{$auction->getCar($auction->idcar)->category}}</li>
                 <li><strong>State</strong>: {{$auction->getCar($auction->idcar)->states}}</li>
                 <li><strong>Color</strong>: {{$auction->getCar($auction->idcar)->color}}</li>
                 <li><strong>Consumption</strong>: {{$auction->getCar($auction->idcar)->consumption}} L/100km</li>
                 <li><strong>Autonomy</strong>: {{$auction->getCar($auction->idcar)->kilometers}} km</li>
+                @if ($auction->states != 'Closed')
                 <li style="font-size: larger;"><strong>Time Left</strong>: <text id='clock'></text></li>
                 <li style="font-size: larger;"><strong>Current Price</strong><text id="currentPriceText">: {{$auction->pricenow}} €</text></li>
                 <li>
@@ -112,6 +117,12 @@
                 @else
                 @endif 
                 </li>
+                @else
+                <li style="font-size: larger;"><strong>Closed</strong></li>
+                <li style="font-size: larger;"><strong>Final Price</strong><text id="currentPriceText">: {{$auction->pricenow}} €</text></li>
+                @endif
+                
+                
               </ul>
             </div>
             <div class="portfolio-description">
@@ -162,7 +173,7 @@
             </table>
         </div>
         </div>
-
+        @if ($auction->states != 'Closed')
         @if (Auth::check() && Auth::user()->id != $auction->getUser($auction->owners)->id)
         <div class="col-lg-4">
             <div class="portfolio-info bidFormBox">
@@ -199,6 +210,7 @@
             </div>
           </div>
         @endif
+        @endif
 
 
 
@@ -212,8 +224,11 @@
 @php
 $time = strtotime($auction->toArray()['timeclose']);
 @endphp
+
+@if ($auction->states != 'Closed')
 <script src="{{ asset('js/clock.js') }}" defer onload="startTime();"> </script>
 <p hidden id = "startValue">{{ floor($auction->pricenow * 1.05) }}</p>
 <p id="HighestBidder" hidden>{{$auction->highestbidder}}</p>
 
 <p hidden id = "hTime"><?php echo $time; ?></p>
+@endif

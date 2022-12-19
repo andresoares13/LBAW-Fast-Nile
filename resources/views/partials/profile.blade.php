@@ -37,7 +37,7 @@
               <p class="card-text">Address: {{$user->address}}</p>
                 @if ($user->isAuctioneer($user->id))
                 <p class="card-text">Phone Number: {{$user->getAuctioneer($user->id)[0]['phone']}}</p>
-                @if (!auth()->check() || Auth::guard('admin')->check())
+                @if (!auth()->check() && !Auth::guard('admin')->check())
                 <div id="profileOptions">
                 <a href="{{ url('/profile/auctions/'. $auctioneer[0]['id'].'/1')}}">
                   <button id="buttonInvBack" style="margin-top: 0;margin-bottom: 10px;" class="btn btn-outline-light btn-lg px-5" type="button">{{$user->names}} auctions</button> 
@@ -47,7 +47,8 @@
                   </a>
                 </div>
                 @else
-                  @if (auth()->user()->id != substr(strrchr(url()->current(),"/"),1))
+                  @if (!Auth::guard('admin')->check())
+                  @if (auth()->user()->id != substr(strrchr(url()->current(),"/"),1) )
                   <div id="profileOptions">
                     <a href="{{ url('/profile/auctions/'. $auctioneer[0]['id'].'/1')}}">
                       <button id="buttonInvBack" style="margin-top: 0; margin-bottom: 10px" class="btn btn-outline-light btn-lg px-5" type="button">{{$user->names}} auctions</button> 
@@ -56,11 +57,20 @@
                     <button id="buttonInvBack" style="margin-top: 0" class="btn btn-outline-light btn-lg px-5" type="button">Followed Auctions</button> 
                   </a>
                 </div>
+                  @endif
                   @endif  
                 @endif
               @endif
               @if(Auth::guard('admin')->check())
               <div id="profileOptions">
+                @if ($user->isAuctioneer($user->id))
+              <a href="{{ url('/profile/auctions/'. $auctioneer[0]['id'].'/1')}}">
+                  <button id="buttonInvBack" style="margin-top: 0;margin-bottom: 10px;" class="btn btn-outline-light btn-lg px-5" type="button">{{$user->names}} auctions</button> 
+                </a>
+                @endif
+                  <a href="{{ url('/profile/following/'. $user->id . '/1')}}">
+                    <button id="buttonInvBack" style="margin-top: 0" class="btn btn-outline-light btn-lg px-5" type="button">Followed Auctions</button> 
+                  </a>
                 <a href="{{ url('/profile/bids/'. strval($user->id) . '/1')}}">
                   <button id="buttonInvBack" style="margin-top: 0" class="btn btn-outline-light btn-lg px-5" type="button">{{$user->names}} Bids</button> 
                 </a>  
@@ -101,6 +111,9 @@
                   </a>
                   <a href="{{ url('/profile/picture/'. strval(auth()->user()->id))}}">
                     <button id="buttonInvBack" style="margin-top: 0" class="btn btn-outline-light btn-lg px-5" type="button">Change profile picture</button> 
+                  </a>
+                  <a href="{{ url('/profile/delete/'. strval(auth()->user()->id))}}">
+                    <button id="buttonInvBack" style="margin-top: 0" class="btn btn-outline-light btn-lg px-5" type="button">Delete account</button> 
                   </a>
                 @endif
               @endif    

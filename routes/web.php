@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\SearchController;
 
+
 if (env('APP_ENV') === 'production') {
     URL::forceSchema('https');
 }
@@ -21,7 +22,6 @@ Route::get('/', function () {
     return redirect('/home');
 });
 Route::get('/home', 'HomeController@showHome');
-
 
 
 
@@ -54,9 +54,11 @@ Route::get('profile/auctions/{id}/{pageNr}', 'UserController@showUserAuctions');
 Route::get('profile/bids/{id}/{pageNr}', 'UserController@showUserBids');
 Route::get('profile/following/{id}/{pageNr}', 'UserController@showUserFollowed');
 Route::get('profile/notifications/{id}/{pageNr}','UserController@showNotifications');
+Route::get('profile/delete/{id}','UserController@showDelete');
 Route::post('api/wallet', 'UserController@addFunds');
 Route::post('edit', 'UserController@editProfile');
 Route::post('upgrade', 'UserController@becomeAuctioneer');
+Route::post('delete', 'UserController@deleteAccount');
 Route::post('pictureProfile', 'UserController@updatePicture');
 Route::post('api/markRead','UserController@markRead');
 Route::post('api/markAllRead','UserController@markAllRead');
@@ -103,6 +105,6 @@ Route::get('users/{pageNr}', 'UserController@showUsersPage');
 
 // Static Pages
 
-Route::get('/aboutUs', 'AboutUsController@showAboutUs');
-Route::get('/contacts', 'ContactsController@showContacts');
-Route::get('/features', 'FeaturesController@showFeatures');
+Route::get('/aboutUs', 'HomeController@showAboutUs');
+Route::get('/contacts', 'HomeController@showContacts');
+Route::get('/features', 'HomeController@showFeatures');
