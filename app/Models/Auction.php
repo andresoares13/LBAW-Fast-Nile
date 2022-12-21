@@ -143,4 +143,18 @@ class Auction extends Model
 
   }
 
+  
+  public function onlyBidsDel($id){
+    $auction = Auction::find($id);
+    if (!$this->hasBids($id)){
+      return FALSE;
+    }
+    $bids = Bid::where('idauction',$auction->id)->whereNull('iduser')->get()->toArray();
+    if (count($bids)>0){
+      return TRUE;
+    }
+    else{
+      return FALSE;
+    }
+  }
 }

@@ -134,7 +134,7 @@ class AuctionController extends Controller
       $auction = Auction::find($request->input('auction'));
       if (auth()->check()){
         if ($this->authorize('showEdit', $auction)){ 
-          if (!$auction->hasBids($auction->id) && $auction->states != 'Closed'){
+          if ((!$auction->hasBids($auction->id) || $auction->onlyBidsDel($auction->id)) && $auction->states != 'Closed'){
             $auction->delete();
             return redirect('/');
           }
@@ -145,7 +145,7 @@ class AuctionController extends Controller
         }
       }  
       elseif(auth()->guard('admin')->check()){
-        if (!$auction->hasBids($auction->id) && $auction->states != 'Closed'){
+        if ((!$auction->hasBids($auction->id) || $auction->onlyBidsDel($auction->id)) && $auction->states != 'Closed'){
           $auction->delete();
           return redirect('/');
         }

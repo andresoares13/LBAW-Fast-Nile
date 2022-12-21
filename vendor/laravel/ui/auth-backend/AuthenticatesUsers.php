@@ -6,6 +6,9 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\DB;
+use App\Models\User;
+
 
 trait AuthenticatesUsers
 {
@@ -42,11 +45,23 @@ trait AuthenticatesUsers
 
             return $this->sendLockoutResponse($request);
         }
+        
+        
 
         if ($this->attemptLogin($request)) {
             if ($request->hasSession()) {
                 $request->session()->put('auth.password_confirmed_at', time());
             }
+            
+            $user = DB::table('users')->where('email',$request->email)->get()->toArray();
+            $user = User::hydrate($user);
+            $user = $user[0];
+            if($user->isBlocked($user->id)){
+     		Auth::logout();
+     		$block = DB::table('block')->where('iduser',$user->id)->get();
+     		return redirect()->route('login')->with('fail',"This account is blocked for the following reason: ".$block[0]->justification);       
+            }
+     
 
             return $this->sendLoginResponse($request);
         }

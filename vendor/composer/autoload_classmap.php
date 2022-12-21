@@ -33,6 +33,7 @@ return array(
     'App\\Models\\Auction' => $baseDir . '/app/Models/Auction.php',
     'App\\Models\\Auctioneer' => $baseDir . '/app/Models/Auctioneer.php',
     'App\\Models\\Bid' => $baseDir . '/app/Models/Bid.php',
+    'App\\Models\\Block' => $baseDir . '/app/Models/Block.php',
     'App\\Models\\Car' => $baseDir . '/app/Models/Car.php',
     'App\\Models\\Follow' => $baseDir . '/app/Models/Follow.php',
     'App\\Models\\Notification' => $baseDir . '/app/Models/Notification.php',

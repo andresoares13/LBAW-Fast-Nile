@@ -383,7 +383,7 @@ class UserController extends Controller
           $block->justification = $request->justification;
           $block->save();
 
-          return redirect()->route('profileAdmin',[$id])->with('info'," User's account has been blocked.");
+          return redirect()->route('profileUser',[$user->id])->with('info'," User's account has been blocked.");
         }
         catch(\Illuminate\Database\QueryException $ex){
           return back()->withInput()->with('fail',"There was an error blocking this user's account");

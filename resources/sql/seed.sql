@@ -526,9 +526,13 @@ CREATE TRIGGER update_deleted_auctioneer
 CREATE OR REPLACE FUNCTION min_bid_delete_auction_function() RETURNS TRIGGER AS
 $BODY$
 BEGIN
-    IF (select count(bid.id) from auction,bid where bid.idAuction = old.id) > 0 THEN 
+    IF (select count(bid.id) from auction,bid where bid.idAuction = old.id and bid.iduser is not null) > 0 THEN 
         RAISE EXCEPTION 'An auction cannot be deleted if it has more than 0 bids';
 	ELSE
+
+     UPDATE notification
+     SET idAuction = NULL
+     WHERE idAuction = old.id;
 
      INSERT INTO notification (idUser,idAuction,messages,viewed)
 	  SELECT users.id,NULL,(SELECT CONCAT('Your auction was canceled - ',old.title)),false
@@ -588,7 +592,7 @@ BEGIN
       INSERT INTO notification (idUser,idAuction,messages,viewed)
       SELECT distinct bid.idUser,bid.idAuction,'Participating auction is ending',false
 	  FROM bid
-	  WHERE bid.idAuction = new.id;
+	  WHERE bid.idAuction = new.id and bid.idUser is not null;
 	  INSERT INTO notification (idUser,idAuction,messages,viewed)
 	  SELECT users.id,new.id,'Your auction is ending',false
 	  FROM users
@@ -617,7 +621,7 @@ BEGIN
       INSERT INTO notification (idUser,idAuction,messages,viewed)
       SELECT distinct bid.idUser,bid.idAuction,'Auction has ended',false
 	  FROM bid
-	  WHERE bid.idAuction = new.id;
+	  WHERE bid.idAuction = new.id and bid.idUser is not null;
 	  
 	  INSERT INTO notification (idUser,idAuction,messages,viewed)
 	  SELECT users.id,new.id,'Your auction has ended',false
@@ -627,7 +631,7 @@ BEGIN
 	  INSERT INTO notification (idUser,idAuction,messages,viewed)
       SELECT distinct bid.idUser,bid.idAuction,(SELECT CONCAT('The winner of the auction was ', (select names FROM users where id= (select highestBidder from auction where id=new.id)))),false
 	  FROM bid
-	  WHERE bid.idAuction = new.id;
+	  WHERE bid.idAuction = new.id and bid.idUser is not null;
 	  
 	  INSERT INTO notification (idUser,idAuction,messages,viewed)
 	  SELECT users.id,new.id,(SELECT CONCAT('The winner of your auction was ', (select names FROM users where id= (select highestBidder from auction where id=new.id)))),false

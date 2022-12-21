@@ -597,6 +597,7 @@ class ComposerStaticInit87dee50e57c42251fd2dfc95069537fc
         'App\\Models\\Auction' => __DIR__ . '/../..' . '/app/Models/Auction.php',
         'App\\Models\\Auctioneer' => __DIR__ . '/../..' . '/app/Models/Auctioneer.php',
         'App\\Models\\Bid' => __DIR__ . '/../..' . '/app/Models/Bid.php',
+        'App\\Models\\Block' => __DIR__ . '/../..' . '/app/Models/Block.php',
         'App\\Models\\Car' => __DIR__ . '/../..' . '/app/Models/Car.php',
         'App\\Models\\Follow' => __DIR__ . '/../..' . '/app/Models/Follow.php',
         'App\\Models\\Notification' => __DIR__ . '/../..' . '/app/Models/Notification.php',

@@ -21,6 +21,11 @@
                     {{Session::get('info')}}
                   </div>
                   @endif
+                  @if (Session::get('fail'))
+                  <div class="alert alert-danger">
+                    {{Session::get('fail')}}
+                  </div>
+                  @endif
                   <form   method="POST" action="{{ route('login') }}">
                   @endisset
                       {{ csrf_field() }}
