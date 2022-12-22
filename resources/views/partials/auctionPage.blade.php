@@ -45,6 +45,7 @@
                 <li>
                 @if (auth()->guard('admin')->check())
                     <div id="editAuctionButton"><a href="/auctionEdit/{{$auction->id}}"><button id="buttonInvBack" class="btn btn-outline-light btn-lg px-5 edit">Edit Auction</button></a></div>
+                    <div id="editAuctionButton"><a href="/auctionStatus/{{$auction->id}}"><button id="buttonInvBack" class="btn btn-outline-light btn-lg px-5 edit">Change Status</button></a></div>
                     @if ((!$auction->hasBids($auction->id) || $auction->onlyBidsDel($auction->id)))
                         <div id="editAuctionButton">
                         <form action="/auctionCancel" method="POST" id="auctionCancel" class="profile" >
@@ -58,6 +59,7 @@
                     @if ($auction->isAuct(auth()->user()->id))
                         @if ($auction->isOwner(auth()->user()->id,$auction->id))
                             <div id="editAuctionButton"><a href="/auctionEdit/{{$auction->id}}"><button id="buttonInvBack" class="btn btn-outline-light btn-lg px-5 edit">Edit Auction</button></a></div>
+                            <div id="editAuctionButton"><a href="/auctionStatus/{{$auction->id}}"><button id="buttonInvBack" class="btn btn-outline-light btn-lg px-5 edit">Change Status</button></a></div>
                             @if ((!$auction->hasBids($auction->id) || $auction->onlyBidsDel($auction->id)))
                                 <div id="editAuctionButton">
                                 <form action="/auctionCancel" method="POST" id="auctionCancel" class="profile" >

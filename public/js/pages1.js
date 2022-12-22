@@ -309,7 +309,7 @@ if (page[1]=='auction'){
         td1.innerHTML = "1";
         td2.innerHTML = bid.valuee + ' €';
         let anchor = document.createElement('a');
-        anchor.href= "/users/"+bid.iduser;
+        anchor.href= "/profile/"+bid.iduser;
         anchor.innerHTML=bid.username;
         td3.appendChild(anchor);
         tr2.appendChild(td1);
@@ -336,6 +336,22 @@ if (page[1]=='auction'){
    
         
     });
+
+
+}
+
+
+function toggleEnding(){
+    label = document.getElementById("endingLabel")
+    input = document.getElementById("auctionStatusEndingForm").getElementsByTagName('input')[1];
+    if (label.innerHTML == "Not Ending"){
+        label.innerHTML = "Ending";
+        input.value = "true";
+    }
+    else{
+        label.innerHTML = "Not Ending";
+        input.value = "false";
+    }
 }
 
 

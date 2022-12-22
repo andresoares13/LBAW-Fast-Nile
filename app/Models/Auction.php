@@ -150,7 +150,8 @@ class Auction extends Model
       return FALSE;
     }
     $bids = Bid::where('idauction',$auction->id)->whereNull('iduser')->get()->toArray();
-    if (count($bids)>0){
+    $notNull = Bid::where('idauction',$auction->id)->whereNotNull('iduser')->get()->toArray();
+    if (count($bids)>0 && count($bids) == count($notNull)){
       return TRUE;
     }
     else{

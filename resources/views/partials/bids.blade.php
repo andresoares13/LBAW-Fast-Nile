@@ -13,7 +13,7 @@
 <td><a href="/auction/{{$bid->idauction}}">{{$bid->getAuction($bid->idauction)[0]->title }}</a></td>
 @else
 @if ($bid->iduser != null)
-<td><a href="/users/{{$bid->iduser}}">{{ $bid->getUserName($bid->iduser)}}</a></td>
+<td><a href="/profile/{{$bid->iduser}}">{{ $bid->getUserName($bid->iduser)}}</a></td>
 @else
 <td><a >Anonymous</a> </td>
 @endif

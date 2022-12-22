@@ -23,8 +23,12 @@
               <div class="card">
                   <div class="card-body text-center mt-4">
                   <h4 class="card-title"><strong>{{$user->names}}</strong></h4>
-                      <p class="card-text">This user has won {{count($user->getAuctionsWon($user->id))}} auction(s), and has made {{count($user->getBidsMade($user->id))}} bids</p>
-                      <p class="card-text">Address: {{$user->address}}</p>
+                      <p class="card-text">This user has won {{count($user->getAuctionsWon($user->id))}} auction(s), and has made {{count($user->getBidsMade($user->id))}} bid(s)</p>
+                      <p class="card-text">Address: {{$user->address}}
+                        @if ($user->address == "")
+                        undefined
+                        @endif
+                      </p>
                       @if ($user->isAuctioneer($user->id))
                       <p class="card-text">Phone Number: {{$user->getAuctioneer($user->id)[0]['phone']}}</p>
                       @endif

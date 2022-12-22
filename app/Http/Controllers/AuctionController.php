@@ -94,20 +94,80 @@ class AuctionController extends Controller
     }
 
     public function editAuction(Request $request){
-      $auction = Auction::find($request->input('auction'));
-      $auction->title = $request->input('title');
-      $auction->descriptions = $request->input('description');
-      if($request->hasFile('image')){
-        $filename = $request->image->getClientOriginalName();
-        $filename = $request->input('auction') . "." .pathinfo($filename,PATHINFO_EXTENSION);
+      if (auth()->check()){
+        if ($this->authorize('showEdit', $auction)){ 
+          $auction = Auction::find($request->input('auction'));
+          $auction->title = $request->input('title');
+          $auction->descriptions = $request->input('description');
+          if($request->hasFile('image')){
+            $filename = $request->image->getClientOriginalName();
+            $filename = $request->input('auction') . "." .pathinfo($filename,PATHINFO_EXTENSION);
 
-        $request->image->storeAs('',$filename,'my_files2');
-        $car = Car::find($auction->idcar);
-        $car->picture = $filename;
-        $car->save();
+            $request->image->storeAs('',$filename,'my_files2');
+            $car = Car::find($auction->idcar);
+            $car->picture = $filename;
+            $car->save();
+          }
+          $auction->save();
+          return redirect('auction/'.$auction->id);
+        }
       }
-      $auction->save();
-      return redirect('auction/'.$auction->id);
+      else if (auth()->guard('admin')->check()){
+        $auction = Auction::find($request->input('auction'));
+        $auction->title = $request->input('title');
+        $auction->descriptions = $request->input('description');
+        if($request->hasFile('image')){
+          $filename = $request->image->getClientOriginalName();
+          $filename = $request->input('auction') . "." .pathinfo($filename,PATHINFO_EXTENSION);
+
+          $request->image->storeAs('',$filename,'my_files2');
+          $car = Car::find($auction->idcar);
+          $car->picture = $filename;
+          $car->save();
+        }
+        $auction->save();
+        return redirect('auction/'.$auction->id);
+      }
+      else{
+        abort(403);
+      }  
+    }
+
+    public function statusAuction(Request $request){
+      if (auth()->check()){
+        if ($this->authorize('showEdit', $auction)){
+          $auction = Auction::find($request->auction);
+          if (isset($request->ending)){
+            $auction->ending = true;
+          }
+          else{
+            $auction->ending = false;
+          }
+          if (isset($request->close)){
+            $auction->states="Closed";
+          }
+          $auction->save();
+          return redirect('auction/'.$auction->id);
+        }
+      }
+      else if (auth()->guard('admin')->check()){
+        $auction = Auction::find($request->auction);
+        if (isset($request->ending)){
+          $auction->ending = true;
+        }
+        else{
+          $auction->ending = false;
+        }
+        if (isset($request->close)){
+          $auction->states="Closed";
+        }
+        $auction->save();
+        return redirect('auction/'.$auction->id);
+      }
+      else{
+        abort(403);
+      }  
+
     }
 
 
@@ -124,6 +184,25 @@ class AuctionController extends Controller
       elseif(auth()->guard('admin')->check()){
         $auction = Auction::find($id);
         return view('pages.auctionEdit', ['auction' => $auction]);
+      }
+      else{
+        abort(403);
+      }
+    }
+
+    public function showAuctionStatus($id){
+      if (auth()->check()){
+        $auction = Auction::find($id);
+        if ($this->authorize('showEdit', $auction)){ 
+          return view('pages.auctionStatus', ['auction' => $auction]);
+        }
+        else{
+          abort(403);
+        }
+      }
+      elseif(auth()->guard('admin')->check()){
+        $auction = Auction::find($id);
+        return view('pages.auctionStatus', ['auction' => $auction]);
       }
       else{
         abort(403);

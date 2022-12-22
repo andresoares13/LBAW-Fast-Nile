@@ -32,9 +32,16 @@
               @else
               User
               @endif
+              @if ($user->isBlocked($user->id))
+              (Account Blocked)
+              @endif
               </h4>
               <br>
-              <p class="card-text">Address: {{$user->address}}</p>
+              <p class="card-text">Address: {{$user->address}}
+                @if ($user->address == "")
+                undefined
+                @endif
+              </p>
                 @if ($user->isAuctioneer($user->id))
                 <p class="card-text">Phone Number: {{$user->getAuctioneer($user->id)[0]['phone']}}</p>
                 @if (!auth()->check() && !Auth::guard('admin')->check())

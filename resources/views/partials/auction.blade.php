@@ -4,7 +4,7 @@
   <h3 class="card-header"><a href="/auction/{{ $auction->id }}">{{ $auction->title }}</a></h3>
   <div class="card-body navbar-dark">
     <h5 class="card-title">{{$auction->getCar($auction->idcar)->names}}</h5>
-    <p class="card-text"><strong> Current Price</strong>: {{$auction->pricestart}} €
+    <p class="card-text"><strong> Current Price</strong>: {{$auction->pricenow}} €
     <h6 class="card-subtitle text-muted">Owner: <a href="/profile/{{$auction->getUser($auction->owners)->id}}">{{$auction->getAuctioneerName($auction->owners)}}</a></h6>
   </div>
   <a href="/auction/{{ $auction->id }}">
