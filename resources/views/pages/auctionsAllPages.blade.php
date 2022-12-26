@@ -6,15 +6,23 @@
 
 <script src="{{ asset('js/auctionsPagesFilters.js') }}" defer> </script>
 
-@if (isset($filter))
-<p hidden id="filter"></p>
-@endif
+
+
+
 
 @if (isset($category))
 <p hidden id="categoryFilter">{{$category}}</p>
 @else
 @php
 $category = 'Category';
+@endphp
+@endif
+
+@if (isset($states))
+<p hidden id="statesFilter">{{$states}}</p>
+@else
+@php
+$states = 'State';
 @endphp
 @endif
 
@@ -58,41 +66,66 @@ $category = 'Category';
         <button class="btn btn-secondary my-2 my-sm-0" type="submit">Search</button>
         </form>
         </div>
+
+        @if (isset($filter))
         <div class="d-flex justify-content-between align-items-center" style="margin-top: 2%;">
-        <form id="categoriesForm" class="d-flex"  action="{{Request::getRequestUri()}}"  method="get" role="search" >
-              <select class="form-select" id="categories" name='category' onchange="updateForms('categories');this.form.submit()" required>
-              <option value="">Category</option>
-                <option id="Sport" value="Sport">Sport</option>
-                <option id="Coupe" value="Coupe">Coupe</option>
-                <option id="Convertible" value="Convertible">Convertible</option>
-                <option id="SUV" value="SUV">SUV</option>
-                <option id="PickupTruck" value="Pickup Truck">Pickup Truck</option>
-              </select>
-            </form>
 
-            <form id="statesForm" class="d-flex"  action="{{Request::getRequestUri()}}"  method="get" role="search" >
-              <select class="form-select" id="states" name='state' onchange="updateForms('states');" required>
-              <option value="">Car States</option>
-              <option value="Wreck">Wreck</option>
-                <option value="Poor Condition">Poor Condition</option>
-                <option value="Normal Condition">Normal Condition</option>
-                <option value="High Condition">High Condition</option>
-                <option value="Brand New">Brand New</option>
-              </select>
-            </form>
 
-            <form id="searchForms" class="d-flex"  action="/auctions/{{$pageNr}}"  method="get" role="search" >
-              <select class="form-select" id="" name='category' onchange="this.form.submit()" required>
-              <option value="">Category</option>
-                <option id="Sport" value="Sport">Sport</option>
-                <option id="Coupe" value="Coupe">Coupe</option>
-                <option id="Convertible" value="Convertible">Convertible</option>
-                <option id="SUV" value="SUV">SUV</option>
-                <option id="PickupTruck" value="Pickup Truck">Pickup Truck</option>
-              </select>
-            </form>
+          <div class="nav-item dropdown">
+            @if ($category == "Category")
+            <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button"  >{{$category}}</a>
+            @else
+            <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button"  >Category: {{$category}}</a>
+            @endif
+            <div class="dropdown-menu">
+            @if ($states == "State")
+            <a class="dropdown-item" href="{{ url('/auctions/'.$pageNr) }}">All</a>
+              <a class="dropdown-item" href="{{ url('/auctions/'.$pageNr.'?category=Sport') }}">Sport</a>
+              <a class="dropdown-item" href="{{ url('/auctions/'.$pageNr.'?category=Coupe') }}">Coupe</a>
+              <a class="dropdown-item" href="{{ url('/auctions/'.$pageNr.'?category=Convertible') }}">Convertible</a>
+              <a class="dropdown-item" href="{{ url('/auctions/'.$pageNr.'?category=SUV') }}">SUV</a>
+              <a class="dropdown-item" href="{{ url('/auctions/'.$pageNr.'?category=Pickup Truck') }}">Pickup Truck</a>
+            @else
+            <a class="dropdown-item" href="{{ url('/auctions/'.$pageNr.'?states='.$states) }}">All</a>
+              <a class="dropdown-item" href="{{ url('/auctions/'.$pageNr.'?category=Sport&states='.$states) }}">Sport</a>
+              <a class="dropdown-item" href="{{ url('/auctions/'.$pageNr.'?category=Coupe&states='.$states) }}">Coupe</a>
+              <a class="dropdown-item" href="{{ url('/auctions/'.$pageNr.'?category=Convertible&states='.$states) }}">Convertible</a>
+              <a class="dropdown-item" href="{{ url('/auctions/'.$pageNr.'?category=SUV&states='.$states) }}">SUV</a>
+              <a class="dropdown-item" href="{{ url('/auctions/'.$pageNr.'?category=Pickup Truck&states='.$states) }}">Pickup Truck</a>
+              @endif
+            </div>
+          </div>
+
+
+          <div class="nav-item dropdown">
+            @if ($states == "State")
+            <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button"  >{{$states}}</a>
+            @else
+            <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button"  >State: {{$states}}</a>
+            @endif
+            <div class="dropdown-menu">
+            @if ($category == "Category")
+            <a class="dropdown-item" href="{{ url('/auctions/'.$pageNr) }}">All</a>
+              <a class="dropdown-item" href="{{ url('/auctions/'.$pageNr.'?states=Wreck') }}">Wreck</a>
+              <a class="dropdown-item" href="{{ url('/auctions/'.$pageNr.'?states=Poor Condition') }}">Poor Condition</a>
+              <a class="dropdown-item" href="{{ url('/auctions/'.$pageNr.'?states=Normal Condition') }}">Normal Condition</a>
+              <a class="dropdown-item" href="{{ url('/auctions/'.$pageNr.'?states=High Condition') }}">High Condition</a>
+              <a class="dropdown-item" href="{{ url('/auctions/'.$pageNr.'?states=Brand New') }}">Brand New</a>
+            @else
+            <a class="dropdown-item" href="{{ url('/auctions/'.$pageNr.'?category='.$category) }}">All</a>
+              <a class="dropdown-item" href="{{ url('/auctions/'.$pageNr.'?category='.$category.'&states=Wreck') }}">Wreck</a>
+              <a class="dropdown-item" href="{{ url('/auctions/'.$pageNr.'?category='.$category.'&states=Poor Condition') }}">Poor Condition</a>
+              <a class="dropdown-item" href="{{ url('/auctions/'.$pageNr.'?category='.$category.'&states=Normal Condition') }}">Normal Condition</a>
+              <a class="dropdown-item" href="{{ url('/auctions/'.$pageNr.'?category='.$category.'&states=High Condition') }}">High Condition</a>
+              <a class="dropdown-item" href="{{ url('/auctions/'.$pageNr.'?category='.$category.'&states=Brand New') }}">Brand New</a>
+            @endif
+            </div>
+          </div>
+        
+          
 
         </div>
+        @endif
       </div>
     </section><!-- End Breadcrumbs -->
 
