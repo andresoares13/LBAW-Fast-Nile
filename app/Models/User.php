@@ -83,4 +83,15 @@ class User extends Authenticatable
         }
         return false;
     }
+
+    public function countAuctionsWon($id,$idAuctioneer){
+        $auctions=Auction::where('highestbidder',$id)->where('owners',$idAuctioneer)->where('states','Closed')->get();
+        return count($auctions);
+    }
+
+    public function countRatingOnAuct($id,$idAuctioneer){
+        $ratings = DB::table('rating')->where('iduser',$id)->where('idauctioneer',$idAuctioneer)->get()->toArray();
+        return count($ratings);
+    }
+
 }

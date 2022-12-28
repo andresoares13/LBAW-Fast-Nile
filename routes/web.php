@@ -62,6 +62,7 @@ Route::post('delete', 'UserController@deleteAccount');
 Route::post('pictureProfile', 'UserController@updatePicture');
 Route::post('api/markRead','UserController@markRead');
 Route::post('api/markAllRead','UserController@markAllRead');
+Route::post('createRating','UserController@createRating');
 
 //admin
 

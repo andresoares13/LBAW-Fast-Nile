@@ -20,6 +20,7 @@ use App\Models\Bid;
 use App\Models\Follow;
 use App\Models\Notification;
 use App\Models\Block;
+use App\Models\Rating;
 
 class UserController extends Controller
 { 
@@ -325,6 +326,33 @@ class UserController extends Controller
         abort(403);
       }
     }
+
+
+    public function createRating(Request $request){
+
+      $user = User::find($request->input('user'));
+      if ($this->authorize('correctUser', $user)){
+        if ($user->countRatingOnAuct($user->id,$request->auctioneer) < $user->countAuctionsWon($user->id,$request->auctioneer)){
+
+          $rating = new Rating();
+          $rating->iduser = $request->user;
+          $rating->idauctioneer = $request->auctioneer;
+          $rating->grade = $request->ratingstars;
+          $rating->save();
+
+          return redirect()->route('profileUser',[$request->profile])->with('info',"You have rated this auctioneer!");
+        }
+        else{
+          abort(403);
+        }
+      }
+      else{
+        abort(403);
+      }
+      
+      
+   }
+
 
 
     public function deleteAccount(Request $request){
