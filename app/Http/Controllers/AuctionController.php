@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Auction;
 use App\Models\Car;
 
+use URL;
+
 class AuctionController extends Controller
 {
 
@@ -175,6 +177,7 @@ class AuctionController extends Controller
         }
       }
       
+
       
       if ($request->input('category') == null && $request->input('states') == null){
         return view('pages.auctionsAllPages', ['auctions' => $auctions,'totalPages' => $totalPages,'pageNr' => $pageNr,'filter' =>false,'all' =>true]);

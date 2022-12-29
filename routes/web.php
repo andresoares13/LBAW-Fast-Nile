@@ -51,6 +51,7 @@ Route::get('profile/wallet/{id}', 'UserController@showWallet');
 Route::get('profile/upgrade/{id}', 'UserController@showUpgrade');
 Route::get('profile/picture/{id}', 'UserController@showPicture');
 Route::get('profile/auctions/{id}/{pageNr}', 'UserController@showUserAuctions');
+Route::get('profile/auctionsWon/{id}/{pageNr}', 'UserController@showUserWonAuctions');
 Route::get('profile/bids/{id}/{pageNr}', 'UserController@showUserBids');
 Route::get('profile/following/{id}/{pageNr}', 'UserController@showUserFollowed');
 Route::get('profile/notifications/{id}/{pageNr}','UserController@showNotifications');

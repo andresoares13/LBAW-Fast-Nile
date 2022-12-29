@@ -130,6 +130,29 @@ class UserController extends Controller
     }
 
 
+    public function showUserWonAuctions($id,$pageNr){
+      $limit = 5 * intval($pageNr);
+      $user = User::find($id);
+      if ($user != NULL){
+        $name = $user->names;
+        $userId = $id;
+        $auctions = Auction::where('highestbidder',$id)->where('states','Closed')->orderBy('timeclose')->limit($limit)->get();
+        $totalCount = count(Auction::where('highestbidder',$id)->where('states','Closed')->get());
+        $lastEl = $totalCount - (5 * (intval($pageNr)-1)); //if the page is not complete we dont want repetitives, if there are 7, first page gets 5, 2nd gets 2
+        $auctions = array_slice($auctions->toArray(), -$lastEl); //only get the last 5
+        $auctions = Auction::hydrate($auctions);
+        $totalPages = intval(ceil($totalCount /5)); //gets the total number of pages of auctions assuming each has 20
+        if ($limit > $totalCount + 5){
+          $auctions = [];
+        }
+        return view('pages.auctionsAllPages', ['auctions' => $auctions,'totalPages' => $totalPages,'pageNr' => $pageNr,'id' =>$id,'name' => $name,'userId'=>$userId,'won' => true]);
+      }
+      else{
+        abort(404);
+      }
+      
+    }
+
     public function showUserBids($id,$pageNr){
       if (!auth()->check() && !Auth::guard('admin')->check()){
         abort(404);

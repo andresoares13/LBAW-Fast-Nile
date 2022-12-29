@@ -68,7 +68,10 @@
                   </div>
                   @endif
                     <a href="{{ url('/profile/auctions/'. $auctioneer[0]['id'].'/1')}}">
-                      <button id="buttonInvBack" style="margin-top: 0; margin-bottom: 10px" class="btn btn-outline-light btn-lg px-5" type="button">{{$user->names}} auctions</button> 
+                      <button id="buttonInvBack" style="margin-top: 0; margin-bottom: 10px" class="btn btn-outline-light btn-lg px-5" type="button">{{$user->names}} Auctions</button> 
+                    </a>
+                    <a href="{{ url('/profile/auctionsWon/'. $user->id . '/1')}}">
+                      <button id="buttonInvBack" style="margin-top: 0; margin-bottom: 10px" class="btn btn-outline-light btn-lg px-5" type="button">{{$user->names}} Won Auctions</button> 
                     </a>
                     <a href="{{ url('/profile/following/'. $user->id . '/1')}}">
                     <button id="buttonInvBack" style="margin-top: 0" class="btn btn-outline-light btn-lg px-5" type="button">Followed Auctions</button> 
@@ -159,6 +162,9 @@
                   </a>
                   <a href="{{ url('/profile/following/'. strval(auth()->user()->id) . '/1')}}">
                     <button id="buttonInvBack" style="margin-top: 0" class="btn btn-outline-light btn-lg px-5" type="button">Followed Auctions</button> 
+                  </a>
+                  <a href="{{ url('/profile/auctionsWon/'. strval(auth()->user()->id) . '/1')}}">
+                    <button id="buttonInvBack" style="margin-top: 0" class="btn btn-outline-light btn-lg px-5" type="button">Auctions Won</button> 
                   </a>
                   <a href="{{ url('/profile/notifications/'. strval(auth()->user()->id) . '/1')}}">
                     <button id="buttonInvBack" style="margin-top: 0" class="btn btn-outline-light btn-lg px-5" type="button">Notifications</button> 
