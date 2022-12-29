@@ -4,7 +4,6 @@
 
 @section('content')
 
-<script src="{{ asset('js/auctionsPagesFilters.js') }}" defer> </script>
 
 
 
@@ -18,11 +17,12 @@ $category = 'Category';
 @endphp
 @endif
 
-@if (isset($states))
-<p hidden id="statesFilter">{{$states}}</p>
+@if (isset($state))
+<p hidden id="statesFilter">{{$state}}</p>
+
 @else
 @php
-$states = 'State';
+$state = 'Car State';
 @endphp
 @endif
 
@@ -68,7 +68,7 @@ $states = 'State';
         </div>
 
         @if (isset($filter))
-        <div class="d-flex justify-content-between align-items-center" style="margin-top: 2%;">
+        <div class="d-flex justify-content-flex-start align-items-center" style="margin-top: 2%;">
 
 
           <div class="nav-item dropdown">
@@ -78,49 +78,65 @@ $states = 'State';
             <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button"  >Category: {{$category}}</a>
             @endif
             <div class="dropdown-menu">
-            @if ($states == "State")
-            <a class="dropdown-item" href="{{ url('/auctions/'.$pageNr) }}">All</a>
-              <a class="dropdown-item" href="{{ url('/auctions/'.$pageNr.'?category=Sport') }}">Sport</a>
-              <a class="dropdown-item" href="{{ url('/auctions/'.$pageNr.'?category=Coupe') }}">Coupe</a>
-              <a class="dropdown-item" href="{{ url('/auctions/'.$pageNr.'?category=Convertible') }}">Convertible</a>
-              <a class="dropdown-item" href="{{ url('/auctions/'.$pageNr.'?category=SUV') }}">SUV</a>
-              <a class="dropdown-item" href="{{ url('/auctions/'.$pageNr.'?category=Pickup Truck') }}">Pickup Truck</a>
+            @if ($state == "Car State")
+            <a class="dropdown-item" href="{{ substr(url()->current(), 0, strrpos( url()->current(), '/')).'/'.$pageNr }}">All</a>
+              <a class="dropdown-item" href="{{ substr(url()->current(), 0, strrpos( url()->current(), '/')).'/'.$pageNr.'?category=Sport' }}">Sport</a>
+              <a class="dropdown-item" href="{{ substr(url()->current(), 0, strrpos( url()->current(), '/')).'/'.$pageNr.'?category=Coupe' }}">Coupe</a>
+              <a class="dropdown-item" href="{{ substr(url()->current(), 0, strrpos( url()->current(), '/')).'/'.$pageNr.'?category=Convertible' }}">Convertible</a>
+              <a class="dropdown-item" href="{{ substr(url()->current(), 0, strrpos( url()->current(), '/')).'/'.$pageNr.'?category=SUV' }}">SUV</a>
+              <a class="dropdown-item" href="{{ substr(url()->current(), 0, strrpos( url()->current(), '/')).'/'.$pageNr.'?category=Pickup Truck' }}">Pickup Truck</a>
             @else
-            <a class="dropdown-item" href="{{ url('/auctions/'.$pageNr.'?states='.$states) }}">All</a>
-              <a class="dropdown-item" href="{{ url('/auctions/'.$pageNr.'?category=Sport&states='.$states) }}">Sport</a>
-              <a class="dropdown-item" href="{{ url('/auctions/'.$pageNr.'?category=Coupe&states='.$states) }}">Coupe</a>
-              <a class="dropdown-item" href="{{ url('/auctions/'.$pageNr.'?category=Convertible&states='.$states) }}">Convertible</a>
-              <a class="dropdown-item" href="{{ url('/auctions/'.$pageNr.'?category=SUV&states='.$states) }}">SUV</a>
-              <a class="dropdown-item" href="{{ url('/auctions/'.$pageNr.'?category=Pickup Truck&states='.$states) }}">Pickup Truck</a>
+            <a class="dropdown-item" href="{{ substr(url()->current(), 0, strrpos( url()->current(), '/')).'/'.$pageNr.'?states='.$state }}">All</a>
+              <a class="dropdown-item" href="{{ substr(url()->current(), 0, strrpos( url()->current(), '/')).'/'.$pageNr.'?category=Sport&states='.$state }}">Sport</a>
+              <a class="dropdown-item" href="{{ substr(url()->current(), 0, strrpos( url()->current(), '/')).'/'.$pageNr.'?category=Coupe&states='.$state }}">Coupe</a>
+              <a class="dropdown-item" href="{{ substr(url()->current(), 0, strrpos( url()->current(), '/')).'/'.$pageNr.'?category=Convertible&states='.$state }}">Convertible</a>
+              <a class="dropdown-item" href="{{ substr(url()->current(), 0, strrpos( url()->current(), '/')).'/'.$pageNr.'?category=SUV&states='.$state }}">SUV</a>
+              <a class="dropdown-item" href="{{ substr(url()->current(), 0, strrpos( url()->current(), '/')).'/'.$pageNr.'?category=Pickup Truck&states='.$state }}">Pickup Truck</a>
               @endif
             </div>
           </div>
 
-
           <div class="nav-item dropdown">
-            @if ($states == "State")
-            <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button"  >{{$states}}</a>
+            @if ($state == "Car State")
+            <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button"  >{{$state}}</a>
             @else
-            <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button"  >State: {{$states}}</a>
+            <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button"  >Car State: {{$state}}</a>
             @endif
             <div class="dropdown-menu">
             @if ($category == "Category")
-            <a class="dropdown-item" href="{{ url('/auctions/'.$pageNr) }}">All</a>
-              <a class="dropdown-item" href="{{ url('/auctions/'.$pageNr.'?states=Wreck') }}">Wreck</a>
-              <a class="dropdown-item" href="{{ url('/auctions/'.$pageNr.'?states=Poor Condition') }}">Poor Condition</a>
-              <a class="dropdown-item" href="{{ url('/auctions/'.$pageNr.'?states=Normal Condition') }}">Normal Condition</a>
-              <a class="dropdown-item" href="{{ url('/auctions/'.$pageNr.'?states=High Condition') }}">High Condition</a>
-              <a class="dropdown-item" href="{{ url('/auctions/'.$pageNr.'?states=Brand New') }}">Brand New</a>
+            <a class="dropdown-item" href="{{ substr(url()->current(), 0, strrpos( url()->current(), '/')).'/'.$pageNr }}">All</a>
+              <a class="dropdown-item" href="{{ substr(url()->current(), 0, strrpos( url()->current(), '/')).'/'.$pageNr.'?states=Wreck' }}">Wreck</a>
+              <a class="dropdown-item" href="{{ substr(url()->current(), 0, strrpos( url()->current(), '/')).'/'.$pageNr.'?states=Poor Condition'}}">Poor Condition</a>
+              <a class="dropdown-item" href="{{ substr(url()->current(), 0, strrpos( url()->current(), '/')).'/'.$pageNr.'?states=Normal Condition' }}">Normal Condition</a>
+              <a class="dropdown-item" href="{{ substr(url()->current(), 0, strrpos( url()->current(), '/')).'/'.$pageNr.'?states=High Condition' }}">High Condition</a>
+              <a class="dropdown-item" href="{{ substr(url()->current(), 0, strrpos( url()->current(), '/')).'/'.$pageNr.'?states=Brand New' }}">Brand New</a>
             @else
-            <a class="dropdown-item" href="{{ url('/auctions/'.$pageNr.'?category='.$category) }}">All</a>
-              <a class="dropdown-item" href="{{ url('/auctions/'.$pageNr.'?category='.$category.'&states=Wreck') }}">Wreck</a>
-              <a class="dropdown-item" href="{{ url('/auctions/'.$pageNr.'?category='.$category.'&states=Poor Condition') }}">Poor Condition</a>
-              <a class="dropdown-item" href="{{ url('/auctions/'.$pageNr.'?category='.$category.'&states=Normal Condition') }}">Normal Condition</a>
-              <a class="dropdown-item" href="{{ url('/auctions/'.$pageNr.'?category='.$category.'&states=High Condition') }}">High Condition</a>
-              <a class="dropdown-item" href="{{ url('/auctions/'.$pageNr.'?category='.$category.'&states=Brand New') }}">Brand New</a>
+            <a class="dropdown-item" href="{{ substr(url()->current(), 0, strrpos( url()->current(), '/')).'/'.$pageNr.'?category='.$category }}">All</a>
+              <a class="dropdown-item" href="{{substr(url()->current(), 0, strrpos( url()->current(), '/')).'/'.$pageNr.'?category='.$category.'&states=Wreck' }}">Wreck</a>
+              <a class="dropdown-item" href="{{ substr(url()->current(), 0, strrpos( url()->current(), '/')).'/'.$pageNr.'?category='.$category.'&states=Poor Condition' }}">Poor Condition</a>
+              <a class="dropdown-item" href="{{ substr(url()->current(), 0, strrpos( url()->current(), '/')).'/'.$pageNr.'?category='.$category.'&states=Normal Condition' }}">Normal Condition</a>
+              <a class="dropdown-item" href="{{ substr(url()->current(), 0, strrpos( url()->current(), '/')).'/'.$pageNr.'?category='.$category.'&states=High Condition' }}">High Condition</a>
+              <a class="dropdown-item" href="{{ substr(url()->current(), 0, strrpos( url()->current(), '/')).'/'.$pageNr.'?category='.$category.'&states=Brand New' }}">Brand New</a>
             @endif
             </div>
           </div>
+       
+          @if (isset($all))
+            @if ($filter)
+            <a href="{{str_replace('allauctions', 'auctions', URL::full())}}" style="margin-left: auto;"><button class="btn btn-secondary my-2 my-sm-0" type="submit" style="margin-left: auto;">Show Only Active</button></a>
+            @else
+            <a href="{{url('/auctions/1')}}" style="margin-left: auto;"><button class="btn btn-secondary my-2 my-sm-0" type="submit" style="margin-left: auto;">Show Only Active</button></a>
+            @endif
+          
+          @else
+          
+            @if ($filter)
+            <a href="{{str_replace('auctions', 'allauctions', URL::full())}}" style="margin-left: auto;"><button class="btn btn-secondary my-2 my-sm-0" type="submit" style="margin-left: auto;">Also show Closed Auctions</button></a>
+          
+            @else
+            <a href="{{url('/allauctions/1')}}" style="margin-left: auto;"><button class="btn btn-secondary my-2 my-sm-0" type="submit" style="margin-left: auto;">Also show Closed Auctions</button></a>
+            @endif
+          @endif
         
           
 
@@ -131,10 +147,10 @@ $states = 'State';
 
 
 
-
+  
    
 
-    <section id="auctionAll">
+    <section id="auctionAll" style="min-height: calc(100vh - 238px);">
   <div class="py-5">
     <div class="container">
       <div class="row hidden-md-up">
@@ -153,30 +169,18 @@ $states = 'State';
         </li>
         @else
         <li class="page-item">
-          @if ($category!="Category")
-          <a class="page-link" href="{{url('/auctions/'.($pageNr-1).'?category='.$category)}}">&laquo;</a>
-          @else
           <a class="page-link" href="/auctions/{{$pageNr-1}}">&laquo;</a>
-          @endif
         </li>
         @endif
         @for ($i = 0; $i < $totalPages; $i++)
         @if ($pageNr != $i+1)
         @if (isset($id))
         <li class="page-item ">
-        @if ($category!="Category")
-          <a class="page-link" href="{{url('/profile/auctions/'.$id.'/'.($i+1).($pageNr-1).'?category='.$category)}}">{{$i+1}}</a>
-          @else
         <a class="page-link" href="/profile/auctions/{{$id}}/{{$i+1}}">{{$i+1}}</a>
-        @endif
         </li>
         @else
         <li class="page-item ">
-        @if ($category!="Category")
-          <a class="page-link" href="{{url('/auctions/'.($i+1).'?category='.$category)}}">{{$i+1}}</a>
-          @else
-        <a class="page-link" href="/auctions/{{$i+1}}">{{$i+1}}</a>
-        @endif
+        <a class="page-link" href="{{str_replace($pageNr, $i+1, URL::full())}}">{{$i+1}}</a>
         </li>
         @endif
         @endif

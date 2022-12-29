@@ -65,9 +65,6 @@
         <li class="nav-item">
           <a class="nav-link" href="#closing">Closing Soon</a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#faq">FAQ</a>
-        </li>
         @else
         <li class="nav-item">
           <a class="nav-link" href="{{ url('/home') }}">Home</a>

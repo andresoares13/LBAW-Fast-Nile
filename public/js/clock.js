@@ -30,7 +30,7 @@ function closeAuctionHandler(){
   if (this.status != 200){
     return;
   }
-  console.log(JSON.parse(this.responseText));
+  
 
 }
 
@@ -62,7 +62,14 @@ function startTime() {
     }
 
     if (auction == null){
-      sendAjaxxRequest('post', '/api/getAuction/',{"id":page},receiveAuctionHandler);
+      if (page =="home"){
+        soon = document.getElementById('soon').innerHTML;
+        sendAjaxxRequest('post', '/api/getAuction/',{"id":soon},receiveAuctionHandler);
+      }
+      else{
+        sendAjaxxRequest('post', '/api/getAuction/',{"id":page},receiveAuctionHandler);
+      }
+      
 
     }
     

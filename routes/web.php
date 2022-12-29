@@ -92,6 +92,7 @@ Route::post('api/bid', 'BidController@create');
 
 Route::get('auction/{id}', 'AuctionController@show');
 Route::get('auctions/{pageNr}', 'AuctionController@showAuctionsPage');
+Route::get('allauctions/{pageNr}','AuctionController@showAllAuctionsPage');
 Route::get('profile/auctionCreate/{id}', 'UserController@showAuctionCreate');
 Route::post('auctionCreate', 'UserController@createAuction');
 Route::get('auctionEdit/{id}', 'AuctionController@showAuctionEdit');

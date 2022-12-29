@@ -22,7 +22,7 @@ class HomeController extends Controller
       $auctions = $auction->allAuctions();
       $soonAuction = $auction->getSoonAuction();
 
-      return view('pages.home', ['auctions' => $auctions,'soonAuction' => $soonAuction]);
+      return view('pages.home', ['auctions' => $auctions,'soonAuction' => $soonAuction[0]]);
     }
 
     public function showAboutUs()

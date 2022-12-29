@@ -121,6 +121,11 @@
                 </li>
                 @else
                 <li style="font-size: larger;"><strong>Closed</strong></li>
+                @if ($auction->highestbidder != null)
+                <li style="font-size: larger;"><strong>Winner: </strong><a href="/profile/{{$auction->highestbidder}}">{{$auction->getHighestBidderName($auction->highestbidder)}}</a></li>
+                @else
+                <li style="font-size: larger;"><strong>Winner: </strong><text>Anonymous</text></li>
+                @endif
                 <li style="font-size: larger;"><strong>Final Price</strong><text id="currentPriceText">: {{$auction->pricenow}} €</text></li>
                 @endif
                 

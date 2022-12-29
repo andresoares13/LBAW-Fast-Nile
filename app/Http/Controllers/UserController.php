@@ -112,8 +112,8 @@ class UserController extends Controller
       if ($auctioneer != NULL){
         $name = $auctioneer->getName($auctioneer->iduser);
         $userId = $auctioneer->getUserId($auctioneer->iduser);
-        $auctions = Auction::where('states','Active')->where('owners',$id)->orderBy('timeclose')->limit($limit)->get();
-        $totalCount = count(Auction::where('states','Active')->where('owners',$id)->get());
+        $auctions = Auction::where('owners',$id)->orderBy('timeclose')->limit($limit)->get();
+        $totalCount = count(Auction::where('owners',$id)->get());
         $lastEl = $totalCount - (5 * (intval($pageNr)-1)); //if the page is not complete we dont want repetitives, if there are 7, first page gets 5, 2nd gets 2
         $auctions = array_slice($auctions->toArray(), -$lastEl); //only get the last 5
         $auctions = Auction::hydrate($auctions);

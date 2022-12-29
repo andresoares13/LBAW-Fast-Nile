@@ -115,7 +115,7 @@ class Auction extends Model
 
   public function getSoonAuction(){
     try{
-      $auction = Auction::orderBy('timeclose')->limit(1)->get();
+      $auction = Auction::where('states','Active')->orderBy('timeclose')->limit(1)->get();
       return $auction;
     }
     catch(Exception $ex){
