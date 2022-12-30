@@ -215,6 +215,9 @@ class AuctionController extends Controller
           $auction->save();
           return redirect('auction/'.$auction->id);
         }
+        else{
+          abort(403);
+        }
       }
       else if (auth()->guard('admin')->check()){
         $auction = Auction::find($request->input('auction'));
