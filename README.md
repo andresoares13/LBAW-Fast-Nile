@@ -29,7 +29,7 @@ Administration URL: https://lbaw22144.lbaw.fe.up.pt/profileAdmin/1
 
 ### Project Management
 
-André Soares, up202004161@edu.fe.up.pt
-António Matos, up202006866@edu.fe.up.pt
-Miguel Teixeira, up202005208@edu.fe.up.pt
-João Moura, up201904881@edu.fe.up.pt
+André Soares, up202004161@edu.fe.up.pt  
+António Matos, up202006866@edu.fe.up.pt  
+Miguel Teixeira, up202005208@edu.fe.up.pt  
+João Moura, up201904881@edu.fe.up.pt  
