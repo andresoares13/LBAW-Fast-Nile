@@ -21,7 +21,7 @@ class HomeController extends Controller
       $auction = new Auction();
       $auctions = $auction->allAuctions();
       $soonAuction = $auction->getSoonAuction();
-
+      
       return view('pages.home', ['auctions' => $auctions,'soonAuction' => $soonAuction[0]]);
     }
 
