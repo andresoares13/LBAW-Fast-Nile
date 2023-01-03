@@ -25,7 +25,7 @@ Administration URL: https://lbaw22144.lbaw.fe.up.pt/profileAdmin/1
 | Type          | Username  | Password |
 | ------------- | --------- | -------- |
 | auctioneer | lostani@gmail.com    | 123456 |
-| regular user | user@example.com | testtest |
+| regular user | regular@gmail.com | regular |
 
 ### Project Management
 
