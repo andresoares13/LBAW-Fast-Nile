@@ -1197,3 +1197,22 @@ h6 {
     padding: 0;
   }
 }
+
+
+#inputStars input{
+  display: none;
+}
+
+#inputStars i{
+  font-size: larger;
+  color: gold;
+  border: #111;
+  border-right: thick;
+  cursor: pointer;
+}
+
+#profileRatingStar{
+  color: gold;
+  border: #111;
+  border-right: thick;
+}

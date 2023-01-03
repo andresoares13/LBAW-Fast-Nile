@@ -41,8 +41,6 @@ return array(
     'App\\Models\\User' => $baseDir . '/app/Models/User.php',
     'App\\Policies\\AuctionPolicy' => $baseDir . '/app/Policies/AuctionPolicy.php',
     'App\\Policies\\BidPolicy' => $baseDir . '/app/Policies/BidPolicy.php',
-    'App\\Policies\\CardPolicy' => $baseDir . '/app/Policies/CardPolicy.php',
-    'App\\Policies\\ItemPolicy' => $baseDir . '/app/Policies/ItemPolicy.php',
     'App\\Policies\\UserPolicy' => $baseDir . '/app/Policies/UserPolicy.php',
     'App\\Providers\\AppServiceProvider' => $baseDir . '/app/Providers/AppServiceProvider.php',
     'App\\Providers\\AuthServiceProvider' => $baseDir . '/app/Providers/AuthServiceProvider.php',

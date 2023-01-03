@@ -605,8 +605,6 @@ class ComposerStaticInit87dee50e57c42251fd2dfc95069537fc
         'App\\Models\\User' => __DIR__ . '/../..' . '/app/Models/User.php',
         'App\\Policies\\AuctionPolicy' => __DIR__ . '/../..' . '/app/Policies/AuctionPolicy.php',
         'App\\Policies\\BidPolicy' => __DIR__ . '/../..' . '/app/Policies/BidPolicy.php',
-        'App\\Policies\\CardPolicy' => __DIR__ . '/../..' . '/app/Policies/CardPolicy.php',
-        'App\\Policies\\ItemPolicy' => __DIR__ . '/../..' . '/app/Policies/ItemPolicy.php',
         'App\\Policies\\UserPolicy' => __DIR__ . '/../..' . '/app/Policies/UserPolicy.php',
         'App\\Providers\\AppServiceProvider' => __DIR__ . '/../..' . '/app/Providers/AppServiceProvider.php',
         'App\\Providers\\AuthServiceProvider' => __DIR__ . '/../..' . '/app/Providers/AuthServiceProvider.php',

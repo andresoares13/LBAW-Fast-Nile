@@ -255,6 +255,7 @@ class AuctionController extends Controller
 
     public function statusAuction(Request $request){
       if (auth()->check()){
+        $auction = Auction::find($request->auction);
         if ($this->authorize('showEdit', $auction)){
           $auction = Auction::find($request->auction);
           if (isset($request->ending)){

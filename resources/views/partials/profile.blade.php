@@ -45,7 +45,7 @@
                 @if ($user->isAuctioneer($user->id))
                 <p class="card-text">Phone Number: {{$user->getAuctioneer($user->id)[0]['phone']}}</p>
                 @if ($user->getAuctioneer($user->id)[0]['grade'] != 0)
-                <p class="card-text">Rating: {{$user->getAuctioneer($user->id)[0]['grade']}} <i class="fa-solid fa-star"></i></p>
+                <p class="card-text">Rating: {{$user->getAuctioneer($user->id)[0]['grade']}} <i id="profileRatingStar" class="fa-solid fa-star"></i></p>
                 @else
                 <p class="card-text">Rating: Unrated</p>
                 @endif
@@ -77,18 +77,22 @@
                     <button id="buttonInvBack" style="margin-top: 0" class="btn btn-outline-light btn-lg px-5" type="button">Followed Auctions</button> 
                   </a>
                   @if($user->countRatingOnAuct(auth()->user()->id,$user->getAuctioneer($user->id)[0]['id'])<$user->countAuctionsWon(auth()->user()->id,$user->getAuctioneer($user->id)[0]['id']))
-                        <a>
+                  <script src="{{ asset('js/rating.js') }}" defer onload="addListeners()"> </script>
                           <p id="ratingtext" style="font-size:25px"> Rate this auctioneer</p>
                           <div id=starbuttons class="ratingstars">
                           <form action="/createRating" method="POST"> 
 
                           {{ csrf_field() }}
-                              <input type="radio" name="ratingstars" value="5" id="5"><label for="5">☆</label>
-                              <input type="radio" name="ratingstars" value="4" id="4"><label for="4">☆</label>
-                              <input type="radio" name="ratingstars" value="3" id="3"><label for="3">☆</label>
-                              <input type="radio" name="ratingstars" value="2" id="2"><label for="2">☆</label>
-                              <input type="radio" name="ratingstars" value="1" id="1"><label for="1">☆</label>
-
+                              <div id="inputStars">
+                              <input type="radio" name="ratingstars" value="1" id="1"><i id="icon1" class="fa-regular fa-star"></i>
+                              <input type="radio" name="ratingstars" value="2" id="2"><i id="icon2" class="fa-regular fa-star"></i>
+                              <input type="radio" name="ratingstars" value="3" id="3"><i id="icon3" class="fa-regular fa-star"></i>
+                              <input type="radio" name="ratingstars" value="4" id="4"><i id="icon4" class="fa-regular fa-star"></i>
+                              <input type="radio" name="ratingstars" value="5" id="5"><i id="icon5" class="fa-regular fa-star"></i>
+                              
+                              </div>
+                              
+                                <br>
                               <input type="hidden" name="user" value="{{ auth()->user()->id }}">
                               <input type="hidden" name="auctioneer" value="{{ $user->getAuctioneer($user->id)[0]['id'] }}">
                               <input type="hidden" name="profile" value="{{ $user->id }}">
@@ -96,7 +100,7 @@
                               <button id="buttonInvBack" style="margin-top: 0" class="btn btn-outline-light btn-lg px-5" type="submit">Rate</button> 
                           </form>
                           </div>
-                        </a>
+                   
                       @endif  
 
                 </div>
