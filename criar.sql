@@ -21,6 +21,8 @@ DROP TABLE IF EXISTS car CASCADE;
 DROP TABLE IF EXISTS rating CASCADE;
 DROP TABLE IF EXISTS auctioneer CASCADE;
 DROP TABLE IF EXISTS users CASCADE;
+DROP TABLE IF EXISTS password_resets CASCADE;
+DROP TABLE IF EXISTS block CASCADE;
 
 DROP TYPE IF EXISTS categories;
 DROP TYPE IF EXISTS statesAuction;
@@ -76,7 +78,8 @@ CREATE TABLE car (
    states statesCar NOT NULL,
    color TEXT NOT NULL,
    consumption FLOAT NOT NULL,
-   kilometers INT NOT NULL
+   kilometers INT NOT NULL,
+   picture TEXT NOT NULL DEFAULT 'default.png'
 );
 
 CREATE TABLE auction (
@@ -91,6 +94,7 @@ CREATE TABLE auction (
    owners INT,
    states statesAuction NOT NULL,
    title TEXT NOT NULL,
+   ending BOOLEAN,
    CONSTRAINT fk_car FOREIGN KEY(idCar) REFERENCES car(id) ON DELETE CASCADE,
    CONSTRAINT fk_bidder FOREIGN KEY(highestBidder) REFERENCES users(id),
    CONSTRAINT fk_owner FOREIGN KEY(owners) REFERENCES auctioneer(id)
@@ -131,6 +135,22 @@ CREATE TABLE auction (
    CONSTRAINT fk_user FOREIGN KEY(idUser) REFERENCES users(id),
    CONSTRAINT fk_auctioneer FOREIGN KEY(idAuctioneer) REFERENCES auctioneer(id) ON DELETE CASCADE
 );
+
+CREATE TABLE password_resets (
+   id SERIAL PRIMARY KEY,
+   email TEXT,
+   token TEXT,
+   created_at TIMESTAMP
+);
+
+ CREATE TABLE block (
+   id SERIAL PRIMARY KEY, 
+   idUser INT NOT NULL,
+   idAdmin INT NOT NULL,
+   justification TEXT NOT NULL,
+   CONSTRAINT fk_user FOREIGN KEY(idUser) REFERENCES users(id) ON DELETE CASCADE,
+   CONSTRAINT fk_admin FOREIGN KEY(idAdmin) REFERENCES administrator(id)
+);  
 
 
 -----------------------------------------
@@ -203,8 +223,8 @@ DROP TRIGGER IF EXISTS min_bid_delete_auction ON auction;
 DROP TRIGGER IF EXISTS new_bid_notification ON auction;
 DROP TRIGGER IF EXISTS ending_notification ON auction;
 DROP TRIGGER IF EXISTS ended_notification ON auction;
-
-
+DROP TRIGGER IF EXISTS fix_auction_price ON auction;
+DROP TRIGGER IF EXISTS update_bid_wallet ON bid;
 
 
 --t1
@@ -440,7 +460,7 @@ CREATE OR REPLACE FUNCTION update_average_grade_function() RETURNS TRIGGER AS
 $BODY$
 BEGIN
    UPDATE auctioneer
-      SET grade = round( CAST(((new.grade + auctioneer.grade) / ( (select count(id) from rating where idAuctioneer = new.idAuctioneer))) AS numeric) , 2 )
+      SET grade = round( CAST(((((auctioneer.grade * (select count(id) -1 from rating where idAuctioneer = new.idAuctioneer)) + new.grade)) / ( (select count(id) from rating where idAuctioneer = new.idAuctioneer))) AS numeric) , 2 )
       WHERE new.idAuctioneer = auctioneer.id;
     return new;
 END;
@@ -467,8 +487,8 @@ BEGIN
       SET idUser = NULL
       WHERE old.id = rating.idUser;
    UPDATE auction 
-      SET highestBidder = (select bid.idUser from auction,bid where bid.idAuction = auction.id and bid.idUser is not NULL order by valuee desc limit 1),
-      priceNow = (select bid.valuee from auction,bid where bid.idAuction = auction.id and bid.idUser is not NULL order by valuee desc limit 1)
+      SET highestBidder = (select bid.idUser from auction,bid where bid.idAuction = auction.id and old.id = auction.highestBidder and bid.idUser is not NULL order by valuee desc limit 1),
+      priceNow = (select bid.valuee from auction,bid where bid.idAuction = auction.id and old.id = auction.highestBidder and bid.idUser is not NULL order by valuee desc limit 1)
       WHERE old.id = auction.highestBidder and auction.states = 'Active';   
     return old;
 END;
@@ -515,9 +535,13 @@ CREATE TRIGGER update_deleted_auctioneer
 CREATE OR REPLACE FUNCTION min_bid_delete_auction_function() RETURNS TRIGGER AS
 $BODY$
 BEGIN
-    IF (select count(bid.id) from auction,bid where bid.idAuction = old.id) > 0 THEN 
-        RAISE EXCEPTION 'An auction can´t be deleted if it has more than 0 bids';
+    IF (select count(bid.id) from auction,bid where bid.idAuction = old.id and bid.iduser is not null) > 0 THEN 
+        RAISE EXCEPTION 'An auction cannot be deleted if it has more than 0 bids';
 	ELSE
+
+     UPDATE notification
+     SET idAuction = NULL
+     WHERE idAuction = old.id;
 
      INSERT INTO notification (idUser,idAuction,messages,viewed)
 	  SELECT users.id,NULL,(SELECT CONCAT('Your auction was canceled - ',old.title)),false
@@ -577,7 +601,7 @@ BEGIN
       INSERT INTO notification (idUser,idAuction,messages,viewed)
       SELECT distinct bid.idUser,bid.idAuction,'Participating auction is ending',false
 	  FROM bid
-	  WHERE bid.idAuction = new.id;
+	  WHERE bid.idAuction = new.id and bid.idUser is not null;
 	  INSERT INTO notification (idUser,idAuction,messages,viewed)
 	  SELECT users.id,new.id,'Your auction is ending',false
 	  FROM users
@@ -606,7 +630,7 @@ BEGIN
       INSERT INTO notification (idUser,idAuction,messages,viewed)
       SELECT distinct bid.idUser,bid.idAuction,'Auction has ended',false
 	  FROM bid
-	  WHERE bid.idAuction = new.id;
+	  WHERE bid.idAuction = new.id and bid.idUser is not null;
 	  
 	  INSERT INTO notification (idUser,idAuction,messages,viewed)
 	  SELECT users.id,new.id,'Your auction has ended',false
@@ -616,7 +640,7 @@ BEGIN
 	  INSERT INTO notification (idUser,idAuction,messages,viewed)
       SELECT distinct bid.idUser,bid.idAuction,(SELECT CONCAT('The winner of the auction was ', (select names FROM users where id= (select highestBidder from auction where id=new.id)))),false
 	  FROM bid
-	  WHERE bid.idAuction = new.id;
+	  WHERE bid.idAuction = new.id and bid.idUser is not null;
 	  
 	  INSERT INTO notification (idUser,idAuction,messages,viewed)
 	  SELECT users.id,new.id,(SELECT CONCAT('The winner of your auction was ', (select names FROM users where id= (select highestBidder from auction where id=new.id)))),false
@@ -633,6 +657,52 @@ CREATE TRIGGER ended_notification
      BEFORE UPDATE ON auction
      FOR EACH ROW
      EXECUTE PROCEDURE ended_notification_function();
+
+
+--t19
+
+CREATE OR REPLACE FUNCTION fix_auction_price_function() RETURNS TRIGGER AS
+$BODY$
+BEGIN
+   IF (new.priceNow is null) THEN
+      UPDATE auction
+         SET priceNow = priceStart where id = new.id;
+   END IF;
+   return new;
+END;
+$BODY$
+language plpgsql;
+
+
+CREATE TRIGGER fix_auction_price
+     AFTER UPDATE ON auction
+     FOR EACH ROW
+     EXECUTE PROCEDURE fix_auction_price_function();     
+
+
+--t20
+
+CREATE OR REPLACE FUNCTION update_bid_wallet_function() RETURNS TRIGGER AS
+$BODY$
+BEGIN
+   UPDATE users
+   SET wallet = wallet - new.valuee 
+   WHERE users.id = new.idUser;
+   
+   UPDATE users
+   SET wallet = wallet + (select valuee from bid where idAuction = new.idAuction and id != new.id ORDER BY id DESC limit 1)
+   WHERE users.id = (select idUser from bid where idAuction = new.idAuction and id != new.id ORDER BY id DESC limit 1);
+   
+   return new;
+END;
+$BODY$
+language plpgsql;
+
+
+CREATE TRIGGER update_bid_wallet
+     AFTER INSERT ON bid
+     FOR EACH ROW
+     EXECUTE PROCEDURE update_bid_wallet_function(); 
      
   
 

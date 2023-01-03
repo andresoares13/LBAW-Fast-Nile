@@ -187,39 +187,3 @@ insert into users (id, names, password, email, address) values (101, 'Vivie', '$
 
 
 
-/* transaction tests
-
-BEGIN TRANSACTION;
-
-SET TRANSACTION ISOLATION LEVEL REPEATABLE READ;
-
--- Insert car
-INSERT INTO car (id, names, category, states, color, consumption, kilometers)
- VALUES (7, 'GMC', 'Convertible', 'Brand New', 'Pink', 8.5, 477);
-
--- Insert auction
-INSERT INTO auction (id, idCar, descriptions, priceStart, priceNow, timeClose, owners, states, title)
- VALUES (7, 7, '', 17758, 17758, '2022-12-08 20:39:22', 7, 'Active','');
-
-END TRANSACTION;
-
----------------------------------------------
-
-BEGIN TRANSACTION;
-
-SET TRANSACTION ISOLATION LEVEL SERIALIZABLE READ ONLY;
-
--- Get username of highest bidder
-SELECT names
-FROM users,auction
-WHERE users.id = auction.highestBidder;
-
--- Get top 10 bids (limit 10)
-SELECT names,valuee
-FROM bid,users,auction
-WHERE users.id = bid.idUser and bid.idAuction = auction.id
-ORDER BY valuee DESC
-LIMIT 10;
-
-END TRANSACTION;
-*/

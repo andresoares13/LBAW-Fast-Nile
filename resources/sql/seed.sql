@@ -451,7 +451,7 @@ CREATE OR REPLACE FUNCTION update_average_grade_function() RETURNS TRIGGER AS
 $BODY$
 BEGIN
    UPDATE auctioneer
-      SET grade = round( CAST(((new.grade + auctioneer.grade) / ( (select count(id) from rating where idAuctioneer = new.idAuctioneer))) AS numeric) , 2 )
+      SET grade = round( CAST(((((auctioneer.grade * (select count(id) -1 from rating where idAuctioneer = new.idAuctioneer)) + new.grade)) / ( (select count(id) from rating where idAuctioneer = new.idAuctioneer))) AS numeric) , 2 )
       WHERE new.idAuctioneer = auctioneer.id;
     return new;
 END;
