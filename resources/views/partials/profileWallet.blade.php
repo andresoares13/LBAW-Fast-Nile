@@ -1,4 +1,4 @@
-
+<script src="{{ asset('js/pages1.js') }}" defer onload="addEventListeners();"></script>
 <main id="main"> 
 
   <!-- ======= Breadcrumbs ======= -->
@@ -30,7 +30,7 @@
                 <iframe name="dummyframe" id="dummyframe" style="display: none;"></iframe>
                 <form action="{{ url('/api/wallet')}}" method="POST" target="dummyframe" id="walletForm" class="profile" onsubmit="return checkWalletValue()">
                   <label for="funds">Choose the amount you want to add <br> <br></label>
-                    <script src="{{ asset('js/pages1.js') }}"></script>
+                    
                     {{ csrf_field() }}
                     <div class="input-group mb-3">
                     <input id="fundsInput" type="text" class="form-control form-control-lg" onkeypress="return checkNumber(event)" name="funds" value="500" required autofocus>
@@ -51,5 +51,4 @@
 <main>
 
 
-<body onload="addEventListeners();"> </body>
 

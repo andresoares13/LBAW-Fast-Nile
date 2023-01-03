@@ -89,6 +89,37 @@ h6 {
   visibility: hidden;
 }
 
+#buttonHeader2,
+#buttonHeader2:focus{
+  padding: 8px 25px;
+  border-radius: 4px;
+  color: #fff;
+  font-weight: 400;
+  font-family: "Poppins", sans-serif !important;
+  border: 2px solid #5c9f24;
+  background-color: transparent;
+  margin-left: auto;
+}
+
+
+
+#buttonHeader2 a {
+  background-color: transparent;
+  color: white;
+}
+
+
+
+#buttonHeader2:hover{
+  color: white;
+  background-color: #5c9f24;
+}
+
+#buttonHeader2:hover:before,
+#buttonHeader2:before {
+  visibility: hidden;
+}
+
 .wallet:hover{
   color: #5c9f24;
 }

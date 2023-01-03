@@ -181,7 +181,7 @@ function encodeForAjax(data) {
     event.preventDefault();
     okMessage("")
     let funds = document.getElementById('fundsInput').value;
-    if (funds < 500 || funds > 50000){
+    if (parseInt(funds) < 500 || parseInt(funds) > 50000){
         errorMessage("The value of funds to be added has to be between 500 and 50000");
         return;
     }

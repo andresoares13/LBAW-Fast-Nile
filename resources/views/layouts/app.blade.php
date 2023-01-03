@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="{{ app()->getLocale() }}">
+<title>{{ config('app.name', 'Laravel') }}</title>
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -8,7 +9,7 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Laravel') }}</title>
+    
 
     <!-- Styles -->
 
@@ -22,7 +23,7 @@
 
 
     
-    <script type="text/javascript">
+    <script >
         // Fix for Firefox autofocus CSS bug
         // See: http://stackoverflow.com/questions/18943276/html-5-autofocus-messes-up-css-loading/18945951#18945951
     </script>
@@ -32,7 +33,7 @@
 
 
 
-  <title>Fast Nile</title>
+  
   <meta content="" name="description">
   <meta content="" name="keywords">
 
@@ -40,7 +41,7 @@
   <link href="{{ asset('img/favicon.png')}}" rel="icon" type="image/png">
 
   <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Roboto:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Roboto:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet" crossorigin="anonymous">
   
       
 
@@ -115,7 +116,7 @@
         
         <li class="nav-item button">
           
-          <a href="{{ url('/logout')}}"><button class="logout" id="buttonHeader">Logout</button></a>
+          <a href="{{ url('/logout')}}"><button class="logout" id="buttonHeader2">Logout</button></a>
         
         </li>
         @elseif (Auth::guard('admin')->check())
