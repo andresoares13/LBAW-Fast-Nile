@@ -298,7 +298,8 @@ class UserController extends Controller
     public function addFunds(Request $request){
   
       if ((int) $request->input('funds') > 50000 || (int) $request->input('funds') < 500){
-        return header("HTTP/1.1 500 Internal Server Error");
+        http_response_code(500);
+        exit();
       }
       $user = User::find($request->input('user'));
       $addedFunds = $user->wallet + $request->input('funds');
