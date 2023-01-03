@@ -215,7 +215,7 @@ DROP TRIGGER IF EXISTS new_bid_notification ON auction;
 DROP TRIGGER IF EXISTS ending_notification ON auction;
 DROP TRIGGER IF EXISTS ended_notification ON auction;
 DROP TRIGGER IF EXISTS fix_auction_price ON auction;
-
+DROP TRIGGER IF EXISTS update_bid_wallet ON bid;
 
 
 --t1
@@ -669,6 +669,31 @@ CREATE TRIGGER fix_auction_price
      AFTER UPDATE ON auction
      FOR EACH ROW
      EXECUTE PROCEDURE fix_auction_price_function();     
+
+
+--t20
+
+CREATE OR REPLACE FUNCTION update_bid_wallet_function() RETURNS TRIGGER AS
+$BODY$
+BEGIN
+   UPDATE users
+   SET wallet = wallet - new.valuee 
+   WHERE users.id = new.idUser;
+   
+   UPDATE users
+   SET wallet = wallet + (select valuee from bid where idAuction = new.idAuction and id != new.id ORDER BY id DESC limit 1)
+   WHERE users.id = (select idUser from bid where idAuction = new.idAuction and id != new.id ORDER BY id DESC limit 1);
+   
+   return new;
+END;
+$BODY$
+language plpgsql;
+
+
+CREATE TRIGGER update_bid_wallet
+     AFTER INSERT ON bid
+     FOR EACH ROW
+     EXECUTE PROCEDURE update_bid_wallet_function(); 
 
 
 

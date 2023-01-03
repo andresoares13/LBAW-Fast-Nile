@@ -30,6 +30,7 @@ function closeAuctionHandler(){
   if (this.status != 200){
     return;
   }
+  window.location.reload();
   
 
 }
@@ -38,6 +39,11 @@ function endingAuctionHandler(){
   if (this.status != 200){
     return;
   }
+  auction = null;
+}
+
+function setAuctionNull(){
+  auction =  null;
 }
 
 
@@ -99,11 +105,18 @@ function startTime() {
     else{
        minutes = ""
     }
-    if (parseInt(days) < 0 && parseInt(hours) < 0 && auction != null){
-      if (parseInt(minutes) <= 0 && parseInt(seconds) <= 0 && auction.states != "Closed"){
+
+    if (seconds <= 0){
+      seconds=""
+    }
+   
+ 
+    if (isNaN(parseInt(days)) && isNaN(parseInt(hours)) && auction != null){
+      console.log(isNaN(parseInt(minutes)),isNaN(parseInt(seconds)),auction.states)
+      if (isNaN(parseInt(minutes)) && isNaN(parseInt(seconds)) && auction.states != "Closed"){
         sendAjaxxRequest('post', '/api/closeAuction/',{"id":page},closeAuctionHandler);
       }
-      else if (minutes < 15 && !auction.ending){
+      else if (parseInt(minutes) < 15 && !auction.ending){
         sendAjaxxRequest('post', '/api/endingAuction/',{"id":page},endingAuctionHandler);
       }
     }

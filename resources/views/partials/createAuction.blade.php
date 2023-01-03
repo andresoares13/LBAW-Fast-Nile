@@ -1,4 +1,4 @@
-<script src="{{ asset('js/pages1.js') }}" defer> </script>
+<script src="{{ asset('js/pages1.js') }}" defer onload="auctionDateRange()"> </script>
 
 <!-- ======= Breadcrumbs ======= -->
 <section id="breadcrumbs" class="breadcrumbs">
@@ -100,5 +100,3 @@
   </div>  
 </section>             
 
-
-<body onload="auctionDateRange()"> </body>

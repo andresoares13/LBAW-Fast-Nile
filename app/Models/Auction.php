@@ -119,7 +119,7 @@ class Auction extends Model
       return $auction;
     }
     catch(Exception $ex){
-      return null;
+      return [[]];
     }
   }
 

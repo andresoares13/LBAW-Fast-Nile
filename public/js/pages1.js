@@ -72,6 +72,7 @@ function errorMessage(s) {
 
 
 function auctionDateRange(){
+
     let yourDate = new Date()
     let day = (yourDate.getDate() + 1).toString()
     let month = (yourDate.getMonth() + 1).toString()
@@ -89,6 +90,7 @@ function auctionDateRange(){
     let maxDate = (parseInt(year) + 5).toString() + "-" + month + "-" + day;
     document.getElementById('timeClose').min = minDate
     document.getElementById('timeClose').max = maxDate
+
 }
 
 
@@ -290,6 +292,8 @@ if (page[1]=='auction'){
 
     bid=JSON.stringify(data);
     bid = JSON.parse(bid);
+
+    setAuctionNull();
 
 
     if (document.getElementById('bidConfirm') !=null){

@@ -10,6 +10,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\Mailtrap;
 use Illuminate\Support\Facades\Hash;
+Use Exception;
 
 
 use App\Models\User;
@@ -27,7 +28,13 @@ class UserController extends Controller
 
     public function show($id)
     {
-      $user = User::find($id);
+      try{
+        $user = User::find($id);
+      }
+      catch(Exception $ex){
+        abort(404);
+      }
+      
       if ($user != null){
         return view('pages.profile', ['user' => $user]);
       }
@@ -38,7 +45,12 @@ class UserController extends Controller
     }
 
     public function showEdit($id){
-      $user = User::find($id);
+      try{
+        $user = User::find($id);
+      }
+      catch(Exception $ex){
+        abort(404);
+      }
       if (Auth::guard('admin')->check()){
         return view('pages.profileEdit', ['user' => $user]);
       }
@@ -51,7 +63,13 @@ class UserController extends Controller
     }
 
     public function showWallet($id){
-      $user = User::find($id);
+      try{
+        $user = User::find($id);
+      }
+      catch(Exception $ex){
+        abort(404);
+      }
+      
       if ($this->authorize('correctUser', $user)){
         return view('pages.profileWallet', ['user' => $user]);
       }
@@ -61,7 +79,12 @@ class UserController extends Controller
     }
 
     public function showUpgrade($id){
-      $user = User::find($id);
+      try{
+        $user = User::find($id);
+      }
+      catch(Exception $ex){
+        abort(404);
+      }
       if ($this->authorize('correctUser', $user)){
         $auctioneer = $user->getAuctioneer($user->id);
         if (count($auctioneer) == 0){
@@ -77,7 +100,13 @@ class UserController extends Controller
     }
 
     public function showPicture($id){
-      $user = User::find($id);
+      try{
+        $user = User::find($id);
+      }
+      catch(Exception $ex){
+        abort(404);
+      }
+      
       if (Auth::guard('admin')->check()){
         return view('pages.profilePicture', ['user' => $user]);
       }
@@ -90,8 +119,13 @@ class UserController extends Controller
     }
 
     public function showAuctionCreate($id){
+      try{
+        $user = User::find($id);
+      }
+      catch(Exception $ex){
+        abort(404);
+      }
       
-      $user = User::find($id);
       if ($this->authorize('correctUser', $user)){
         $auctioneer = $user->getAuctioneer($user->id);
         if (count($auctioneer) != 0){
@@ -108,7 +142,13 @@ class UserController extends Controller
 
     public function showUserAuctions($id,$pageNr){
       $limit = 5 * intval($pageNr);
-      $auctioneer = Auctioneer::Find($id);
+      try{
+        $auctioneer = Auctioneer::Find($id);
+      }
+      catch(Exception $ex){
+        abort(404);
+      }
+      
       if ($auctioneer != NULL){
         $name = $auctioneer->getName($auctioneer->iduser);
         $userId = $auctioneer->getUserId($auctioneer->iduser);
@@ -132,6 +172,7 @@ class UserController extends Controller
 
     public function showUserWonAuctions($id,$pageNr){
       $limit = 5 * intval($pageNr);
+      
       $user = User::find($id);
       if ($user != NULL){
         $name = $user->names;
@@ -522,15 +563,20 @@ class UserController extends Controller
 
 
     public function showUsersPage($pageNr){ //gets 30 results based on the page number
-      $limit = 30 * intval($pageNr);
-      $users = User::orderBy('id')->limit($limit)->get();
-      $totalCount = count(User::get());
-      $lastEl = $totalCount - (30 * (intval($pageNr)-1)); 
-      $users = array_slice($users->toArray(), -$lastEl); //only get the last 30
-      $users = User::hydrate($users);
-      $totalPages = intval(ceil($totalCount /30)); //gets the total number of pages of auctions assuming each has 30
-      if ($limit > $totalCount + 30){
-        $users = [];
+      try{
+        $limit = 30 * intval($pageNr);
+        $users = User::orderBy('id')->limit($limit)->get();
+        $totalCount = count(User::get());
+        $lastEl = $totalCount - (30 * (intval($pageNr)-1)); 
+        $users = array_slice($users->toArray(), -$lastEl); //only get the last 30
+        $users = User::hydrate($users);
+        $totalPages = intval(ceil($totalCount /30)); //gets the total number of pages of auctions assuming each has 30
+        if ($limit > $totalCount + 30){
+          $users = [];
+        }
+      }
+      catch(Exception $ex){
+        abort(404);
       }
       return view('pages.userCard', ['users' => $users,'totalPages' => $totalPages,'pageNr' => $pageNr]);
 

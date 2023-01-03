@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+Use Exception;
 
 use App\Models\Auction;
 use App\Models\Car;
@@ -44,7 +45,7 @@ class AuctionController extends Controller
         }
       }
       catch(\Illuminate\Database\QueryException $ex){
-        dd($ex->getMessage()); 
+        abort(404);
       }
       return view('pages.auction', ['auction' => $auction]);
     }
@@ -65,47 +66,59 @@ class AuctionController extends Controller
     public function showAuctionsPage($pageNr, Request $request){ //gets 6 results based on the page number
       $limit = 6 * intval($pageNr);
       if ($request->input('category') == null && $request->input('states') == null){
-        $auctions = Auction::where('states','Active')->orderBy('timeclose')->limit($limit)->get();
-        $totalCount = count(Auction::where('states','Active')->get());
-        $lastEl = $totalCount - (6 * (intval($pageNr)-1)); //if the page is not complete we dont want repetitives, if there are 7, first page gets 6, 2nd gets 1
-        $auctions = array_slice($auctions->toArray(), -$lastEl); //only get the last 6
-        $auctions = Auction::hydrate($auctions);
-        $totalPages = intval(ceil($totalCount /6)); //gets the total number of pages of auctions assuming each has 20
-        if ($limit > $totalCount+6){
-          $auctions = [];
+        try{
+          $auctions = Auction::where('states','Active')->orderBy('timeclose')->limit($limit)->get();
+          $totalCount = count(Auction::where('states','Active')->get());
+          $lastEl = $totalCount - (6 * (intval($pageNr)-1)); //if the page is not complete we dont want repetitives, if there are 7, first page gets 6, 2nd gets 1
+          $auctions = array_slice($auctions->toArray(), -$lastEl); //only get the last 6
+          $auctions = Auction::hydrate($auctions);
+          $totalPages = intval(ceil($totalCount /6)); //gets the total number of pages of auctions assuming each has 20
+          if ($limit > $totalCount+6){
+            $auctions = [];
+          }
         }
+        catch(Exception $ex){
+          abort(404);
+        }
+        
+        
       }
       else{ //in case of search filters
-        
-        if ($request->category != null && $request->states == null){
-          $auctions = DB::table('auction')->join('car', 'auction.idcar', '=', 'car.id')
-          ->select('auction.*','car.id','car.names','car.category','car.states as carState','car.color','car.consumption','car.kilometers','car.picture')
-          ->where('auction.states','Active')->where('category',$request->input('category'))->orderBy('timeclose')->limit($limit)->get();
-          $totalCount = count(DB::table('auction')->join('car', 'auction.idcar', '=', 'car.id')->where('auction.states','Active')->where('category',$request->input('category'))->get());
-        }
-        else if ($request->states != null && $request->category == null){
-          $auctions = DB::table('auction')->join('car', 'auction.idcar', '=', 'car.id')
-          ->select('auction.*','car.id','car.names','car.category','car.states as carState','car.color','car.consumption','car.kilometers','car.picture')
-          ->where('auction.states','Active')->where('car.states',$request->input('states'))->orderBy('timeclose')->limit($limit)->get();
+        try{
+          if ($request->category != null && $request->states == null){
+            $auctions = DB::table('auction')->join('car', 'auction.idcar', '=', 'car.id')
+            ->select('auction.*','car.id','car.names','car.category','car.states as carState','car.color','car.consumption','car.kilometers','car.picture')
+            ->where('auction.states','Active')->where('category',$request->input('category'))->orderBy('timeclose')->limit($limit)->get();
+            $totalCount = count(DB::table('auction')->join('car', 'auction.idcar', '=', 'car.id')->where('auction.states','Active')->where('category',$request->input('category'))->get());
+          }
+          else if ($request->states != null && $request->category == null){
+            $auctions = DB::table('auction')->join('car', 'auction.idcar', '=', 'car.id')
+            ->select('auction.*','car.id','car.names','car.category','car.states as carState','car.color','car.consumption','car.kilometers','car.picture')
+            ->where('auction.states','Active')->where('car.states',$request->input('states'))->orderBy('timeclose')->limit($limit)->get();
 
-          $totalCount = count(DB::table('auction')->join('car', 'auction.idcar', '=', 'car.id')
-          ->where('auction.states','Active')->where('car.states',$request->input('states'))->get());
-        }
-        else{
-          $auctions = DB::table('auction')->join('car', 'auction.idcar', '=', 'car.id')
-          ->select('auction.*','car.id','car.names','car.category','car.states as carState','car.color','car.consumption','car.kilometers','car.picture')
-          ->where('auction.states','Active')->where('category',$request->input('category'))->where('car.states',$request->input('states'))->orderBy('timeclose')->limit($limit)->get();
-          $totalCount = count(DB::table('auction')->join('car', 'auction.idcar', '=', 'car.id')->where('auction.states','Active')->where('category',$request->input('category'))->where('car.states',$request->input('states'))->get());
-        }
+            $totalCount = count(DB::table('auction')->join('car', 'auction.idcar', '=', 'car.id')
+            ->where('auction.states','Active')->where('car.states',$request->input('states'))->get());
+          }
+          else{
+            $auctions = DB::table('auction')->join('car', 'auction.idcar', '=', 'car.id')
+            ->select('auction.*','car.id','car.names','car.category','car.states as carState','car.color','car.consumption','car.kilometers','car.picture')
+            ->where('auction.states','Active')->where('category',$request->input('category'))->where('car.states',$request->input('states'))->orderBy('timeclose')->limit($limit)->get();
+            $totalCount = count(DB::table('auction')->join('car', 'auction.idcar', '=', 'car.id')->where('auction.states','Active')->where('category',$request->input('category'))->where('car.states',$request->input('states'))->get());
+          }
 
-        
-    
-        $lastEl = $totalCount - (6 * (intval($pageNr)-1)); //if the page is not complete we dont want repetitives, if there are 7, first page gets 6, 2nd gets 1
-        $auctions = array_slice($auctions->toArray(), -$lastEl); //only get the last 6
-        $auctions = Auction::hydrate($auctions);
-        $totalPages = intval(ceil($totalCount /6)); //gets the total number of pages of auctions assuming each has 20
-        if ($limit > $totalCount+6){
-          $auctions = [];
+          
+      
+          $lastEl = $totalCount - (6 * (intval($pageNr)-1)); //if the page is not complete we dont want repetitives, if there are 7, first page gets 6, 2nd gets 1
+          $auctions = array_slice($auctions->toArray(), -$lastEl); //only get the last 6
+          $auctions = Auction::hydrate($auctions);
+          $totalPages = intval(ceil($totalCount /6)); //gets the total number of pages of auctions assuming each has 20
+          if ($limit > $totalCount+6){
+            $auctions = [];
+          }
+
+        }
+        catch(Exception $ex){
+          abort(404);
         }
       }
       
