@@ -78,6 +78,11 @@
                   </a>
                   @if($user->countRatingOnAuct(auth()->user()->id,$user->getAuctioneer($user->id)[0]['id'])<$user->countAuctionsWon(auth()->user()->id,$user->getAuctioneer($user->id)[0]['id']))
                   <script src="{{ asset('js/rating.js') }}" defer onload="addListeners()"> </script>
+                  @if (Session::get('fail'))
+            <div class="alert alert-danger">
+              {{Session::get('fail')}}
+            </div>
+            @endif
                           <p id="ratingtext" style="font-size:25px"> Rate this auctioneer</p>
                           <div id=starbuttons class="ratingstars">
                           <form action="/createRating" method="POST"> 

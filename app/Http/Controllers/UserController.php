@@ -393,6 +393,12 @@ class UserController extends Controller
 
 
     public function createRating(Request $request){
+      if ($request->ratingstars == null){
+        return back()->withInput()->with('fail',"No rating selected");
+      }
+      if ($request->ratingstars > 5 || $request->ratingstars < 1){
+        return back()->withInput()->with('fail',"Invalid rating");
+      }
 
       $user = User::find($request->input('user'));
       if ($this->authorize('correctUser', $user)){
